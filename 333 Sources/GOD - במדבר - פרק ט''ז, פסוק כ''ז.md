@@ -1,0 +1,17 @@
+---
+tags: [gemara-source]
+author: "[[GOD]]"
+book: "במדבר"
+location: "פרק ט''ז, פסוק כ''ז"
+---
+> [!info]- Reference
+> Author:: [[GOD]]
+> Book:: במדבר
+> Location:: פרק ט''ז, פסוק כ''ז
+
+### Source
+> ![[{3EEE4315-319D-4B8A-B726-9966CDB07620}.png]]
+
+### GOD - במדבר - פרק ט''ז, פסוק כ''ז
+
+So they moved away from the dwelling of Korah, Dathan, and Abiram, from all around; and Dathan and Abiram came out and stood defiantly at the entrance of their tents, with their wives, their children, and their infants.

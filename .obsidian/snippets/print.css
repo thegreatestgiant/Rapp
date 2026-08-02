@@ -1,0 +1,69 @@
+@media print {
+  /* Hide Obsidian UI chrome */
+  .workspace-ribbon,
+  .workspace-leaf-resize-handle,
+  .status-bar,
+  .titlebar,
+  .nav-header,
+  .nav-folder-title,
+  .view-header,
+  .workspace-tab-header-container,
+  .sidebar-toggle-button,
+  .workspace-tab-container-before,
+  .workspace-tab-container-after {
+    display: none !important;
+  }
+
+  /* Clean page breaks between embedded source sheets */
+  .markdown-embed {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .markdown-preview-view h2 {
+    page-break-before: always;
+  }
+
+  .markdown-preview-view h2:first-of-type {
+    page-break-before: avoid;
+  }
+
+  /* Readable font sizing */
+  .markdown-preview-view {
+    font-size: 12pt;
+    line-height: 1.6;
+  }
+
+  /* Hide dataview query code blocks in print, but NOT dataviewjs since we use it to embed! */
+  .dataview {
+    break-inside: avoid;
+  }
+
+  pre:has(.language-dataview) {
+    display: none !important;
+  }
+
+  /* Hide callout collapse arrows */
+  .callout-fold {
+    display: none !important;
+  }
+
+  /* Expand collapsed callouts for printing */
+  .callout.is-collapsed .callout-content {
+    display: block !important;
+  }
+
+  /* Clean image display */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Remove background colors */
+  body, .markdown-preview-view {
+    background: white !important;
+    color: black !important;
+  }
+}

@@ -1,0 +1,1218 @@
+{
+  "workspaces": {
+    "M & A": {
+      "main": {
+        "id": "670608a615321a82",
+        "type": "split",
+        "children": [
+          {
+            "id": "b651e4480a81a73f",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "da797b8e2304190a",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/002 Math & Art 4930/Edward Belbruno.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Edward Belbruno"
+                }
+              },
+              {
+                "id": "0df114e98dc6e4c7",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/002 Math & Art 4930/Math for Entropy.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Math for Entropy"
+                }
+              },
+              {
+                "id": "cab85fe0ddf80a87",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/002 Math & Art 4930/Mona Lisa.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Mona Lisa"
+                }
+              },
+              {
+                "id": "ca52cadd76feb948",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/002 Math & Art 4930/Leonardo Da Vinci.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Leonardo Da Vinci"
+                }
+              }
+            ],
+            "currentTab": 1
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "3b387d35749fc360",
+        "type": "split",
+        "children": [
+          {
+            "id": "e81cc24ce78a61e8",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "4405ae25478465cb",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "autoReveal": true
+                  },
+                  "icon": "lucide-folder-closed",
+                  "title": "Files"
+                }
+              },
+              {
+                "id": "81d867b930069c5d",
+                "type": "leaf",
+                "state": {
+                  "type": "bookmarks",
+                  "state": {},
+                  "icon": "lucide-bookmark",
+                  "title": "Bookmarks"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 263.5
+      },
+      "right": {
+        "id": "4058f45f907a58f4",
+        "type": "split",
+        "children": [
+          {
+            "id": "ac41ec5da3be13ec",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "f6e4fd2c553008e5",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/002 Math & Art 4930/Trajectories to the moon.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": false,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": true
+                  },
+                  "icon": "links-coming-in",
+                  "title": "Backlinks for Trajectories to the moon"
+                }
+              },
+              {
+                "id": "1e6c873644ee0bfe",
+                "type": "leaf",
+                "state": {
+                  "type": "outgoing-link",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/002 Math & Art 4930/Trajectories to the moon.md",
+                    "linksCollapsed": false,
+                    "unlinkedCollapsed": true
+                  },
+                  "icon": "links-going-out",
+                  "title": "Outgoing links from Trajectories to the moon"
+                }
+              },
+              {
+                "id": "48ad8d5af62fbb98",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "useHierarchy": true,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-tags",
+                  "title": "Tags"
+                }
+              },
+              {
+                "id": "9d0b76331b40fd4d",
+                "type": "leaf",
+                "state": {
+                  "type": "all-properties",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-archive",
+                  "title": "All properties"
+                }
+              },
+              {
+                "id": "aea2e23e615c8491",
+                "type": "leaf",
+                "state": {
+                  "type": "list-panel-view",
+                  "state": {},
+                  "icon": "list-panel-view",
+                  "title": "List Panel"
+                }
+              },
+              {
+                "id": "462575889cff89f7",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/002 Math & Art 4930/Math for Entropy.md",
+                    "followCursor": false,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-list",
+                  "title": "Outline of Math for Entropy"
+                }
+              }
+            ],
+            "currentTab": 5
+          }
+        ],
+        "direction": "horizontal",
+        "width": 217
+      },
+      "left-ribbon": {
+        "hiddenItems": {
+          "workspaces:Manage workspace layouts": false,
+          "switcher:Open quick switcher": false,
+          "graph:Open graph view": false,
+          "canvas:Create new canvas": false,
+          "templates:Insert template": false,
+          "command-palette:Open command palette": false,
+          "bases:Create new base": false,
+          "omnisearch:Omnisearch": false,
+          "pandoc-extended-markdown:Open list panel": false
+        }
+      },
+      "active": "0df114e98dc6e4c7",
+      "mtime": "2025-12-24T14:59:18-05:00"
+    },
+    "Philosophy": {
+      "main": {
+        "id": "670608a615321a82",
+        "type": "split",
+        "children": [
+          {
+            "id": "ed6a1cd582412f3f",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "ba999619c03d3fbc",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/001 Introduction to Philosophy 1011/Introduction.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Introduction"
+                }
+              },
+              {
+                "id": "954424467b49f51b",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/001 Introduction to Philosophy 1011/Metaphysics.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Metaphysics"
+                }
+              },
+              {
+                "id": "80d9f6a5257f7669",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/001 Introduction to Philosophy 1011/David Hume.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "David Hume"
+                }
+              },
+              {
+                "id": "ec8105e7cad67e7e",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/001 Introduction to Philosophy 1011/Johnson proof of J.md",
+                    "mode": "source",
+                    "source": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Johnson proof of J"
+                }
+              }
+            ],
+            "currentTab": 2
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "3b387d35749fc360",
+        "type": "split",
+        "children": [
+          {
+            "id": "e81cc24ce78a61e8",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "4405ae25478465cb",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "autoReveal": true
+                  },
+                  "icon": "lucide-folder-closed",
+                  "title": "Files"
+                }
+              },
+              {
+                "id": "81d867b930069c5d",
+                "type": "leaf",
+                "state": {
+                  "type": "bookmarks",
+                  "state": {},
+                  "icon": "lucide-bookmark",
+                  "title": "Bookmarks"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 263.5
+      },
+      "right": {
+        "id": "4058f45f907a58f4",
+        "type": "split",
+        "children": [
+          {
+            "id": "ac41ec5da3be13ec",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "f6e4fd2c553008e5",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/001 Introduction to Philosophy 1011/Infinity of infinities.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": false,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": false
+                  },
+                  "icon": "links-coming-in",
+                  "title": "Backlinks for Infinity of infinities"
+                }
+              },
+              {
+                "id": "1e6c873644ee0bfe",
+                "type": "leaf",
+                "state": {
+                  "type": "outgoing-link",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/001 Introduction to Philosophy 1011/Introduction.md",
+                    "linksCollapsed": false,
+                    "unlinkedCollapsed": true
+                  },
+                  "icon": "links-going-out",
+                  "title": "Outgoing links from Introduction"
+                }
+              },
+              {
+                "id": "48ad8d5af62fbb98",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "useHierarchy": true,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-tags",
+                  "title": "Tags"
+                }
+              },
+              {
+                "id": "9d0b76331b40fd4d",
+                "type": "leaf",
+                "state": {
+                  "type": "all-properties",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-archive",
+                  "title": "All properties"
+                }
+              },
+              {
+                "id": "aea2e23e615c8491",
+                "type": "leaf",
+                "state": {
+                  "type": "list-panel-view",
+                  "state": {},
+                  "icon": "list-panel-view",
+                  "title": "List Panel"
+                }
+              },
+              {
+                "id": "462575889cff89f7",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/001 Introduction to Philosophy 1011/David Hume.md",
+                    "followCursor": false,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-list",
+                  "title": "Outline of David Hume"
+                }
+              }
+            ],
+            "currentTab": 5
+          }
+        ],
+        "direction": "horizontal",
+        "width": 217
+      },
+      "left-ribbon": {
+        "hiddenItems": {
+          "workspaces:Manage workspace layouts": false,
+          "switcher:Open quick switcher": false,
+          "graph:Open graph view": false,
+          "canvas:Create new canvas": false,
+          "templates:Insert template": false,
+          "command-palette:Open command palette": false,
+          "bases:Create new base": false,
+          "omnisearch:Omnisearch": false,
+          "pandoc-extended-markdown:Open list panel": false
+        }
+      },
+      "active": "80d9f6a5257f7669",
+      "mtime": "2025-12-22T16:24:15-05:00"
+    },
+    "Linear Algebra": {
+      "main": {
+        "id": "670608a615321a82",
+        "type": "split",
+        "children": [
+          {
+            "id": "8b3e7d5214da7f2e",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "a44e71d52022f66b",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "000 School/000 Classes/Linear Algebra.md",
+                    "mode": "source",
+                    "source": false,
+                    "backlinks": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Linear Algebra"
+                }
+              },
+              {
+                "id": "33581ad721086e11",
+                "type": "leaf",
+                "state": {
+                  "type": "pdf",
+                  "state": {
+                    "file": "000 School/000 Classes/Linear Algebra and its Applications.pdf"
+                  },
+                  "icon": "lucide-file-text",
+                  "title": "Linear Algebra and its Applications"
+                }
+              },
+              {
+                "id": "1dff1a1cd81dd790",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "000 School/020 Spring 2026/001 Linear Algebra/Notes/Similarity.md",
+                    "mode": "source",
+                    "source": false,
+                    "backlinks": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Similarity"
+                }
+              },
+              {
+                "id": "a36b1d1c6e102cc3",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "000 School/020 Spring 2026/001 Linear Algebra/Notes/Proof of 5-1. Triangular Eigen.md",
+                    "mode": "source",
+                    "source": false,
+                    "backlinks": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Proof of 5-1. Triangular Eigen"
+                }
+              },
+              {
+                "id": "221d2a1127f11168",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "000 School/020 Spring 2026/001 Linear Algebra/Notes/Vector Subspaces.md",
+                    "mode": "source",
+                    "source": false,
+                    "backlinks": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Vector Subspaces"
+                }
+              }
+            ],
+            "currentTab": 1
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "3b387d35749fc360",
+        "type": "split",
+        "children": [
+          {
+            "id": "e81cc24ce78a61e8",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "4405ae25478465cb",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "autoReveal": true
+                  },
+                  "icon": "lucide-folder-closed",
+                  "title": "Files"
+                }
+              },
+              {
+                "id": "81d867b930069c5d",
+                "type": "leaf",
+                "state": {
+                  "type": "bookmarks",
+                  "state": {},
+                  "icon": "lucide-bookmark",
+                  "title": "Bookmarks"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 261
+      },
+      "right": {
+        "id": "4058f45f907a58f4",
+        "type": "split",
+        "children": [
+          {
+            "id": "ac41ec5da3be13ec",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "f6e4fd2c553008e5",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "000 School/020 Spring 2026/001 Linear Algebra/Notes/Simultanius Equation.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": false,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": false
+                  },
+                  "icon": "links-coming-in",
+                  "title": "Backlinks for Simultanius Equation"
+                }
+              },
+              {
+                "id": "48ad8d5af62fbb98",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "useHierarchy": true,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-tags",
+                  "title": "Tags"
+                }
+              },
+              {
+                "id": "9d0b76331b40fd4d",
+                "type": "leaf",
+                "state": {
+                  "type": "all-properties",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-archive",
+                  "title": "All properties"
+                }
+              },
+              {
+                "id": "aea2e23e615c8491",
+                "type": "leaf",
+                "state": {
+                  "type": "list-panel-view",
+                  "state": {},
+                  "icon": "list-panel-view",
+                  "title": "List Panel"
+                }
+              },
+              {
+                "id": "462575889cff89f7",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "000 School/020 Spring 2026/001 Linear Algebra/Notes/Simultanius Equation.md",
+                    "followCursor": false,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-list",
+                  "title": "Outline of Simultanius Equation"
+                }
+              }
+            ],
+            "currentTab": 1
+          }
+        ],
+        "direction": "horizontal",
+        "width": 200,
+        "collapsed": true
+      },
+      "left-ribbon": {
+        "hiddenItems": {
+          "workspaces:Manage workspace layouts": false,
+          "switcher:Open quick switcher": false,
+          "graph:Open graph view": false,
+          "canvas:Create new canvas": false,
+          "templates:Insert template": false,
+          "command-palette:Open command palette": false,
+          "omnisearch:Omnisearch": false,
+          "pandoc-extended-markdown:Open list panel": false,
+          "templater-obsidian:Templater": false
+        }
+      },
+      "active": "4405ae25478465cb",
+      "mtime": "2026-07-30T17:53:47-04:00"
+    },
+    "Math For CS": {
+      "main": {
+        "id": "670608a615321a82",
+        "type": "split",
+        "children": [
+          {
+            "id": "94a4655100693f11",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "7e8dac8bc267d2df",
+                "type": "leaf",
+                "state": {
+                  "type": "pdf",
+                  "state": {
+                    "file": "000 School/000 Classes/MathForCs.pdf"
+                  },
+                  "icon": "lucide-file-text",
+                  "title": "MathForCs"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "3b387d35749fc360",
+        "type": "split",
+        "children": [
+          {
+            "id": "e81cc24ce78a61e8",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "4405ae25478465cb",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "autoReveal": true
+                  },
+                  "icon": "lucide-folder-closed",
+                  "title": "Files"
+                }
+              },
+              {
+                "id": "81d867b930069c5d",
+                "type": "leaf",
+                "state": {
+                  "type": "bookmarks",
+                  "state": {},
+                  "icon": "lucide-bookmark",
+                  "title": "Bookmarks"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 263.5
+      },
+      "right": {
+        "id": "4058f45f907a58f4",
+        "type": "split",
+        "children": [
+          {
+            "id": "ac41ec5da3be13ec",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "f6e4fd2c553008e5",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "000 School/020 Spring 2026/002 Math for CS/HomeWorks/3 - 2026-03-11 (15-02).md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": false,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": true
+                  },
+                  "icon": "links-coming-in",
+                  "title": "Backlinks for 3 - 2026-03-11 (15-02)"
+                }
+              },
+              {
+                "id": "1e6c873644ee0bfe",
+                "type": "leaf",
+                "state": {
+                  "type": "outgoing-link",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/002 Math & Art 4930/Trajectories to the moon.md",
+                    "linksCollapsed": false,
+                    "unlinkedCollapsed": true
+                  },
+                  "icon": "lucide-ghost",
+                  "title": "outgoing-link"
+                }
+              },
+              {
+                "id": "48ad8d5af62fbb98",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "useHierarchy": true,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-tags",
+                  "title": "Tags"
+                }
+              },
+              {
+                "id": "9d0b76331b40fd4d",
+                "type": "leaf",
+                "state": {
+                  "type": "all-properties",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-archive",
+                  "title": "All properties"
+                }
+              },
+              {
+                "id": "aea2e23e615c8491",
+                "type": "leaf",
+                "state": {
+                  "type": "list-panel-view",
+                  "state": {},
+                  "icon": "list-panel-view",
+                  "title": "List Panel"
+                }
+              },
+              {
+                "id": "462575889cff89f7",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "000 School/020 Spring 2026/002 Math for CS/HomeWorks/3 - 2026-03-11 (15-02).md",
+                    "followCursor": false,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-list",
+                  "title": "Outline of 3 - 2026-03-11 (15-02)"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 217,
+        "collapsed": true
+      },
+      "left-ribbon": {
+        "hiddenItems": {
+          "templater-obsidian:Templater": false,
+          "workspaces:Manage workspace layouts": false,
+          "switcher:Open quick switcher": false,
+          "graph:Open graph view": false,
+          "canvas:Create new canvas": false,
+          "templates:Insert template": false,
+          "command-palette:Open command palette": false,
+          "omnisearch:Omnisearch": false,
+          "pandoc-extended-markdown:Open list panel": false
+        }
+      },
+      "active": "7e8dac8bc267d2df",
+      "mtime": "2026-04-15T18:14:21-04:00"
+    },
+    "Rabbi Rapp": {
+      "main": {
+        "id": "670608a615321a82",
+        "type": "split",
+        "children": [
+          {
+            "id": "72dfea414c333700",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "b29931b676b30ddc",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "000 School/Gemara/Source Sheets/Ikar 12.md",
+                    "mode": "source",
+                    "source": false,
+                    "backlinks": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "Ikar 12"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "3b387d35749fc360",
+        "type": "split",
+        "children": [
+          {
+            "id": "e81cc24ce78a61e8",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "4405ae25478465cb",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "autoReveal": true
+                  },
+                  "icon": "lucide-folder-closed",
+                  "title": "Files"
+                }
+              },
+              {
+                "id": "81d867b930069c5d",
+                "type": "leaf",
+                "state": {
+                  "type": "bookmarks",
+                  "state": {},
+                  "icon": "lucide-bookmark",
+                  "title": "Bookmarks"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 263.5
+      },
+      "right": {
+        "id": "4058f45f907a58f4",
+        "type": "split",
+        "children": [
+          {
+            "id": "ac41ec5da3be13ec",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "f6e4fd2c553008e5",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "000 School/Gemara/Source Sheets/שמואל ב כ''ג.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": false,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": false
+                  },
+                  "icon": "links-coming-in",
+                  "title": "Backlinks for שמואל ב כ''ג"
+                }
+              },
+              {
+                "id": "1e6c873644ee0bfe",
+                "type": "leaf",
+                "state": {
+                  "type": "outgoing-link",
+                  "state": {
+                    "file": "000 School/010 Fall 2025/001 Introduction to Philosophy 1011/Introduction.md",
+                    "linksCollapsed": false,
+                    "unlinkedCollapsed": true
+                  },
+                  "icon": "lucide-ghost",
+                  "title": "outgoing-link"
+                }
+              },
+              {
+                "id": "48ad8d5af62fbb98",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "useHierarchy": true,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-tags",
+                  "title": "Tags"
+                }
+              },
+              {
+                "id": "9d0b76331b40fd4d",
+                "type": "leaf",
+                "state": {
+                  "type": "all-properties",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-archive",
+                  "title": "All properties"
+                }
+              },
+              {
+                "id": "aea2e23e615c8491",
+                "type": "leaf",
+                "state": {
+                  "type": "list-panel-view",
+                  "state": {},
+                  "icon": "list-panel-view",
+                  "title": "List Panel"
+                }
+              },
+              {
+                "id": "462575889cff89f7",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "000 School/Gemara/Source Sheets/Ikar 12.md",
+                    "followCursor": false,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-list",
+                  "title": "Outline of Ikar 12"
+                }
+              }
+            ],
+            "currentTab": 5
+          }
+        ],
+        "direction": "horizontal",
+        "width": 217
+      },
+      "left-ribbon": {
+        "hiddenItems": {
+          "templater-obsidian:Templater": false,
+          "workspaces:Manage workspace layouts": false,
+          "switcher:Open quick switcher": false,
+          "graph:Open graph view": false,
+          "canvas:Create new canvas": false,
+          "templates:Insert template": false,
+          "command-palette:Open command palette": false,
+          "omnisearch:Omnisearch": false,
+          "pandoc-extended-markdown:Open list panel": false
+        }
+      },
+      "active": "b29931b676b30ddc",
+      "mtime": "2026-05-11T19:11:09-04:00"
+    },
+    "Gemara": {
+      "main": {
+        "id": "670608a615321a82",
+        "type": "split",
+        "children": [
+          {
+            "id": "2251b08c3feb3cba",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "302b43ba3e100ba4",
+                "type": "leaf",
+                "state": {
+                  "type": "pdf",
+                  "state": {
+                    "file": "000 School/Gemara/Source PDFs/dont open mouth.pdf"
+                  },
+                  "icon": "lucide-file-text",
+                  "title": "dont open mouth"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "3b387d35749fc360",
+        "type": "split",
+        "children": [
+          {
+            "id": "e81cc24ce78a61e8",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "4405ae25478465cb",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "autoReveal": true
+                  },
+                  "icon": "lucide-folder-closed",
+                  "title": "Files"
+                }
+              },
+              {
+                "id": "81d867b930069c5d",
+                "type": "leaf",
+                "state": {
+                  "type": "bookmarks",
+                  "state": {},
+                  "icon": "lucide-bookmark",
+                  "title": "Bookmarks"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 263.5
+      },
+      "right": {
+        "id": "4058f45f907a58f4",
+        "type": "split",
+        "children": [
+          {
+            "id": "ac41ec5da3be13ec",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "f6e4fd2c553008e5",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "000 School/Gemara/Source PDFs/dont open mouth.pdf",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": false,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": false
+                  },
+                  "icon": "links-coming-in",
+                  "title": "Backlinks for dont open mouth"
+                }
+              },
+              {
+                "id": "48ad8d5af62fbb98",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "useHierarchy": true,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-tags",
+                  "title": "Tags"
+                }
+              },
+              {
+                "id": "9d0b76331b40fd4d",
+                "type": "leaf",
+                "state": {
+                  "type": "all-properties",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-archive",
+                  "title": "All properties"
+                }
+              },
+              {
+                "id": "aea2e23e615c8491",
+                "type": "leaf",
+                "state": {
+                  "type": "list-panel-view",
+                  "state": {},
+                  "icon": "list-panel-view",
+                  "title": "List Panel"
+                }
+              },
+              {
+                "id": "462575889cff89f7",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "000 School/Gemara/Source PDFs/dont open mouth.pdf",
+                    "followCursor": false,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-list",
+                  "title": "Outline of dont open mouth"
+                }
+              }
+            ],
+            "currentTab": 1
+          }
+        ],
+        "direction": "horizontal",
+        "width": 217
+      },
+      "left-ribbon": {
+        "hiddenItems": {
+          "templater-obsidian:Templater": false,
+          "workspaces:Manage workspace layouts": false,
+          "switcher:Open quick switcher": false,
+          "graph:Open graph view": false,
+          "canvas:Create new canvas": false,
+          "templates:Insert template": false,
+          "command-palette:Open command palette": false,
+          "omnisearch:Omnisearch": false,
+          "pandoc-extended-markdown:Open list panel": false
+        }
+      },
+      "active": "302b43ba3e100ba4",
+      "mtime": "2026-05-06T12:51:30-04:00"
+    }
+  },
+  "active": "Rabbi Rapp"
+}

@@ -1,0 +1,11 @@
+{
+  "subjects": ["Gemara", "Halacha", "Navi", "Ikarim"],
+  "seasons": ["Spring", "Fall"],
+  "test_types": ["Final", "Midterm"],
+  "quiz_options": ["1", "2", "3", "4", "5", "6", "7", "Midterm", "Final"],
+  "preferences": {
+    "semester": "Spring 2026",
+    "class": "Linear",
+    "quiz": "4"
+  }
+}

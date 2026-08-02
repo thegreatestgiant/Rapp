@@ -1,0 +1,19 @@
+{
+  "vimMode": true,
+  "showLineNumber": true,
+  "alwaysUpdateLinks": true,
+  "attachmentFolderPath": "444 Attachments",
+  "promptDelete": false,
+  "newFileLocation": "current",
+  "readableLineLength": false,
+  "pdfExportSettings": {
+    "includeName": false,
+    "pageSize": "Letter",
+    "landscape": false,
+    "margin": "0",
+    "downscalePercent": 10
+  },
+  "userIgnoreFilters": [
+    "999 Scripts/.venv/"
+  ]
+}

@@ -1,0 +1,811 @@
+/* List Marker Styles */
+.pandoc-list-marker {
+    cursor: text;
+}
+
+/* Custom Label Placeholder Styles */
+.pandoc-custom-label-placeholder {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: var(--text-muted);
+}
+
+/* Inline placeholder number styles */
+.pandoc-inline-placeholder-number {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: var(--text-muted);
+    cursor: text;
+}
+
+/* Fancy Lists Styles */
+.pandoc-list-upper-alpha {
+    list-style-type: upper-alpha;
+}
+
+.pandoc-list-lower-alpha {
+    list-style-type: lower-alpha;
+}
+
+.pandoc-list-upper-roman {
+    list-style-type: upper-roman;
+}
+
+.pandoc-list-lower-roman {
+    list-style-type: lower-roman;
+}
+
+.pandoc-list-paren {
+    counter-reset: pandoc-list;
+}
+
+.pandoc-list-paren > li {
+    counter-increment: pandoc-list;
+    list-style: none;
+    position: relative;
+}
+
+.pandoc-list-paren > li::before {
+    content: counter(pandoc-list) ") ";
+    position: absolute;
+    left: -2em;
+}
+
+/* Definition Lists Styles */
+.pandoc-definition-list {
+    margin: 1em 0;
+}
+
+.pandoc-definition-term {
+    font-weight: bold;
+    text-decoration: underline;
+    margin-top: 0.5em;
+    margin-bottom: 0.25em;
+}
+
+.pandoc-definition-items {
+    margin-left: 2em;
+    margin-top: 0.25em;
+    list-style-type: disc;
+}
+
+.pandoc-definition-items li {
+    margin: 0.25em 0;
+}
+
+/* Definition content paragraphs - override Obsidian's indented text styling */
+.cm-pandoc-definition-paragraph {
+    /* No extra padding - indentation handled by spaces/tabs */
+    text-indent: 0 !important;
+}
+
+/* Override code block styling for definition content */
+.cm-pandoc-definition-paragraph .cm-hmd-indented-code,
+.cm-pandoc-definition-paragraph .cm-inline-code,
+.pandoc-definition-content-text {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    color: inherit !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+}
+
+/* Ensure the indent is visible for proper cursor positioning */
+.cm-pandoc-definition-paragraph .cm-indent {
+    opacity: 1;
+}
+
+/* In live preview mode */
+.cm-line .pandoc-definition-term {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* CodeMirror-specific definition term styling */
+.cm-pandoc-definition-term {
+    text-decoration: underline;
+}
+
+.cm-line .pandoc-definition-marker {
+    display: none;
+}
+
+/* Example Lists Styles */
+.pandoc-example-list {
+    counter-reset: none;
+}
+
+li.pandoc-example-item {
+    list-style: none;
+    position: relative;
+}
+
+li.pandoc-example-item::before {
+    content: "(" attr(data-example-number) ") ";
+    position: absolute;
+    left: -3em;
+}
+
+.pandoc-example-reference {
+    color: var(--text-accent);
+    cursor: pointer;
+}
+
+.pandoc-example-reference:hover {
+    text-decoration: underline;
+}
+
+/* Duplicate markers (for both example lists and custom label lists) */
+.pandoc-duplicate-markers {
+    color: var(--text-error);
+    text-decoration: underline;
+    cursor: help;
+}
+
+/* Live Preview Mode Specific */
+.cm-formatting-list-ol.pandoc-list-upper-alpha::before {
+    content: attr(data-marker);
+}
+
+.cm-formatting-list-ol.pandoc-list-lower-alpha::before {
+    content: attr(data-marker);
+}
+
+.cm-formatting-list-ol.pandoc-list-upper-roman::before {
+    content: attr(data-marker);
+}
+
+.cm-formatting-list-ol.pandoc-list-lower-roman::before {
+    content: attr(data-marker);
+}
+
+.cm-formatting-list-ol.pandoc-example-list::before {
+    content: attr(data-original);
+}
+
+/* Source Mode - preserve original text */
+.is-live-preview:not(.is-readable-line-width) .cm-s-obsidian {
+    .pandoc-list-upper-alpha,
+    .pandoc-list-lower-alpha,
+    .pandoc-list-upper-roman,
+    .pandoc-list-lower-roman,
+    .pandoc-example-list,
+    .pandoc-definition-term,
+    .pandoc-definition-marker {
+        all: initial;
+        color: inherit;
+        font-family: inherit;
+        font-size: inherit;
+    }
+}
+
+/* List Line Indentation - Matching Obsidian's default list behavior */
+/* Obsidian already handles text-indent for HyperMD-list-line */
+/* We only need to ensure proper padding for alignment */
+.HyperMD-list-line.pandoc-list-line {
+    /* Only padding needed - Obsidian handles text-indent internally */
+    padding-inline-start: 29px;
+}
+
+/* For nested lists */
+.HyperMD-list-line-2.pandoc-list-line {
+    padding-inline-start: var(--list-indent-editing, 30px);
+}
+
+.pandoc-list-continuation-widget {
+    display: inline-block;
+    pointer-events: none;
+    white-space: pre;
+    width: 0; /* width is set inline by widget */
+    flex-shrink: 0;
+}
+
+/* Custom Label Reference Clickable */
+.pandoc-custom-label-ref-clickable {
+    cursor: pointer;
+}
+
+/* Custom Label Lists */
+.pandoc-custom-label-item {
+    list-style: none;
+    position: relative;
+}
+
+/* Example Reference Suggestions */
+.pandoc-suggestion-content {
+    padding: 6px 10px;
+}
+
+.pandoc-suggestion-title {
+    font-weight: 600;
+    color: var(--text-normal);
+    margin-bottom: 2px;
+}
+
+.pandoc-suggestion-preview {
+    font-size: 0.85em;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
+}
+
+.pandoc-suggestion-number {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 2px;
+    text-decoration-color: var(--text-muted);
+}
+
+.pandoc-suggestion-placeholder {
+    font-size: 0.8em;
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+/* Superscript and Subscript Styles */
+.pandoc-superscript,
+sup.pandoc-superscript {
+    vertical-align: super;
+    font-size: 0.85em;
+    line-height: 0;
+}
+
+.pandoc-subscript,
+sub.pandoc-subscript {
+    vertical-align: sub;
+    font-size: 0.85em;
+    line-height: 0;
+}
+
+/* List Panel View Styles */
+.pandoc-list-panel-view-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 8px;
+}
+
+.pandoc-list-panel-icon-row {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    padding: 4px 0;
+    margin-bottom: 4px;
+}
+
+.pandoc-list-panel-icon-button {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    background-color: var(--background-primary);
+    transition: all 0.2s ease;
+}
+
+.pandoc-list-panel-icon-button:hover {
+    background-color: var(--background-modifier-hover);
+    border-color: var(--text-accent);
+}
+
+.pandoc-list-panel-icon-button.is-active {
+    background-color: var(--interactive-accent);
+    border-color: var(--interactive-accent);
+}
+
+.pandoc-list-panel-icon-button.is-active svg {
+    color: var(--text-on-accent);
+}
+
+.pandoc-list-panel-icon-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Panel icon container */
+.pandoc-panel-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+}
+
+/* Text-based icons for panels */
+.pandoc-icon-custom-label,
+.pandoc-icon-example-list,
+.pandoc-icon-definition-list,
+.pandoc-icon-footnote {
+    font-family: var(--font-monospace);
+    font-weight: bold;
+    font-size: 10px;
+    line-height: 20px;
+    color: var(--text-muted);
+}
+
+.pandoc-list-panel-icon-button.is-active .pandoc-icon-custom-label,
+.pandoc-list-panel-icon-button.is-active .pandoc-icon-example-list,
+.pandoc-list-panel-icon-button.is-active .pandoc-icon-definition-list,
+.pandoc-list-panel-icon-button.is-active .pandoc-icon-footnote {
+    color: var(--text-on-accent);
+}
+
+.pandoc-list-panel-icon-button:hover .pandoc-icon-custom-label,
+.pandoc-list-panel-icon-button:hover .pandoc-icon-example-list,
+.pandoc-list-panel-icon-button:hover .pandoc-icon-definition-list,
+.pandoc-list-panel-icon-button:hover .pandoc-icon-footnote {
+    color: var(--text-normal);
+}
+
+.pandoc-list-panel-separator {
+    margin: 8px 0;
+    border: none;
+    border-top: 1px solid var(--background-modifier-border);
+}
+
+.pandoc-list-panel-content-container {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Panel Order Settings Styles */
+.pandoc-panel-order-info {
+    flex: 0 0 auto;
+    max-width: 200px;
+}
+
+.pandoc-panel-order-container {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.pandoc-panel-order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 300px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.pandoc-panel-order-item {
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pandoc-panel-order-item.is-selected {
+    background-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+}
+
+.pandoc-panel-order-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.pandoc-panel-order-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 140px;
+}
+
+.pandoc-panel-order-button {
+    width: 100%;
+}
+
+/* Custom Label View Styles */
+table.custom-label-view-container {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+/* Header styles removed - no longer using header */
+
+tr.custom-label-view-row {
+    border-bottom: 1px solid var(--background-modifier-border-hover);
+    transition: background-color 0.15s ease;
+}
+
+tr.custom-label-view-row:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+td.custom-label-view-label {
+    font-family: var(--font-monospace);
+    font-size: 0.9em;
+    color: var(--text-accent);
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 3px;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 1%;
+    min-width: fit-content;
+}
+
+td.custom-label-view-label:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+td.custom-label-view-content {
+    font-size: 0.9em;
+    color: var(--text-normal);
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 3px;
+    transition: background-color 0.15s ease;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 4.5em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-height: 1.3;
+}
+
+/* Normalize paragraph spacing in custom label panel content */
+td.custom-label-view-content p {
+    margin: 0;
+    line-height: 1.3;
+}
+
+td.custom-label-view-content p:not(:last-child) {
+    margin-bottom: 0.3em;
+}
+
+/* Also normalize lists in custom label panel */
+td.custom-label-view-content ul,
+td.custom-label-view-content ol {
+    margin: 0;
+    padding-left: 1.2em;
+    line-height: 1.3;
+}
+
+td.custom-label-view-content ul:not(:last-child),
+td.custom-label-view-content ol:not(:last-child) {
+    margin-bottom: 0.3em;
+}
+
+td.custom-label-view-content li {
+    margin: 0;
+    line-height: 1.3;
+}
+
+td.custom-label-view-content:hover {
+    background-color: var(--background-modifier-hover);
+    color: var(--text-accent);
+}
+
+.custom-label-view-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Example List View Styles */
+table.pandoc-example-list-view-container {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+tr.pandoc-example-list-view-row {
+    border-bottom: 1px solid var(--background-modifier-border-hover);
+    transition: background-color 0.15s ease;
+}
+
+tr.pandoc-example-list-view-row:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+td.pandoc-example-list-view-number {
+    font-family: var(--font-monospace);
+    font-size: 0.9em;
+    color: var(--text-muted);
+    cursor: default;
+    padding: 6px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 1%;
+    min-width: fit-content;
+}
+
+td.pandoc-example-list-view-label {
+    font-family: var(--font-monospace);
+    font-size: 0.9em;
+    color: var(--text-accent);
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 3px;
+    transition: background-color 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 1%;
+    min-width: fit-content;
+}
+
+td.pandoc-example-list-view-label:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+td.pandoc-example-list-view-content {
+    font-size: 0.9em;
+    color: var(--text-normal);
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 3px;
+    transition: background-color 0.15s ease;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 4.5em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    line-height: 1.3;
+}
+
+/* Normalize paragraph spacing in example list panel content */
+td.pandoc-example-list-view-content p {
+    margin: 0;
+    line-height: 1.3;
+}
+
+td.pandoc-example-list-view-content p:not(:last-child) {
+    margin-bottom: 0.3em;
+}
+
+/* Also normalize lists in example list panel */
+td.pandoc-example-list-view-content ul,
+td.pandoc-example-list-view-content ol {
+    margin: 0;
+    padding-left: 1.2em;
+    line-height: 1.3;
+}
+
+td.pandoc-example-list-view-content ul:not(:last-child),
+td.pandoc-example-list-view-content ol:not(:last-child) {
+    margin-bottom: 0.3em;
+}
+
+td.pandoc-example-list-view-content li {
+    margin: 0;
+    line-height: 1.3;
+}
+
+td.pandoc-example-list-view-content:hover {
+    background-color: var(--background-modifier-hover);
+    color: var(--text-accent);
+}
+
+.pandoc-example-list-view-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Definition List View Styles */
+table.pandoc-definition-list-view-container {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875em;
+    table-layout: fixed;
+}
+
+tr.pandoc-definition-list-view-row {
+    border-bottom: 1px solid var(--background-modifier-border);
+    transition: background-color 0.15s ease;
+}
+
+tr.pandoc-definition-list-view-row:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+td.pandoc-definition-list-view-term {
+    width: 30%;
+    padding: 8px;
+    font-weight: 600;
+    color: var(--text-normal);
+    vertical-align: top;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+td.pandoc-definition-list-view-definitions {
+    width: 70%;
+    padding: 8px;
+    color: var(--text-normal);
+    vertical-align: top;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+td.pandoc-definition-list-view-definitions ul {
+    margin: 0;
+    padding-left: 1.2em;
+    list-style-type: disc;
+}
+
+td.pandoc-definition-list-view-definitions li {
+    margin-bottom: 4px;
+}
+
+td.pandoc-definition-list-view-definitions li:last-child {
+    margin-bottom: 0;
+}
+
+td.pandoc-definition-list-view-definitions p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+td.pandoc-definition-list-view-definitions:hover {
+    background-color: var(--interactive-hover);
+}
+
+.pandoc-definition-list-view-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Footnote Panel Styles */
+table.pandoc-footnote-panel-container {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+tr.pandoc-footnote-panel-row {
+    border-bottom: 1px solid var(--background-modifier-border);
+    transition: background-color 0.15s ease;
+}
+
+tr.pandoc-footnote-panel-row:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+td.pandoc-footnote-panel-index {
+    font-family: var(--font-monospace);
+    font-size: 0.95em;
+    color: var(--text-accent);
+    cursor: pointer;
+    padding: 6px 8px;
+    text-align: center;
+    white-space: nowrap;
+    width: 56px;
+}
+
+td.pandoc-footnote-panel-content {
+    font-size: 0.9em;
+    color: var(--text-normal);
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 3px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.3;
+}
+
+td.pandoc-footnote-panel-content:hover {
+    background-color: var(--background-modifier-hover);
+    color: var(--text-accent);
+}
+
+.pandoc-footnote-panel-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Hover popover styles */
+.pandoc-hover-popover {
+    position: absolute;
+    z-index: 1000;
+    padding: 8px 12px;
+    background-color: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-size: 0.9em;
+}
+
+.pandoc-hover-popover-label {
+    font-family: var(--font-monospace);
+    white-space: nowrap;
+}
+
+.pandoc-hover-popover-content {
+    max-width: 400px;
+    max-height: 300px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+/* Fix excessive line height in popover paragraphs */
+.pandoc-hover-popover p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.pandoc-hover-popover p:not(:last-child) {
+    margin-bottom: 0.5em;
+}
+
+/* Also normalize other block elements that might appear in popovers */
+.pandoc-hover-popover ul,
+.pandoc-hover-popover ol {
+    margin: 0;
+    padding-left: 1.5em;
+    line-height: 1.5;
+}
+
+.pandoc-hover-popover ul:not(:last-child),
+.pandoc-hover-popover ol:not(:last-child) {
+    margin-bottom: 0.5em;
+}
+
+.pandoc-hover-popover li {
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Highlight animation for scrolled-to lines */
+@keyframes custom-label-highlight-fade {
+    0% {
+        background-color: rgba(255, 213, 0, 0.4);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+.cm-line.custom-label-highlight {
+    animation: custom-label-highlight-fade 2s ease-out !important;
+    position: relative;
+}
+
+/* Custom label hover preview */
+.custom-label-hover-preview {
+    font-family: var(--font-text);
+    line-height: 1.5;
+    color: var(--text-normal);
+}

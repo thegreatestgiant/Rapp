@@ -1,0 +1,12 @@
+{
+  "cssTheme": "Catppuccin",
+  "enabledCssSnippets": [
+    "HR",
+    "Vim mode with line focus",
+    "hideproperties",
+    "clean-embeds",
+    "print"
+  ],
+  "nativeMenus": true,
+  "accentColor": ""
+}

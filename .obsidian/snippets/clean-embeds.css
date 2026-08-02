@@ -1,0 +1,20 @@
+/* 1. Hide the file name title bar on embeds */
+.markdown-embed-title {
+  display: none;
+}
+
+/* 2. Make headers inside embeds smaller so they blend in */
+.markdown-embed-content h2,
+.markdown-embed-content h3 {
+  font-size: 1.1em !important;
+  color: var(--text-muted) !important;
+  margin-top: 0 !important;
+  border-bottom: none !important;
+}
+
+/* 3. Remove the harsh border and padding around embeds (Optional) */
+.markdown-embed {
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}

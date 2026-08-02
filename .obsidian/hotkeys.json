@@ -1,0 +1,63 @@
+{
+  "editor:delete-paragraph": [],
+  "file-explorer:new-file": [],
+  "workspaces:save-and-load": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "S"
+    }
+  ],
+  "quickadd:choice:e567ba20-651e-4000-8f11-bf53f5e857d3": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "N"
+    }
+  ],
+  "quickadd:choice:fee9d27a-9db9-4097-8981-a1c0ea6538c9": [
+    {
+      "modifiers": [
+        "Alt"
+      ],
+      "key": "S"
+    }
+  ],
+  "quickadd:choice:3e6eeef2-e80b-4a16-b8af-46f8b008e2f2": [
+    {
+      "modifiers": [
+        "Alt",
+        "Shift"
+      ],
+      "key": "S"
+    }
+  ],
+  "templater-obsidian:888 Templates/Run PDF Parser.md": [
+    {
+      "modifiers": [
+        "Alt"
+      ],
+      "key": "P"
+    }
+  ],
+  "better-export-pdf:export-current-file-to-pdf": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "P"
+    }
+  ],
+  "app:reload": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "R"
+    }
+  ]
+}

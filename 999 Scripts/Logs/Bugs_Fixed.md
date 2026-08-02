@@ -1,0 +1,12 @@
+# Bugs Fixed
+
+## 2026-08-02
+- **Author Matching Order (`process_source_sheets.py`)**: Fixed an issue where shorter author names in `KNOWN_AUTHORS` (like `רמב"ם`) were matched before longer ones (like `הרמב"ם`), which caused the prefix to remain in the book title. Sorted the list by length descending before checking.
+- **Dataview Path Bug (`process_source_sheets.py`)**: Fixed the Dataview query in the Author template generating paths like `FROM "Gemara/Sources"` instead of a proper relative path. Now uses a robust `#gemara-source` tag instead.
+- **Fallback Author Logic (`process_source_sheets.py`)**: Fixed the fallback logic so that when the first word of a book is used as the author, it is properly removed from the book string.
+- **Image Cropping Overlaps (`process_source_sheets.py`)**: Added a safeguard (`max(y0 + 10, y1)`) to ensure PDF cropping rects always have positive height, preventing crashes on multi-column layouts where headers might share the same Y-axis.
+- **Fragile Regex (`clean_pending_edits.py`)**: Improved the regex for cleaning `> [!todo] Pending Edit Approval` blocks so it correctly replaces them with blank lines instead of eating all surrounding whitespace.
+- **Git History Locks (`.venv`, `.tmp.drive*`)**: Purged `.venv` and Google Drive sync folders from the entire Git history, as `.venv` was causing lock/unstaged change conflicts during rebases and filter-branch operations.
+- **Git Workspace Noise**: Purged `.obsidian/workspace.json` from the entire git history because it changes constantly and dirties the working directory.
+- **Empty Dataviews for Authors**: Discovered that after cloning a Git submodule, Obsidian Dataview fails to index the new files and tags until the application is fully reloaded (`Ctrl+R`). Additionally, confirmed that Obsidian 1.4+ Properties natively parses `author: "[[אבן עזרא]]"` as a Link object, meaning `contains(author, this.file.link)` perfectly works without modifications.
+- **Outdated Hardcoded Paths (`Run PDF Parser.md`, `clean_pending_edits.py`, etc.)**: Fixed several hardcoded directory paths in the `Run PDF Parser.md` template and Python auxiliary scripts that were still pointing to the old unnumbered `Sources` or `Source PDFs` folders instead of `333 Sources` and `000 Source PDFs` respectively. Also updated `Run PDF Parser.md` to execute `../.venv/bin/python`.
