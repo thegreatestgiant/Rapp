@@ -42,17 +42,25 @@ const pdfNames = pdfFiles.map(f => f.name);
 
 if (pdfNames.length === 0) {
     new Notice("No PDFs found in the Source PDFs folder!");
+    await cleanupUntitled();
     return;
+}
+
+async function cleanupUntitled() {
+    const activeFile = app.workspace.getActiveFile();
+    if (activeFile && activeFile.basename.startsWith("Untitled") && activeFile.stat.size < 10) {
+        await app.vault.trash(activeFile, true);
+    }
 }
 
 // 0. Add a subject selector
 const subjects = config.subjects || ["Gemara", "Halacha", "Navi", "Ikarim"];
 let selectedSubject = await tp.system.suggester(subjects, subjects, false, "Select Subject for PDF");
-if (!selectedSubject) return;
+if (!selectedSubject) { await cleanupUntitled(); return; }
 
 // 1. Interactive popup to select the PDF
 const selectedPdf = await tp.system.suggester(pdfNames, pdfNames, false, "Select PDF to Process");
-if (!selectedPdf) return;
+if (!selectedPdf) { await cleanupUntitled(); return; }
 
 // 1.5. Check if any Source Sheet already links to this PDF
 const sheetsFolder = rappPath("111 Source Sheets");
@@ -76,6 +84,7 @@ if (existingSheet) {
     );
     if (!proceed) {
         new Notice("Cancelled PDF processing.");
+        await cleanupUntitled();
         return;
     }
 }
@@ -103,7 +112,7 @@ if (process.platform === 'win32') {
 
 new Notice(`Processing ${selectedPdf}... (This may take an extra minute on the very first run to install Python requirements)`, 6000);
 
-exec(cmd, (error, stdout, stderr) => {
+exec(cmd, async (error, stdout, stderr) => {
     if (stdout.includes('PYTHON_MISSING')) {
         new Notice("❌ Python 3 is not installed on your system! Please install Python 3 to parse PDFs.", 10000);
         return;
@@ -118,5 +127,31 @@ exec(cmd, (error, stdout, stderr) => {
     if (stderr) console.error(`Script Stderr: ${stderr}`);
     
     new Notice(`✅ Successfully processed ${selectedPdf}!`);
+
+    // Parse the generated sheet name and open it
+    const match = stdout.match(/Master Source Sheet created at:\s*(.*)/);
+    if (match) {
+        const fullPath = match[1].trim();
+        // The file name is the last part of the path
+        const fileName = fullPath.split(/[\/\\]/).pop();
+        const sheetVaultPath = rappPath(`111 Source Sheets/${fileName}`);
+        
+        // Wait a brief moment for Obsidian to notice the new file
+        setTimeout(async () => {
+            const newFile = app.vault.getAbstractFileByPath(sheetVaultPath);
+            if (newFile) {
+                // If this script was run via a "New Note" QuickAdd command, 
+                // it left an empty "Untitled" file. Let's delete it so it doesn't clutter the vault.
+                const activeFile = app.workspace.getActiveFile();
+                if (activeFile && activeFile.basename.startsWith("Untitled") && activeFile.stat.size < 10) {
+                    await app.vault.trash(activeFile, true);
+                }
+                
+                // Open the newly generated Source Sheet
+                const leaf = app.workspace.getLeaf(false);
+                await leaf.openFile(newFile);
+            }
+        }, 1000);
+    }
 });
 _%>

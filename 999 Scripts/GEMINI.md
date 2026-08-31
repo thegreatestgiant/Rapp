@@ -29,6 +29,11 @@ We designed an automated workflow to process Gemara Source Sheet PDFs dropped in
 9. Fixed folder paths in auxiliary scripts (`clean_pending_edits.py`, `scratch.py`, `scratch_match.py`) to align with the new numbered directory structure (`333 Sources`, etc.).
 10. Updated the `Run PDF Parser.md` Templater script to point to the correct `Rapp` directories for PDFs and sheets, and updated the WSL python call to use `../.venv/bin/python`.
 11. Copied the `.obsidian` folder from the main vault into the `Rapp` folder to allow testing as a standalone vault.
+12. Updated `Run PDF Parser.md` so it automatically opens the generated Source Sheet after processing, and cleanly deletes any empty "Untitled" files left behind by QuickAdd executions or cancellations.
+13. Overhauled the citation matching engine in `process_source_sheets.py` to dynamically load known authors from the `222 Authors` folder, resolve font-encoding glitches with quotation marks, and implement positional string matching. It now flawlessly identifies complex authors like `רא"ש`, `ריטב"א`, `הר"ן`, `רבבות אפרים`, and `הר צבי` even if they have prefixes like `שו"ת` or `חידושי`.
+14. Fixed a critical fuzzy-matching false positive bug in `process_source_sheets.py`. Upgraded the `match_existing_source` logic from basic full-string fuzzy matching to a strict component-based architecture. This prevents off-by-one errors (e.g. `הלכה ט` incorrectly matching `הלכה ח`) by verifying that the normalized author and the final location token match exactly before permitting fuzzy matching on the book title.
+15. Developed an automated *Dibur Hamatchil* (DH) extraction heuristic in `process_source_sheets.py`. The parser now reads the raw text stream immediately following citations in the PDF to detect leading phrases terminated by hyphens or periods. It leverages these extracted phrases to automatically generate specific subsection anchors (e.g., `![[רש''י...#אבל לא במדינה]]`), perfectly disambiguating multiple quotes from the same page source.
+16. Re-added the explicit wikilink to the original PDF directly beneath the top-level `# Heading` in generated Master Source Sheets.
 
 *See `Logs/Bugs_Fixed.md`, `Logs/Features_Added.md`, and `Logs/Architectural_Decisions.md` for a detailed breakdown of these updates.*
 

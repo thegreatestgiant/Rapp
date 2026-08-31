@@ -74,22 +74,53 @@ def sanitize_filename(name):
     return clean
 
 def decode_text(text):
-    if any(c in "abcdefghijklmnopqrstuvwxyz,.;" for c in text):
+    if any(c in "abcdefghijklmnopqrstuvwxyz,.;\x1b" for c in text):
         rev = text[::-1]
         res = [QWERTY_TO_HEBREW.get(ch, ch) for ch in rev]
-        return "".join(res)
+        return "".join(res).replace('\x1b', '"')
     return text
+
+def get_all_known_authors():
+    authors = set(KNOWN_AUTHORS)
+    if AUTHORS_DIR.exists():
+        for f in AUTHORS_DIR.glob("*.md"):
+            name = f.stem.replace("''", '"')
+            authors.add(name)
+    
+    extras = [
+        'רא"ש', 'הרא"ש', 'ריטב"א', 'הריטב"א', 'רשב"א', 'הרשב"א', 'תוספות', 'הר"ן', 'ר"ן', 
+        'חלקת יואב', 'רבבות אפרים', 'דרוש וחדוש', 'מועדים בהלכה', 'רי"ף', 'הרי"ף', 'רש"י', 'הר צבי'
+    ]
+    for e in extras:
+        authors.add(e)
+        
+    # Remove some generic prefixes that might have slipped into authors if we don't want them as strict authors
+    bad = {'שו"ת', 'ספר', 'פ', 'חידושי', 'ערוך', 'תוספת', 'דרוש', 'חלקת'}
+    for b in bad:
+        if b in authors:
+            authors.remove(b)
+            
+    return sorted(list(authors), key=len, reverse=True)
+
+ALL_KNOWN_AUTHORS = get_all_known_authors()
 
 def parse_citation(header_text):
     clean = re.sub(r"\([^\)]*?\d+[^\)]*?\)", "", header_text)
     clean = re.sub(r"\b\d+[\)\(]|\([\)\d]+", "", clean)
     clean = re.sub(r"\s+", " ", clean).strip()
+    clean = clean.replace("''", '"') # Normalize quotes for matching
 
     author = None
-    for a in KNOWN_AUTHORS:
+    matches = []
+    for a in ALL_KNOWN_AUTHORS:
         if a in clean:
-            author = a.replace('שו"ת ', '').replace('הרמב"ם', 'רמב"ם').replace('הרמב"ן', 'רמב"ן')
-            break
+            matches.append(a)
+            
+    if matches:
+        matches.sort(key=lambda x: (clean.find(x), -len(x)))
+        best_match = matches[0]
+        author = best_match.replace('שו"ת ', '').replace('הרמב"ם', 'רמב"ם').replace('הרמב"ן', 'רמב"ן')
+        author = author.replace('הרא"ש', 'רא"ש').replace('הריטב"א', 'ריטב"א').replace('הרשב"א', 'רשב"א').replace('הר"ן', 'ר"ן')
 
     loc_match = re.search(r"(דף|פרק|סימן|פסוק|סעיף|מאמר|אות|טור|ס\"ק|ד\"ה|משנה|פיסקא|ח\"א|ח\"ב|ח\"ג|ח\"ד).*", clean)
     if loc_match:
@@ -115,7 +146,13 @@ def parse_citation(header_text):
                 break
 
     if not author:
-        author = book.split()[0] if book else "מקור"
+        words = book.split()
+        if len(words) > 1 and words[0] in ['שו"ת', "שו''ת", 'חידושי', 'ספר', 'פ', 'פירוש', 'דרוש', 'חלקת', 'ערוך', 'תוספת', 'קונטרס']:
+            author = " ".join(words[:2])
+        elif words:
+            author = words[0]
+        else:
+            author = "מקור"
 
     if not book:
         book = "מקור"
@@ -129,16 +166,31 @@ import difflib
 def normalize_text_for_match(t):
     return re.sub(r'[^\wא-ת]', '', t)
 
+def get_normalized_location(t):
+    t = re.sub(r'[^\wא-ת]', '', t)
+    t = t.replace('עמודב', 'עב').replace('עמודא', 'עא')
+    return t
+
 def match_existing_source(author, book, location):
-    parsed_full = f"{author} {book} {location}"
-    norm_parsed = normalize_text_for_match(parsed_full)
+    norm_author = normalize_text_for_match(author)
+    norm_loc = get_normalized_location(location)
+    norm_book = normalize_text_for_match(book)
     
     existing_files = list(SOURCES_DIR.glob("*.md"))
-    norm_existing = {normalize_text_for_match(f.stem): f for f in existing_files}
     
-    matches = difflib.get_close_matches(norm_parsed, norm_existing.keys(), n=1, cutoff=0.7)
-    if matches:
-        return norm_existing[matches[0]]
+    for f in existing_files:
+        stem = f.stem
+        parts = stem.split(" - ")
+        if len(parts) >= 3:
+            ex_author = parts[0]
+            ex_book = " - ".join(parts[1:-1])
+            ex_loc = parts[-1]
+            
+            if normalize_text_for_match(ex_author) == norm_author:
+                if get_normalized_location(ex_loc) == norm_loc:
+                    if difflib.SequenceMatcher(None, norm_book, normalize_text_for_match(ex_book)).ratio() >= 0.7:
+                        return f
+                        
     return None
 
 def extract_sources_and_images(pdf_path):
@@ -170,6 +222,23 @@ def extract_sources_and_images(pdf_path):
             decoded_header = decode_text(raw_header).replace("\n", " ")
             author, book, location = parse_citation(decoded_header)
 
+            # Attempt to extract Dibur Hamatchil (DH) from the next block
+            dh = None
+            block_idx = blocks.index(h)
+            if block_idx + 1 < len(blocks):
+                first_line = blocks[block_idx+1][4].strip().split('\n')[0]
+                first_line_dec = decode_text(first_line).strip()
+                # Check for DH ending with hyphen or period
+                match = re.search(r'^(.*?)[\-\.](?:\s|$)', first_line_dec)
+                if match:
+                    candidate = match.group(1).strip()
+                    if len(candidate.split()) <= 8:
+                        dh = candidate
+                elif first_line_dec.endswith('-') or first_line_dec.endswith('.'):
+                    candidate = first_line_dec[:-1].strip()
+                    if len(candidate.split()) <= 8:
+                        dh = candidate
+
             y0 = max(0, h[1] - 5)
             if i + 1 < len(headers):
                 y1 = headers[i+1][1] - 5
@@ -187,6 +256,7 @@ def extract_sources_and_images(pdf_path):
                 "book": book,
                 "location": location,
                 "header": decoded_header,
+                "dibur_hamatchil": dh,
                 "image_filenames": [main_img_name]
             })
 
@@ -195,6 +265,7 @@ def process_source(source_data, sheet_stem):
     author = source_data["author"]
     book = source_data["book"]
     location = source_data["location"]
+    dh = source_data.get("dibur_hamatchil")
     img_names = source_data["image_filenames"]
 
     display_author = sanitize_filename(author)
@@ -207,13 +278,15 @@ def process_source(source_data, sheet_stem):
 
     file_base = " - ".join(title_parts)
     file_name = f"{file_base}.md"
+    
+    heading_to_use = dh if dh else file_base
 
     existing_file = match_existing_source(author, book, location)
 
     if existing_file and existing_file.exists():
         existing_stem = existing_file.stem
         print(f"Skipping existing source (already exists): {existing_file.name}")
-        return existing_stem
+        return existing_stem, heading_to_use
 
     print(f"Creating new source: {file_name}")
     img_embeds = "\n".join([f"> ![[{img}]]" for img in img_names])
@@ -255,10 +328,10 @@ tags: [gemara-source]
 {img_embeds}
 > *(Cropped from {sheet_stem})*
 
-### {file_base}
+### {heading_to_use}
 """
     source_file.write_text(source_content, encoding="utf-8")
-    return file_base
+    return file_base, heading_to_use
 
 def main():
     config = load_config()
@@ -293,8 +366,8 @@ def main():
 
     linked_notes = []
     for s in sources:
-        note_stem = process_source(s, sheet_stem)
-        linked_notes.append(note_stem)
+        note_stem, heading = process_source(s, sheet_stem)
+        linked_notes.append((note_stem, heading))
 
     # Master Source Sheet note content
     sheet_content = f"""---
@@ -306,11 +379,13 @@ pdf_source: "[[{pdf_path.name}]]"
 ---
 # {sheet_stem}
 
+[[{pdf_path.name}]]
+
 ## Sources
 
 """
-    for i, note in enumerate(linked_notes):
-        sheet_content += f"## {i + 1}\n![[{note}#{note}]]\n\n"
+    for i, (note, heading) in enumerate(linked_notes):
+        sheet_content += f"## {i + 1}\n![[{note}#{heading}]]\n\n"
 
     sheet_file.write_text(sheet_content, encoding="utf-8")
     print(f"\nSuccess! Processed {len(sources)} sources from {pdf_path.name}.")
