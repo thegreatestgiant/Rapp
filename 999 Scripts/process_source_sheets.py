@@ -279,15 +279,17 @@ def process_source(source_data, sheet_stem, subject):
     dh = source_data.get("dibur_hamatchil")
     img_names = source_data["image_filenames"]
 
-    display_author = sanitize_filename(author)
-    display_book = sanitize_filename(book)
-    display_loc = sanitize_filename(location)
+    display_author = sanitize_filename(author)[:60].strip()
+    display_book = sanitize_filename(book)[:60].strip()
+    display_loc = sanitize_filename(location)[:60].strip()
 
     title_parts = [display_author, display_book]
     if display_loc:
         title_parts.append(display_loc)
 
     file_base = " - ".join(title_parts)
+    if len(file_base) > 100:
+        file_base = file_base[:100].strip()
     file_name = f"{file_base}.md"
     
     heading_to_use = dh if dh else file_base
@@ -345,8 +347,8 @@ tags: [{tag_name}]
 
 ### {heading_to_use}
 """
-        source_file.write_text(source_content, encoding="utf-8")
-        return file_base, heading_to_use
+    source_file.write_text(source_content, encoding="utf-8")
+    return file_base, heading_to_use
 
 def main():
     config = load_config()
