@@ -219,6 +219,17 @@ def extract_sources_and_images(pdf_path):
 
         for i, h in enumerate(headers):
             raw_header = h[4].strip()
+            
+            # If the header block ONLY contains a number (like '(2' or '11)'),
+            # the actual text might be in another block on the same horizontal line.
+            if re.match(r"^[\(\)\s\d]+$", raw_header):
+                same_line_texts = []
+                for b in blocks:
+                    if b != h and abs(b[1] - h[1]) < 5:
+                        same_line_texts.append(b[4].strip())
+                if same_line_texts:
+                    raw_header = " ".join(same_line_texts) + " " + raw_header
+
             decoded_header = decode_text(raw_header).replace("\n", " ")
             author, book, location = parse_citation(decoded_header)
 
@@ -261,7 +272,7 @@ def extract_sources_and_images(pdf_path):
             })
 
     return sources
-def process_source(source_data, sheet_stem):
+def process_source(source_data, sheet_stem, subject):
     author = source_data["author"]
     book = source_data["book"]
     location = source_data["location"]
@@ -290,6 +301,10 @@ def process_source(source_data, sheet_stem):
 
     print(f"Creating new source: {file_name}")
     img_embeds = "\n".join([f"> ![[{img}]]" for img in img_names])
+    
+    # Strip brackets from subject for the tag
+    tag_subject = subject.replace("[", "").replace("]", "").lower()
+    tag_name = f"{tag_subject}-source"
 
     # 1. Author note creation
     author_file = AUTHORS_DIR / f"{display_author}.md"
@@ -304,7 +319,7 @@ tags: [author]
 ## Linked Sources
 ```dataview
 TABLE book as Book, location as Location
-FROM #gemara-source
+FROM #gemara-source or #navi-source or #halacha-source or #ikarim-source
 WHERE contains(author, this.file.link)
 SORT book ASC, location ASC
 ```
@@ -317,7 +332,7 @@ SORT book ASC, location ASC
 author: "[[{display_author}]]"
 book: "{display_book}"
 location: "{display_loc}"
-tags: [gemara-source]
+tags: [{tag_name}]
 ---
 > [!info]- Reference
 > Author:: [[{display_author}]]
@@ -330,8 +345,8 @@ tags: [gemara-source]
 
 ### {heading_to_use}
 """
-    source_file.write_text(source_content, encoding="utf-8")
-    return file_base, heading_to_use
+        source_file.write_text(source_content, encoding="utf-8")
+        return file_base, heading_to_use
 
 def main():
     config = load_config()
@@ -366,7 +381,7 @@ def main():
 
     linked_notes = []
     for s in sources:
-        note_stem, heading = process_source(s, sheet_stem)
+        note_stem, heading = process_source(s, sheet_stem, args.subject)
         linked_notes.append((note_stem, heading))
 
     # Master Source Sheet note content

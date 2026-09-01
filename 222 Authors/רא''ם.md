@@ -8,7 +8,7 @@ tags: [author]
 ## Linked Sources
 ```dataview
 TABLE book as Book, location as Location
-FROM #gemara-source
+FROM #gemara-source or #navi-source or #halacha-source or #ikarim-source
 WHERE contains(author, this.file.link)
 SORT book ASC, location ASC
 ```

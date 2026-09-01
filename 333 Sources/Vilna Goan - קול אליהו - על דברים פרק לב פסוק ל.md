@@ -1,5 +1,5 @@
 ---
-tags: [gemara-source]
+tags: [navi-source]
 author: "[[Vilna Goan]]"
 book: "קול אליהו"
 location: "על דברים פרק לב פסוק ל"

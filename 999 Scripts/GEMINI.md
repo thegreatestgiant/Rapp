@@ -16,6 +16,7 @@ We designed an automated workflow to process Gemara Source Sheet PDFs dropped in
 1. **Never overwrite existing sources directly.** Instead, append new information (like new screenshots) under a `> [!todo] Pending Edit Approval` block at the bottom of the existing source note.
 2. **Template Adherence:** Ensure new source notes strictly follow the `Gemara Source.md` frontmatter and formatting.
 3. **Screenshots over Text:** The Python script uses `PyMuPDF` (`fitz`) to crop the source's bounding box and saves it to `999 Attachments/` as an image, rather than relying on extracted text which can be messy.
+4. **Cleanup Test Files:** Always clean up any test scripts, dummy outputs, or temporary testing files (e.g., `test.py`) that were created during your workflow once you are done with them.
 
 ## Current Progress
 1. Created the `Scripts/` folder and initial architecture.
@@ -34,6 +35,7 @@ We designed an automated workflow to process Gemara Source Sheet PDFs dropped in
 14. Fixed a critical fuzzy-matching false positive bug in `process_source_sheets.py`. Upgraded the `match_existing_source` logic from basic full-string fuzzy matching to a strict component-based architecture. This prevents off-by-one errors (e.g. `הלכה ט` incorrectly matching `הלכה ח`) by verifying that the normalized author and the final location token match exactly before permitting fuzzy matching on the book title.
 15. Developed an automated *Dibur Hamatchil* (DH) extraction heuristic in `process_source_sheets.py`. The parser now reads the raw text stream immediately following citations in the PDF to detect leading phrases terminated by hyphens or periods. It leverages these extracted phrases to automatically generate specific subsection anchors (e.g., `![[רש''י...#אבל לא במדינה]]`), perfectly disambiguating multiple quotes from the same page source.
 16. Re-added the explicit wikilink to the original PDF directly beneath the top-level `# Heading` in generated Master Source Sheets.
+17. Fixed a PyMuPDF text block splitting bug in `process_source_sheets.py` where isolated numbers (e.g., `(2`) disconnected from their Hebrew text caused the parser to fallback to `מקור - מקור`. The parser now scans horizontally across the Y-axis to reconnect orphaned text chunks back to their numerical headers before parsing.
 
 *See `Logs/Bugs_Fixed.md`, `Logs/Features_Added.md`, and `Logs/Architectural_Decisions.md` for a detailed breakdown of these updates.*
 
