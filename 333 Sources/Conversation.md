@@ -1,8 +1,20 @@
-### Image
-> [!info] Source
-> ![[{B2D82C0B-D60F-453E-8B51-737AC6AA40DE}.png]]
+---
+author: "[[Conversation]]"
+book: "Conversation"
+location: ""
+tags: [gemara-source]
+---
+> [!info]- Reference
+> Author:: [[Conversation]]
+> Book:: Conversation
+> Location:: 
 
-### Conversation
+### Source
+> ![[ikar 12_p2_s5.png]]
+> ![[ikar 12_p3_cont.png]]
+> *(Cropped from ikar 12)*
+
+### Conversation - Conversation
 1: The [[רמב''ם]] writes you have to not only believe but also wait for Mashiach
 2: There is no one who does this
 1: But then everyone is a Kofer

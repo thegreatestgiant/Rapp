@@ -1,5 +1,9 @@
 # Gemini Learnings and Rules
 
+## General Workflow
+
+1. **Parallelize Independent Tasks**: If there is a batch of tasks to run and they are not sequential (i.e., they do not rely on the output of the previous task), you must break them up and delegate them to multiple subagents concurrently using the `invoke_subagent` tool. Do not execute them sequentially yourself.
+
 ## Source File Conventions
 When fixing or creating source files, the following conventions must be adhered to in order to keep the vault organized and links intact:
 
@@ -10,7 +14,7 @@ When fixing or creating source files, the following conventions must be adhered 
 3. **Link Updates**: If a source file is renamed or its headline is modified, any embed links in Source Sheets (e.g., `111 Source Sheets/`) must be updated to match the new file name and headline.
    *(Format: `![[Author - Book - Location#Author - Book - Location]]`)*
 4. **Metadata**: The YAML frontmatter and DataView fields inside the source file must accurately reflect the Author and Book. The `author` field must link to the author's file (not the book file).
-5. **Author Files**: Author files in the `222 Authors` folder should be named after the actual author (e.g., `רב אפרים גרינבלט.md`), not the title of their book (e.g., *not* `רבבות אפרים.md`).
+5. **Author Files**: Author files in the `222 Authors` folder should generally be named after the actual author (e.g., `רב אפרים גרינבלט.md`). However, for extremely famous Rabbis who are universally known by their primary Sefer (e.g., `חזון איש`, `חתם סופר`, `שולחן ערוך`, `משנה ברורה`, `מגן אברהם`), it is preferred to use the Sefer name as the Author name to match common colloquial usage.
 
 ## Source Sheet Auditor Protocol
 
@@ -24,6 +28,7 @@ When the user asks you to "audit", "check", or "fix" a Source Sheet, you must au
    - If the author or book is wrong, update the source file's metadata, its internal headline, and rename the file according to the `[Author Name] - [Book Name] - [Location].md` convention.
    - Verify that an author file exists in `222 Authors/` and is named after the person, updating or renaming it if necessary.
    - Update the original Source Sheet link to reflect the corrected filename and headline.
+   - **Root Cause Patching**: If a systematic parsing error is discovered (e.g., misinterpreting an honorific like `ר'` or mangling English text), trace the bug to the Python parser (`999 Scripts/process_source_sheets.py`) and patch the script directly so it parses correctly next time. Document these fixes in the `Logs/` folder.
 4. **Report Back**: Once all subagents have completed their checks and fixes, provide a summarized report of all the sources that were corrected.
 
 ## Scripting and PDF Parsing Guidelines

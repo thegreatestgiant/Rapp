@@ -17,3 +17,12 @@
 * **Issue**: Sources in PDFs were arbitrarily defaulting to `מקור - מקור`. The extraction script (`process_source_sheets.py`) was misinterpreting headers that ONLY had a number (like `(2`).
 * **Root Cause**: Because Hebrew text is right-to-left and numbers are left-to-right, the PyMuPDF library (`fitz`) sometimes completely separates numbers and text on the same line into completely disjoint text blocks. When checking for matching regex like `\( ?\d+`, the script would lock onto the number block alone and completely ignore the disconnected text chunk sitting nearby.
 * **Fix**: Added a look-around mechanism to `extract_sources_and_images`. If the detected header block *only* consists of numbers and parentheses, it will scan all other blocks on the same page. If it finds another block sitting horizontally on the exact same Y-axis (`abs(b[1] - h[1]) < 5`), it prepends the orphaned text chunk onto the header before decoding and parsing.
+
+## September 2, 2026 - Rabbi Ovadia of Bartenura & Single-Letter Author Parse Bug
+* **Issue**: Citations starting with `ר' עובדיה מברטנורא` or `ר׳ עובדיה מברטנורא` parsed the author as isolated `ר׳` instead of the full author name, causing erroneous author files like `ר׳.md` and incorrect source naming.
+* **Root Cause**: The parser did not recognize abbreviation variants of Bartenura in its known author index, and the fallback parsing logic extracted the first token `ר׳`/`ר'` as the author when known authors failed to match.
+* **Fix**:
+  - Added canonical alias mappings in `AUTHOR_CANONICAL_MAP` mapping `ר' עובדיה מברטנורא`, `ר׳ עובדיה מברטנורא`, and `ברטנורא` to `רבי עובדיה מברטנורא`.
+  - Added Bartenura variants to `extras` in `get_all_known_authors()`.
+  - Added `ר`, `ר'`, `ר׳` to bad author filter list and fallback guards to avoid treating single-letter honorific prefixes as authors.
+  - Audited and updated existing source file, author file, and source sheet embed link.

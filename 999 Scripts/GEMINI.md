@@ -41,6 +41,7 @@ We designed an automated workflow to process Gemara Source Sheet PDFs dropped in
 15. Developed an automated *Dibur Hamatchil* (DH) extraction heuristic in `process_source_sheets.py`. The parser now reads the raw text stream immediately following citations in the PDF to detect leading phrases terminated by hyphens or periods. It leverages these extracted phrases to automatically generate specific subsection anchors (e.g., `![[רש''י...#אבל לא במדינה]]`), perfectly disambiguating multiple quotes from the same page source.
 16. Re-added the explicit wikilink to the original PDF directly beneath the top-level `# Heading` in generated Master Source Sheets.
 17. Fixed a PyMuPDF text block splitting bug in `process_source_sheets.py` where isolated numbers (e.g., `(2`) disconnected from their Hebrew text caused the parser to fallback to `מקור - מקור`. The parser now scans horizontally across the Y-axis to reconnect orphaned text chunks back to their numerical headers before parsing.
+18. Resolved single-letter author false extraction for `ר' עובדיה מברטנורא` / `ר׳ עובדיה מברטנורא` / `ברטנורא` in `process_source_sheets.py`, mapping them canonically to `רבי עובדיה מברטנורא` with `מסכת שבת` as the book, and fixed bad fallback parsing on single-letter honorifics. Audited and updated existing source, author file, and source sheet.
 
 *See `Logs/Bugs_Fixed.md`, `Logs/Features_Added.md`, and `Logs/Architectural_Decisions.md` for a detailed breakdown of these updates.*
 

@@ -80,6 +80,24 @@ def decode_text(text):
         return "".join(res).replace('\x1b', '"')
     return text
 
+AUTHOR_CANONICAL_MAP = {
+    'ר\' עובדיה מברטנורא': 'רבי עובדיה מברטנורא',
+    'ר׳ עובדיה מברטנורא': 'רבי עובדיה מברטנורא',
+    'ברטנורא': 'רבי עובדיה מברטנורא',
+    'הרמב"ם': 'רמב"ם',
+    'הרמב"ן': 'רמב"ן',
+    'הרא"ש': 'רא"ש',
+    'הריטב"א': 'ריטב"א',
+    'הרשב"א': 'רשב"א',
+    'הר"ן': 'ר"ן',
+    'הרי"ף': 'רי"ף',
+    'חמדת שלמה': 'רבי שלמה זלמן ליפשיץ',
+    'חשק שלמה': 'רבי שלמה הכהן מווילנה',
+    'הערות הגרי"ש אלישיב': 'הרב יוסף שלום אלישיב',
+    'בנין ציון': 'רבי יעקב עטלינגר',
+    'ארץ צבי': 'רבי אריה צבי פרומר'
+}
+
 def get_all_known_authors():
     authors = set(KNOWN_AUTHORS)
     if AUTHORS_DIR.exists():
@@ -89,13 +107,17 @@ def get_all_known_authors():
     
     extras = [
         'רא"ש', 'הרא"ש', 'ריטב"א', 'הריטב"א', 'רשב"א', 'הרשב"א', 'תוספות', 'הר"ן', 'ר"ן', 
-        'חלקת יואב', 'רבבות אפרים', 'דרוש וחדוש', 'מועדים בהלכה', 'רי"ף', 'הרי"ף', 'רש"י', 'הר צבי'
+        'חלקת יואב', 'רבבות אפרים', 'דרוש וחדוש', 'מועדים בהלכה', 'רי"ף', 'הרי"ף', 'רש"י', 'הר צבי',
+        'רבי עובדיה מברטנורא', 'ר\' עובדיה מברטנורא', 'ר׳ עובדיה מברטנורא', 'ברטנורא'
     ]
     for e in extras:
         authors.add(e)
         
+    for k in AUTHOR_CANONICAL_MAP.keys():
+        authors.add(k)
+        
     # Remove some generic prefixes that might have slipped into authors if we don't want them as strict authors
-    bad = {'שו"ת', 'ספר', 'פ', 'חידושי', 'ערוך', 'תוספת', 'דרוש', 'חלקת'}
+    bad = {'שו"ת', 'ספר', 'פ', 'חידושי', 'ערוך', 'תוספת', 'דרוש', 'חלקת', 'ר', "ר'", "ר׳", 'מקור'}
     for b in bad:
         if b in authors:
             authors.remove(b)
@@ -107,10 +129,12 @@ ALL_KNOWN_AUTHORS = get_all_known_authors()
 def parse_citation(header_text):
     clean = re.sub(r"\([^\)]*?\d+[^\)]*?\)", "", header_text)
     clean = re.sub(r"\b\d+[\)\(]|\([\)\d]+", "", clean)
+    clean = re.sub(r"^\s*\d+[\)\.]?\s*", "", clean)
     clean = re.sub(r"\s+", " ", clean).strip()
     clean = clean.replace("''", '"') # Normalize quotes for matching
 
     author = None
+    matched_text = None
     matches = []
     for a in ALL_KNOWN_AUTHORS:
         if a in clean:
@@ -119,8 +143,9 @@ def parse_citation(header_text):
     if matches:
         matches.sort(key=lambda x: (clean.find(x), -len(x)))
         best_match = matches[0]
-        author = best_match.replace('שו"ת ', '').replace('הרמב"ם', 'רמב"ם').replace('הרמב"ן', 'רמב"ן')
-        author = author.replace('הרא"ש', 'רא"ש').replace('הריטב"א', 'ריטב"א').replace('הרשב"א', 'רשב"א').replace('הר"ן', 'ר"ן')
+        matched_text = best_match
+        author = best_match.replace('שו"ת ', '')
+        author = AUTHOR_CANONICAL_MAP.get(author, AUTHOR_CANONICAL_MAP.get(best_match, author))
 
     loc_match = re.search(r"(דף|פרק|סימן|פסוק|סעיף|מאמר|אות|טור|ס\"ק|ד\"ה|משנה|פיסקא|ח\"א|ח\"ב|ח\"ג|ח\"ד).*", clean)
     if loc_match:
@@ -130,7 +155,9 @@ def parse_citation(header_text):
         location = ""
         book_part = clean
 
-    if author and book_part.startswith(author):
+    if matched_text and book_part.startswith(matched_text):
+        book_part = book_part[len(matched_text):].strip()
+    elif author and book_part.startswith(author):
         book_part = book_part[len(author):].strip()
     elif author and ('שו"ת ' + author) in book_part:
         book_part = book_part.replace('שו"ת ' + author, "").strip()
@@ -149,7 +176,7 @@ def parse_citation(header_text):
         words = book.split()
         if len(words) > 1 and words[0] in ['שו"ת', "שו''ת", 'חידושי', 'ספר', 'פ', 'פירוש', 'דרוש', 'חלקת', 'ערוך', 'תוספת', 'קונטרס']:
             author = " ".join(words[:2])
-        elif words:
+        elif words and words[0] not in ["ר'", "ר׳", "ר"]:
             author = words[0]
         else:
             author = "מקור"
