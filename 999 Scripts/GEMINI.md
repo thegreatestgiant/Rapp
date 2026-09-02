@@ -16,7 +16,12 @@ We designed an automated workflow to process Gemara Source Sheet PDFs dropped in
 1. **Never overwrite existing sources directly.** Instead, append new information (like new screenshots) under a `> [!todo] Pending Edit Approval` block at the bottom of the existing source note.
 2. **Template Adherence:** Ensure new source notes strictly follow the `Gemara Source.md` frontmatter and formatting.
 3. **Screenshots over Text:** The Python script uses `PyMuPDF` (`fitz`) to crop the source's bounding box and saves it to `999 Attachments/` as an image, rather than relying on extracted text which can be messy.
-4. **Cleanup Test Files:** Always clean up any test scripts, dummy outputs, or temporary testing files (e.g., `test.py`) that were created during your workflow once you are done with them.
+4. **Source File Conventions:** 
+    - Naming convention: `Author - Book - Location.md`
+    - Headline convention: The main `###` headline inside the source must exactly match the file name.
+    - Author Links: Author metadata must point to an actual author in `222 Authors` (named after the person, e.g., `רב אפרים גרינבלט.md`), not a book title.
+    - Sheet Links: Embed links in Source Sheets must always use `![[Author - Book - Location#Author - Book - Location]]` to point directly to the headline.
+5. **Cleanup Test Files:** Always clean up any test scripts, dummy outputs, or temporary testing files (e.g., `test.py`) that were created during your workflow once you are done with them.
 
 ## Current Progress
 1. Created the `Scripts/` folder and initial architecture.
