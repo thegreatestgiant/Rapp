@@ -1,16 +1,16 @@
 {
   "workspaces": {
-    "Rabbi Rapp": {
+    "Gemara": {
       "main": {
-        "id": "d24c39ca1b516a83",
+        "id": "670608a615321a82",
         "type": "split",
         "children": [
           {
-            "id": "ab309b83b93990fb",
+            "id": "2251b08c3feb3cba",
             "type": "tabs",
             "children": [
               {
-                "id": "e0fb76e14dd4c0f4",
+                "id": "9a3b13899a984021",
                 "type": "leaf",
                 "state": {
                   "type": "pdf",
@@ -22,7 +22,7 @@
                 }
               },
               {
-                "id": "e248235e18386d9b",
+                "id": "302b43ba3e100ba4",
                 "type": "leaf",
                 "state": {
                   "type": "markdown",
@@ -35,184 +35,9 @@
                   "icon": "lucide-file",
                   "title": "half convert"
                 }
-              },
-              {
-                "id": "741ac4108e6c6fd1",
-                "type": "leaf",
-                "state": {
-                  "type": "markdown",
-                  "state": {
-                    "file": "333 Sources/רבי אריה צבי פרומר - שו''ת ארץ צבי - סימן מא.md",
-                    "mode": "source",
-                    "source": false,
-                    "backlinks": false
-                  },
-                  "icon": "lucide-file",
-                  "title": "רבי אריה צבי פרומר - שו''ת ארץ צבי - סימן מא"
-                }
               }
             ],
-            "currentTab": 2
-          }
-        ],
-        "direction": "vertical"
-      },
-      "left": {
-        "id": "72fe1a2f2958457d",
-        "type": "split",
-        "children": [
-          {
-            "id": "8c2ce26264181715",
-            "type": "tabs",
-            "children": [
-              {
-                "id": "faf42df6213f1086",
-                "type": "leaf",
-                "state": {
-                  "type": "file-explorer",
-                  "state": {
-                    "sortOrder": "alphabetical",
-                    "autoReveal": false,
-                    "showSearch": false,
-                    "searchQuery": ""
-                  },
-                  "icon": "lucide-folder-closed",
-                  "title": "Files"
-                }
-              },
-              {
-                "id": "083ea26d8f950aa5",
-                "type": "leaf",
-                "state": {
-                  "type": "bookmarks",
-                  "state": {
-                    "showSearch": false,
-                    "searchQuery": ""
-                  },
-                  "icon": "lucide-bookmark",
-                  "title": "Bookmarks"
-                }
-              }
-            ]
-          }
-        ],
-        "direction": "horizontal",
-        "width": 300
-      },
-      "right": {
-        "id": "7c32d0287ddb1d47",
-        "type": "split",
-        "children": [
-          {
-            "id": "164424292b6998c0",
-            "type": "tabs",
-            "children": [
-              {
-                "id": "de28b3688d58516f",
-                "type": "leaf",
-                "state": {
-                  "type": "backlink",
-                  "state": {
-                    "file": "666 Exam Review/Spring 2026 - Final.md",
-                    "collapseAll": false,
-                    "extraContext": false,
-                    "sortOrder": "alphabetical",
-                    "showSearch": false,
-                    "searchQuery": "",
-                    "backlinkCollapsed": false,
-                    "unlinkedCollapsed": true
-                  },
-                  "icon": "links-coming-in",
-                  "title": "Backlinks"
-                }
-              },
-              {
-                "id": "c3946a8ac0f09045",
-                "type": "leaf",
-                "state": {
-                  "type": "tag",
-                  "state": {
-                    "sortOrder": "frequency",
-                    "useHierarchy": true,
-                    "showSearch": false,
-                    "searchQuery": ""
-                  },
-                  "icon": "lucide-tags",
-                  "title": "Tags"
-                }
-              },
-              {
-                "id": "71fc0ec6dd122c75",
-                "type": "leaf",
-                "state": {
-                  "type": "all-properties",
-                  "state": {
-                    "sortOrder": "frequency",
-                    "showSearch": false,
-                    "searchQuery": ""
-                  },
-                  "icon": "lucide-archive",
-                  "title": "All properties"
-                }
-              },
-              {
-                "id": "cdeeaf3bfc74c02a",
-                "type": "leaf",
-                "state": {
-                  "type": "outline",
-                  "state": {
-                    "file": "666 Exam Review/Spring 2026 - Final.md",
-                    "followCursor": false,
-                    "showSearch": false,
-                    "searchQuery": ""
-                  },
-                  "icon": "lucide-list",
-                  "title": "Outline"
-                }
-              }
-            ]
-          }
-        ],
-        "direction": "horizontal",
-        "width": 300,
-        "collapsed": true
-      },
-      "left-ribbon": {
-        "hiddenItems": {
-          "switcher:Open quick switcher": false,
-          "graph:Open graph view": false,
-          "canvas:Create new canvas": false,
-          "templates:Insert template": false,
-          "command-palette:Open command palette": false,
-          "workspaces:Manage workspace layouts": false,
-          "omnisearch:Omnisearch": false,
-          "pandoc-extended-markdown:Open list panel": false,
-          "templater-obsidian:Templater": false
-        }
-      },
-      "active": "741ac4108e6c6fd1",
-      "mtime": "2026-09-02T09:25:06-04:00"
-    },
-    "Gemara": {
-      "main": {
-        "id": "670608a615321a82",
-        "type": "split",
-        "children": [
-          {
-            "id": "2251b08c3feb3cba",
-            "type": "tabs",
-            "children": [
-              {
-                "id": "302b43ba3e100ba4",
-                "type": "leaf",
-                "state": {
-                  "type": "empty",
-                  "state": {},
-                  "icon": "lucide-file",
-                  "title": "New tab"
-                }
-              }
-            ]
+            "currentTab": 1
           }
         ],
         "direction": "vertical"
@@ -358,7 +183,7 @@
         }
       },
       "active": "302b43ba3e100ba4",
-      "mtime": "2026-09-01T12:58:43-04:00"
+      "mtime": "2026-09-03T10:19:02-04:00"
     },
     "Halacha": {
       "main": {
@@ -544,6 +369,184 @@
       },
       "active": "302b43ba3e100ba4",
       "mtime": "2026-09-02T10:35:49-04:00"
+    },
+    "Navi": {
+      "main": {
+        "id": "d24c39ca1b516a83",
+        "type": "split",
+        "children": [
+          {
+            "id": "ab309b83b93990fb",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "479ffcb598c13f5b",
+                "type": "leaf",
+                "state": {
+                  "type": "pdf",
+                  "state": {
+                    "file": "000 Source PDFs/melachim 1.1.pdf"
+                  },
+                  "icon": "lucide-file-text",
+                  "title": "melachim 1.1"
+                }
+              },
+              {
+                "id": "e0fb76e14dd4c0f4",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "111 Source Sheets/melachim 1.1.md",
+                    "mode": "source",
+                    "source": false,
+                    "backlinks": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "melachim 1.1"
+                }
+              }
+            ],
+            "currentTab": 1
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "72fe1a2f2958457d",
+        "type": "split",
+        "children": [
+          {
+            "id": "8c2ce26264181715",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "faf42df6213f1086",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {
+                    "sortOrder": "alphabetical",
+                    "autoReveal": false,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-folder-closed",
+                  "title": "Files"
+                }
+              },
+              {
+                "id": "083ea26d8f950aa5",
+                "type": "leaf",
+                "state": {
+                  "type": "bookmarks",
+                  "state": {
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-bookmark",
+                  "title": "Bookmarks"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 300
+      },
+      "right": {
+        "id": "7c32d0287ddb1d47",
+        "type": "split",
+        "children": [
+          {
+            "id": "164424292b6998c0",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "de28b3688d58516f",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "666 Exam Review/Spring 2026 - Final.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": false,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": true
+                  },
+                  "icon": "links-coming-in",
+                  "title": "Backlinks"
+                }
+              },
+              {
+                "id": "c3946a8ac0f09045",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "useHierarchy": true,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-tags",
+                  "title": "Tags"
+                }
+              },
+              {
+                "id": "71fc0ec6dd122c75",
+                "type": "leaf",
+                "state": {
+                  "type": "all-properties",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-archive",
+                  "title": "All properties"
+                }
+              },
+              {
+                "id": "cdeeaf3bfc74c02a",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "666 Exam Review/Spring 2026 - Final.md",
+                    "followCursor": false,
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
+                  "icon": "lucide-list",
+                  "title": "Outline"
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 300,
+        "collapsed": true
+      },
+      "left-ribbon": {
+        "hiddenItems": {
+          "switcher:Open quick switcher": false,
+          "graph:Open graph view": false,
+          "canvas:Create new canvas": false,
+          "templates:Insert template": false,
+          "command-palette:Open command palette": false,
+          "workspaces:Manage workspace layouts": false,
+          "omnisearch:Omnisearch": false,
+          "pandoc-extended-markdown:Open list panel": false,
+          "templater-obsidian:Templater": false
+        }
+      },
+      "active": "e0fb76e14dd4c0f4",
+      "mtime": "2026-09-03T10:31:03-04:00"
     }
   },
   "active": "Gemara"

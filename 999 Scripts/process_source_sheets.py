@@ -326,7 +326,22 @@ def process_source(source_data, sheet_stem, subject):
     if existing_file and existing_file.exists():
         existing_stem = existing_file.stem
         print(f"Skipping existing source (already exists): {existing_file.name}")
-        return existing_stem, heading_to_use
+        
+        # Try to find the actual heading in the existing file
+        actual_heading = heading_to_use
+        try:
+            content = existing_file.read_text(encoding="utf-8")
+            import re
+            # Find all ### headings
+            headings = re.findall(r'^###\s+(.+)$', content, flags=re.MULTILINE)
+            # Filter out the "Source" heading
+            headings = [h.strip() for h in headings if h.strip().lower() != 'source']
+            if headings:
+                actual_heading = headings[-1]
+        except Exception as e:
+            pass
+            
+        return existing_stem, actual_heading
 
     print(f"Creating new source: {file_name}")
     img_embeds = "\n".join([f"> ![[{img}]]" for img in img_names])
