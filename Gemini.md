@@ -15,6 +15,7 @@ When fixing or creating source files, the following conventions must be adhered 
    *(Format: `![[Author - Book - Location#Author - Book - Location]]`)*
 4. **Metadata**: The YAML frontmatter and DataView fields inside the source file must accurately reflect the Author and Book. The `author` field must link to the author's file (not the book file).
 5. **Author Files**: Author files in the `222 Authors` folder should generally be named after the actual author (e.g., `רב אפרים גרינבלט.md`). However, for extremely famous Rabbis who are universally known by their primary Sefer (e.g., `חזון איש`, `חתם סופר`, `שולחן ערוך`, `משנה ברורה`, `מגן אברהם`), it is preferred to use the Sefer name as the Author name to match common colloquial usage.
+6. **Mishnah Commentaries**: For Mishnah commentaries (e.g., Bartenura, Tosafos Yom Tov, Rambam Peirush Hamishnah), the Maseches (tractate) should be included as part of the Book name rather than the Location. For example: Book: `תוספות יום טוב מסכת שבת` and Location: `פרק א משנה א`.
 
 ## Source Sheet Auditor Protocol
 

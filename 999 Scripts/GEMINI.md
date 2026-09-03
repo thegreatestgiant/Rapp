@@ -21,6 +21,7 @@ We designed an automated workflow to process Gemara Source Sheet PDFs dropped in
     - Headline convention: The main `###` headline inside the source must exactly match the file name.
     - Author Links: Author metadata must point to an actual author in `222 Authors` (named after the person, e.g., `רב אפרים גרינבלט.md`), not a book title.
     - Sheet Links: Embed links in Source Sheets must always use `![[Author - Book - Location#Author - Book - Location]]` to point directly to the headline.
+    - Mishnah Commentaries: For commentaries like Bartenura and Tosafos Yom Tov, append the Maseches to the Book name (e.g., Book: `תוספות יום טוב מסכת שבת`) and leave only the Perek/Mishnah in the Location (e.g., Location: `פרק א משנה א`).
 5. **Cleanup Test Files:** Always clean up any test scripts, dummy outputs, or temporary testing files (e.g., `test.py`) that were created during your workflow once you are done with them.
 
 ## Current Progress

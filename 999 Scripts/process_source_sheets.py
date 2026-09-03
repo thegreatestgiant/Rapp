@@ -136,12 +136,19 @@ def parse_citation(header_text):
     author = None
     matched_text = None
     matches = []
-    for a in ALL_KNOWN_AUTHORS:
-        if a in clean:
+    
+    # Sort authors by length descending so longer authors match first
+    sorted_authors = sorted(ALL_KNOWN_AUTHORS, key=len, reverse=True)
+    for a in sorted_authors:
+        # Use a regex to match the author as a whole word or at boundaries.
+        # Since Hebrew text might have prefixes/suffixes, simple \b might not always be perfect,
+        # but it prevents "ר''ן" from matching inside "מוהר''ן".
+        # We can use a regex that ensures 'a' is not preceded or followed by Hebrew letters.
+        pattern = r'(?<![א-ת])' + re.escape(a) + r'(?![א-ת])'
+        if re.search(pattern, clean):
             matches.append(a)
             
     if matches:
-        matches.sort(key=lambda x: (clean.find(x), -len(x)))
         best_match = matches[0]
         matched_text = best_match
         author = best_match.replace('שו"ת ', '')
@@ -166,7 +173,8 @@ def parse_citation(header_text):
 
     if not author:
         for tb in TANACH_BOOKS:
-            if tb in clean:
+            pattern = r'(?<![א-ת])' + re.escape(tb) + r'(?![א-ת])'
+            if re.search(pattern, clean):
                 author = 'תנ"ך'
                 if not book:
                     book = tb
