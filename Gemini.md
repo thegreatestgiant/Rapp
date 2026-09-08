@@ -35,3 +35,6 @@ When the user asks you to "audit", "check", or "fix" a Source Sheet, you must au
 ## Scripting and PDF Parsing Guidelines
 
 When making changes to the Python scripts, the PDF parser workflow, or any files inside the `999 Scripts/` directory, you **must** read and adhere to the architectural guidelines and rules documented in `999 Scripts/GEMINI.md`.
+
+## Git Commits
+- **Do not commit changes yourself**: The user will review and commit all changes.

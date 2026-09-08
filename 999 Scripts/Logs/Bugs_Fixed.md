@@ -26,3 +26,21 @@
   - Added Bartenura variants to `extras` in `get_all_known_authors()`.
   - Added `ר`, `ר'`, `ר׳` to bad author filter list and fallback guards to avoid treating single-letter honorific prefixes as authors.
   - Audited and updated existing source file, author file, and source sheet embed link.
+
+## 2026-09-08: Melachim 2 Audit & Fixes
+* **Audit of `melachim 2.md`:** Systematically checked all source links in `melachim 2.md` that were poorly parsed.
+* **Bad Author & Title Extraction:** Corrected several sources that incorrectly extracted titles or generic prefixes as authors. Fixed:
+  * "סדר - סדר הדורות..." -> `רבי יחיאל היילפרין`
+  * "תנ''ך - ילקוט שמעוני..." -> `ילקוט שמעוני`
+  * "מלכים - הגרי''ז הלוי..." -> `הגרי''ז הלוי`
+  * "שיחות - שיחות מוסר..." and "ה - ה '' א..." -> `רבי חיים שמואלביץ`
+  * "תנ''ך - העמק דבר..." -> `הנצי''ב מולוז'ין`
+  * "במדבר רבה" and "תנ''ך - רות רבה" -> `מדרש רבה`
+  * Created missing author profiles in `222 Authors` for `רבי יחיאל היילפרין`, `ילקוט שמעוני`, `הגרי''ז הלוי`, `רבי חיים שמואלביץ`, `הנצי''ב מולוז'ין`, `מדרש רבה`.
+  * Renamed incorrectly named source files in `333 Sources` to fit the `Author - Book - Location.md` convention.
+* **Script Root Cause Patches:** Updated `process_source_sheets.py` to prevent Hebrew letters like `ה - ` from being mistakenly identified as authors due to list numbering formats not being stripped. Also added entries to `AUTHOR_CANONICAL_MAP` to correctly match well-known books like `שיחות מוסר`, `סדר הדורות`, `ילקוט שמעוני`, and `העמק דבר` and automatically map them to their canonical authors.
+* **Source Embed Issue Fix:** Fixed a formatting bug in `process_source_sheets.py` where cropped images were placed under a `### Source` header rather than the `### Author - Book - Location` heading. This caused the master source sheets (which use `#Author - Book - Location` fragment embeds) to only render text and completely miss displaying the source images. Script modified to drop images directly beneath the fragment heading. 
+* Updated all existing sources in `melachim 2` to move the images to the correct heading.
+* **Reverted Source Embed Issue Fix:** Restored the 2-header layout for sources, using `### Source Image` to contain the images, directly above the `### Author - Book - Location` heading.
+* **Image Restoration:** Fixed a bug where a formatting reversion script accidentally deleted source images from the markdown files (because the `### Source Image` header had been lost). The images were successfully restored under newly injected `### Source Image` headers. Also removed a duplicated image that was accidentally inserted into Source 17 (רד''ק).
+* **Commentary Parsing Bug (`process_source_sheets.py`):** Fixed a systematic parsing issue where citations beginning with commentary prefixes like `פ׳` or `פירוש` (e.g., `פ׳ זית רענן על ילקוט שמעוני...`) caused the python parser to fail author extraction. Added regex to `process_source_sheets.py` to seamlessly strip these prefixes. As a result, Source 3 is now correctly attributed directly to the commentary `זית רענן` rather than erroneously mapping to the base text (`ילקוט שמעוני`) or the underlying rabbi (`מגן אברהם`). Created a new author profile for `זית רענן` and updated all metadata and embed links.

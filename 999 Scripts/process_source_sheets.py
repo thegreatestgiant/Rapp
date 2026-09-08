@@ -95,7 +95,15 @@ AUTHOR_CANONICAL_MAP = {
     'חשק שלמה': 'רבי שלמה הכהן מווילנה',
     'הערות הגרי"ש אלישיב': 'הרב יוסף שלום אלישיב',
     'בנין ציון': 'רבי יעקב עטלינגר',
-    'ארץ צבי': 'רבי אריה צבי פרומר'
+    'ארץ צבי': 'רבי אריה צבי פרומר',
+    'שיחות מוסר': 'רבי חיים שמואלביץ',
+    'סדר הדורות': 'רבי יחיאל היילפרין',
+    'ילקוט שמעוני': 'ילקוט שמעוני',
+    'הגרי"ז הלוי': 'הגרי"ז הלוי',
+    'הנצי"ב מולוז\'ין': 'הנצי"ב מולוז\'ין',
+    'במדבר רבה': 'מדרש רבה',
+    'רות רבה': 'מדרש רבה',
+    'העמק דבר': 'הנצי"ב מולוז\'ין'
 }
 
 def get_all_known_authors():
@@ -110,8 +118,8 @@ def get_all_known_authors():
         'חלקת יואב', 'רבבות אפרים', 'דרוש וחדוש', 'מועדים בהלכה', 'רי"ף', 'הרי"ף', 'רש"י', 'הר צבי',
         'רבי עובדיה מברטנורא', 'ר\' עובדיה מברטנורא', 'ר׳ עובדיה מברטנורא', 'ברטנורא'
     ]
-    for e in extras:
-        authors.add(e)
+    for ex in extras:
+        authors.add(ex)
         
     for k in AUTHOR_CANONICAL_MAP.keys():
         authors.add(k)
@@ -130,6 +138,8 @@ def parse_citation(header_text):
     clean = re.sub(r"\([^\)]*?\d+[^\)]*?\)", "", header_text)
     clean = re.sub(r"\b\d+[\)\(]|\([\)\d]+", "", clean)
     clean = re.sub(r"^\s*\d+[\)\.]?\s*", "", clean)
+    clean = re.sub(r"^[א-ת]\"?[א-ת]?\s*[\)\.\-]\s*", "", clean)
+    clean = re.sub(r"^(פ['׳]|פי['׳]|פירוש)\s*", "", clean)
     clean = re.sub(r"\s+", " ", clean).strip()
     clean = clean.replace("''", '"') # Normalize quotes for matching
 
@@ -389,8 +399,7 @@ tags: [{tag_name}]
 > Author:: [[{display_author}]]
 > Book:: {display_book}
 > Location:: {display_loc}
-
-### Source
+### Source Image
 {img_embeds}
 > *(Cropped from {sheet_stem})*
 
