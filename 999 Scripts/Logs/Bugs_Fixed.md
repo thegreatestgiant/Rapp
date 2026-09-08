@@ -44,3 +44,16 @@
 * **Reverted Source Embed Issue Fix:** Restored the 2-header layout for sources, using `### Source Image` to contain the images, directly above the `### Author - Book - Location` heading.
 * **Image Restoration:** Fixed a bug where a formatting reversion script accidentally deleted source images from the markdown files (because the `### Source Image` header had been lost). The images were successfully restored under newly injected `### Source Image` headers. Also removed a duplicated image that was accidentally inserted into Source 17 (רד''ק).
 * **Commentary Parsing Bug (`process_source_sheets.py`):** Fixed a systematic parsing issue where citations beginning with commentary prefixes like `פ׳` or `פירוש` (e.g., `פ׳ זית רענן על ילקוט שמעוני...`) caused the python parser to fail author extraction. Added regex to `process_source_sheets.py` to seamlessly strip these prefixes. As a result, Source 3 is now correctly attributed directly to the commentary `זית רענן` rather than erroneously mapping to the base text (`ילקוט שמעוני`) or the underlying rabbi (`מגן אברהם`). Created a new author profile for `זית רענן` and updated all metadata and embed links.
+
+## 2026-09-08: Chatzi Shiur Audit & Fixes
+* **Audit of `chatzi shiur.md`:** Systematically checked all source links in `chatzi shiur.md` that were poorly parsed.
+* **Bad Author & Title Extraction:** Corrected several sources that incorrectly extracted the first word of the title as the author due to missing canonical maps. Fixed:
+  * "לחם - לחם שמים על..." -> `רבי יעקב עמדין`
+  * "בית - בית מאיר..." -> `רבי מאיר פוזנר`
+  * "ספר אשי - ספר אשי ישראל..." -> `אשי ישראל`
+  * "תפארת - תפארת ישראל..." -> `רבי ישראל ליפשיץ`
+  * "שש''כ - שש''כ..." -> `שמירת שבת כהלכתה`
+  * "ביצחק - ביצחק יקרא..." -> `ביצחק יקרא`
+* **Cleaned up Author Profiles:** Deleted erroneous author profiles (e.g., `לחם.md`, `בית.md`, `ביצחק.md`) and created the proper ones in `222 Authors`.
+* **Renamed Source Files:** Renamed incorrectly named source files in `333 Sources` to fit the convention, and updated their internal metadata and headers.
+* **Script Root Cause Patches:** Expanded `AUTHOR_CANONICAL_MAP` in `process_source_sheets.py` to automatically map these books (`לחם שמים`, `בית מאיר`, `אשי ישראל`, `תפארת ישראל`, `שש"כ`, `ביצחק יקרא`) to their canonical authors.

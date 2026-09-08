@@ -50,5 +50,7 @@ We designed an automated workflow to process Gemara Source Sheet PDFs dropped in
 
 20. Restored the 2-header layout (`### Source Image` and `### Author - Book - Location`) in `process_source_sheets.py` and across all 26 `melachim 2` sources.
 
+21. Audited `chatzi shiur.md` master sheet and fixed incorrectly parsed sources. Corrected bad author extraction for `לחם שמים`, `בית מאיר`, `אשי ישראל`, `תפארת ישראל`, `שש"כ`, and `ביצחק יקרא`. Created missing author files, renamed sources, updated file metadata, and added new canonical mappings to `process_source_sheets.py`.
+
 ## Next Steps for WSL
 1. **Refine the PDF Parsing Heuristic:** The current regex/logic in `extract_sources_and_images()` in `process_source_sheets.py` still uses placeholder logic for detecting the headers. We need to feed the script a real PDF from `000 Source PDFs/` and adjust the text search so the script correctly identifies citations and draws accurate bounding boxes for the images.
