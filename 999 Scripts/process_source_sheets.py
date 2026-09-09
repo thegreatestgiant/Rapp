@@ -255,7 +255,8 @@ def extract_sources_and_images(pdf_path):
         headers.sort(key=lambda b: b[1])
 
         if page_num > 0 and sources and (not headers or headers[0][1] > 90):
-            cont_y1 = headers[0][1] - 5 if headers else min(page.rect.height, page.rect.height - 15)
+            max_b_y1 = max((b[3] for b in blocks), default=page.rect.height)
+            cont_y1 = headers[0][1] - 5 if headers else min(page.rect.height, max_b_y1 + 5)
             cont_rect = fitz.Rect(0, 30, page.rect.width, cont_y1)
             pix = page.get_pixmap(clip=cont_rect, dpi=150)
             cont_img_name = sanitize_filename(f"{pdf_path.stem}_p{page_num+1}_cont.png")
@@ -299,7 +300,8 @@ def extract_sources_and_images(pdf_path):
             if i + 1 < len(headers):
                 y1 = headers[i+1][1] - 5
             else:
-                y1 = min(page.rect.height, page.rect.height - 15)
+                max_b_y1 = max((b[3] for b in blocks), default=page.rect.height)
+                y1 = min(page.rect.height, max_b_y1 + 5)
 
             clip_rect = fitz.Rect(0, y0, page.rect.width, y1)
             pix = page.get_pixmap(clip=clip_rect, dpi=150)

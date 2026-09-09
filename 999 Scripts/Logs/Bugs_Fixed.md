@@ -57,3 +57,17 @@
 * **Cleaned up Author Profiles:** Deleted erroneous author profiles (e.g., `לחם.md`, `בית.md`, `ביצחק.md`) and created the proper ones in `222 Authors`.
 * **Renamed Source Files:** Renamed incorrectly named source files in `333 Sources` to fit the convention, and updated their internal metadata and headers.
 * **Script Root Cause Patches:** Expanded `AUTHOR_CANONICAL_MAP` in `process_source_sheets.py` to automatically map these books (`לחם שמים`, `בית מאיר`, `אשי ישראל`, `תפארת ישראל`, `שש"כ`, `ביצחק יקרא`) to their canonical authors.
+
+## 2026-09-09: Eating on Yom Kippur Audit & Fixes
+* **Audit of `eating erev yom kippur.md`:** Systematically checked all source links in `eating erev yom kippur.md` that were poorly parsed.
+* **Bad Author & Title Extraction:** Corrected several sources that incorrectly extracted the first word of the title as the author due to missing canonical maps or generic fallbacks. Fixed:
+  * "מקור - מקור - טור..." -> `רבי יעקב בן אשר`
+  * "ספר שבולי - ספר שבולי הלקט..." -> `רבי צדקיה בן אברהם הרופא`
+  * "ספר שערי - ספר שערי תשובה..." -> `רבינו יונה גירונדי`
+  * "משנה ברורה - מקור..." -> `חפץ חיים`
+  * "ספר מנחת - ספר מנחת חינוך..." -> `רבי יוסף באבד`
+* **Cleaned up Author Profiles:** Deleted erroneous author profiles (`מקור.md`, `ספר שבולי.md`, `ספר שערי.md`, `ספר מנחת.md`, `משנה ברורה.md`) and created the proper ones in `222 Authors`.
+* **Renamed Source Files:** Renamed incorrectly named source files in `333 Sources` to fit the convention, and updated their internal metadata and headers.
+* **Script Root Cause Patches:** Expanded `AUTHOR_CANONICAL_MAP` in `process_source_sheets.py` to automatically map these books (`טור`, `שבלי הלקט`, `שערי תשובה`, `מנחת חינוך`, `משנה ברורה`) to their canonical authors.
+* **Image Cropping Cutoff:** Fixed a bug in `process_source_sheets.py` where the final source on a page would be cropped prematurely because the script subtracted 15 pixels from the page height. This caused the bottom of the text to be cut off (e.g., in `eating erev yom kippur` Source 18). Updated the script to crop all the way to `page.rect.height`.
+* **Image Cropping Refinement:** Following up on the cropping fix, hardcoding the crop boundary to `page.rect.height` caused issues if the final source ended halfway down a page, leading to massive blocks of whitespace being included in the screenshot. Updated `process_source_sheets.py` to dynamically calculate the maximum Y-coordinate (`y1`) among all text blocks on the page. The script now crops perfectly at the bottom of the lowest text block (plus a 5-pixel padding), rather than going all the way to the page boundary.
