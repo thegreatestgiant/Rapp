@@ -196,15 +196,15 @@
             "type": "tabs",
             "children": [
               {
-                "id": "2cef1f0ae0e3624f",
+                "id": "81c36e2f49f13246",
                 "type": "leaf",
                 "state": {
                   "type": "pdf",
                   "state": {
-                    "file": "000 Source PDFs/rosh hashanah on shabbos.pdf"
+                    "file": "000 Source PDFs/eating erev yom kippur.pdf"
                   },
                   "icon": "lucide-file-text",
-                  "title": "rosh hashanah on shabbos"
+                  "title": "eating erev yom kippur"
                 }
               },
               {
@@ -213,17 +213,32 @@
                 "state": {
                   "type": "markdown",
                   "state": {
-                    "file": "111 Source Sheets/תקיעת שופר בר''ה שחל להיות בשבת.md",
+                    "file": "111 Source Sheets/eating erev yom kippur.md",
                     "mode": "source",
                     "source": false,
                     "backlinks": false
                   },
                   "icon": "lucide-file",
-                  "title": "תקיעת שופר בר''ה שחל להיות בשבת"
+                  "title": "eating erev yom kippur"
+                }
+              },
+              {
+                "id": "e15f2d576e9982eb",
+                "type": "leaf",
+                "state": {
+                  "type": "markdown",
+                  "state": {
+                    "file": "333 Sources/רש''י - מסכת כתובות - דף ה עמוד א.md",
+                    "mode": "source",
+                    "source": false,
+                    "backlinks": false
+                  },
+                  "icon": "lucide-file",
+                  "title": "רש''י - מסכת כתובות - דף ה עמוד א"
                 }
               }
             ],
-            "currentTab": 1
+            "currentTab": 2
           }
         ],
         "direction": "vertical"
@@ -368,8 +383,8 @@
           "pandoc-extended-markdown:Open list panel": false
         }
       },
-      "active": "302b43ba3e100ba4",
-      "mtime": "2026-09-02T10:35:49-04:00"
+      "active": "e15f2d576e9982eb",
+      "mtime": "2026-09-09T11:49:13-04:00"
     },
     "Navi": {
       "main": {
@@ -580,5 +595,5 @@
       "mtime": "2026-09-08T11:57:15-04:00"
     }
   },
-  "active": "Halacha"
+  "active": "Gemara"
 }
