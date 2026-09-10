@@ -56,5 +56,11 @@ We designed an automated workflow to process Gemara Source Sheet PDFs dropped in
 
 23. Fixed a premature cropping bug for the final source on a page by updating `process_source_sheets.py` to crop dynamically to the bottom of the lowest text block on the page, eliminating excess whitespace when a source ends early. Manually recropped Source 18 in `eating erev yom kippur.md` to restore the missing bottom text.
 
+24. Audited `melachim 2.md` master sheet for convention violations. 
+- Added second image (melachim 2) to Source 24 (`סנהדרין מט עמוד א`).
+- Fixed incorrectly mapped author `זית רענן` to `מגן אברהם`, renamed file and updated canonical map in `process_source_sheets.py`.
+- Fixed Dibur Hamatchil headline issue in Source 12 (`בבא בתרא צא עמוד ב`).
+- Cleaned up duplicate image embeds in Sources 4 and 26.
+
 ## Next Steps for WSL
 1. **Refine the PDF Parsing Heuristic:** The current regex/logic in `extract_sources_and_images()` in `process_source_sheets.py` still uses placeholder logic for detecting the headers. We need to feed the script a real PDF from `000 Source PDFs/` and adjust the text search so the script correctly identifies citations and draws accurate bounding boxes for the images.
