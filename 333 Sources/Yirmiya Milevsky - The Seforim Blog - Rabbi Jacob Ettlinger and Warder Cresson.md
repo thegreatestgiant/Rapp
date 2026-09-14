@@ -9,8 +9,9 @@ tags: [gemara-source]
 > Book:: The Seforim Blog
 > Location:: Rabbi Jacob Ettlinger and Warder Cresson
 
-### Source
+### Source Image
 > ![[half convert_p2_s3.png]]
+
 > ![[half convert_p2_s4.png]]
 > ![[half convert_p3_s1.png]]
 > *(Cropped from half convert)*

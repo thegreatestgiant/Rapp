@@ -195,15 +195,15 @@
             "type": "tabs",
             "children": [
               {
-                "id": "81c36e2f49f13246",
+                "id": "95c8876e471d34ec",
                 "type": "leaf",
                 "state": {
                   "type": "pdf",
                   "state": {
-                    "file": "000 Source PDFs/eating erev yom kippur.pdf"
+                    "file": "000 Source PDFs/Fixing Lulav and Esrog.pdf"
                   },
                   "icon": "lucide-file-text",
-                  "title": "eating erev yom kippur"
+                  "title": "Fixing Lulav and Esrog"
                 }
               },
               {
@@ -212,32 +212,32 @@
                 "state": {
                   "type": "markdown",
                   "state": {
-                    "file": "111 Source Sheets/eating erev yom kippur.md",
+                    "file": "111 Source Sheets/Fixing Lulav and Esrog.md",
                     "mode": "source",
                     "source": false,
                     "backlinks": false
                   },
                   "icon": "lucide-file",
-                  "title": "eating erev yom kippur"
+                  "title": "Fixing Lulav and Esrog"
                 }
               },
               {
-                "id": "e15f2d576e9982eb",
+                "id": "8100a0f1f39942fa",
                 "type": "leaf",
                 "state": {
                   "type": "markdown",
                   "state": {
-                    "file": "333 Sources/רש''י - מסכת כתובות - דף ה עמוד א.md",
+                    "file": "333 Sources/רבי אלעזר לנדא - יד המלך - הלכות שופר וסוכה ולולב - פרק ח הלכה ז.md",
                     "mode": "source",
                     "source": false,
                     "backlinks": false
                   },
                   "icon": "lucide-file",
-                  "title": "רש''י - מסכת כתובות - דף ה עמוד א"
+                  "title": "רבי אלעזר לנדא - יד המלך - הלכות שופר וסוכה ולולב - פרק ח הלכה ז"
                 }
               }
             ],
-            "currentTab": 2
+            "currentTab": 1
           }
         ],
         "direction": "vertical"
@@ -382,8 +382,8 @@
           "pandoc-extended-markdown:Open list panel": false
         }
       },
-      "active": "e15f2d576e9982eb",
-      "mtime": "2026-09-09T11:49:13-04:00"
+      "active": "302b43ba3e100ba4",
+      "mtime": "2026-09-14T10:51:33-04:00"
     },
     "Navi": {
       "main": {
@@ -579,5 +579,5 @@
       "mtime": "2026-09-10T12:00:56-04:00"
     }
   },
-  "active": "Halacha"
+  "active": "Gemara"
 }

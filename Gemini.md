@@ -16,6 +16,7 @@ When fixing or creating source files, the following conventions must be adhered 
 4. **Metadata**: The YAML frontmatter and DataView fields inside the source file must accurately reflect the Author and Book. The `author` field must link to the author's file (not the book file).
 5. **Author Files**: Author files in the `222 Authors` folder should generally be named after the actual author (e.g., `רב אפרים גרינבלט.md`). However, for extremely famous Rabbis who are universally known by their primary Sefer (e.g., `חזון איש`, `חתם סופר`, `שולחן ערוך`, `משנה ברורה`, `מגן אברהם`), it is preferred to use the Sefer name as the Author name to match common colloquial usage.
 6. **Mishnah Commentaries**: For Mishnah commentaries (e.g., Bartenura, Tosafos Yom Tov, Rambam Peirush Hamishnah), the Maseches (tractate) should be included as part of the Book name rather than the Location. For example: Book: `תוספות יום טוב מסכת שבת` and Location: `פרק א משנה א`.
+7. **Source Image Section**: The cropped PDF image MUST be placed under a `### Source Image` heading at the top of the file, BEFORE the main `### Title` (or Dibur Hamatchil) heading containing the notes. The `### Source Image` heading MUST NEVER be embedded or linked to in the master source sheet. Master source sheets should ONLY embed the title/DH heading (e.g., `![[File#Title]]`), intentionally ignoring and hiding the image from the sheet.
 
 ## Source Sheet Auditor Protocol
 

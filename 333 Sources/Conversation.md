@@ -9,8 +9,9 @@ tags: [gemara-source]
 > Book:: Conversation
 > Location:: 
 
-### Source
+### Source Image
 > ![[ikar 12_p2_s5.png]]
+
 > ![[ikar 12_p3_cont.png]]
 > *(Cropped from ikar 12)*
 

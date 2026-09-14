@@ -74,7 +74,7 @@ def sanitize_filename(name):
     return clean
 
 def decode_text(text):
-    if any(c in "abcdefghijklmnopqrstuvwxyz,.;\x1b" for c in text):
+    if any(c in "abcdefghijklmnopqrstuvwxyz\x1b" for c in text.lower()):
         rev = text[::-1]
         res = [QWERTY_TO_HEBREW.get(ch, ch) for ch in rev]
         return "".join(res).replace('\x1b', '"')
@@ -169,7 +169,11 @@ def parse_citation(citation):
     clean = re.sub(r'^סוכת\s*-\s*', '', clean)
     clean = re.sub(r'^Succos\s*-\s*', '', clean, flags=re.IGNORECASE)
     clean = re.sub(r'^Makor\s*-\s*', '', clean, flags=re.IGNORECASE)
-    clean = re.sub(r"\([^\)]*?\d+[^\)]*?\)", "", clean)
+    clean = re.sub(r'\([^)]*\)', '', clean)
+    clean = re.sub(r'\)[^(]*\(', '', clean)
+    clean = re.sub(r'\[[^\]]*\]', '', clean)
+    clean = re.sub(r'\][^\[]*\[', '', clean)
+    clean = re.sub(r"[()\[\]]", "", clean)
     clean = re.sub(r"\b\d+[\)\(]|\([\)\d]+", "", clean)
     clean = re.sub(r"^\s*\d+[\)\.]?\s*", "", clean)
     clean = re.sub(r"^[א-ת]\"?[א-ת]?\s*[\)\.\-]\s*", "", clean)
@@ -217,7 +221,7 @@ def parse_citation(citation):
 
     if not author:
         for tb in TANACH_BOOKS:
-            pattern = r'(?<![א-ת])' + re.escape(tb) + r'(?![א-ת])'
+            pattern = r'^(ספר\s+|חומש\s+)?' + re.escape(tb) + r'(?![א-ת])'
             if re.search(pattern, clean):
                 author = 'תנ"ך'
                 if not book:
@@ -364,7 +368,9 @@ def process_source(source_data, sheet_stem, subject):
     display_book = sanitize_filename(book)[:60].strip()
     display_loc = sanitize_filename(location)[:60].strip()
 
-    title_parts = [display_author, display_book]
+    title_parts = [display_author]
+    if display_book and display_book != display_author:
+        title_parts.append(display_book)
     if display_loc:
         title_parts.append(display_loc)
 
