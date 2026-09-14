@@ -62,5 +62,7 @@ We designed an automated workflow to process Gemara Source Sheet PDFs dropped in
 - Fixed Dibur Hamatchil headline issue in Source 12 (`בבא בתרא צא עמוד ב`).
 - Cleaned up duplicate image embeds in Sources 4 and 26.
 
+25. Audited `Fixing Lulav and Esrog.md` master sheet and fixed incorrectly parsed sources. Corrected bad author extraction for `סוכת שלם`, `בית יעקב`, `שבות יעקב`, `מהרש"ם`, `דברי מלכיאל`, `שאילת שלום`, `יד המלך`, `אליהו רבה`, `שואל ומשיב`, `שדי חמד`, `שערי תשובה`, `ארבעת המינים השלם`, `המתיבתא תשנ"ו`, `טור`, and `משנה ברורה`. Created missing author files, renamed sources, updated file metadata, and added new canonical mappings to `process_source_sheets.py`.
+
 ## Next Steps for WSL
 1. **Refine the PDF Parsing Heuristic:** The current regex/logic in `extract_sources_and_images()` in `process_source_sheets.py` still uses placeholder logic for detecting the headers. We need to feed the script a real PDF from `000 Source PDFs/` and adjust the text search so the script correctly identifies citations and draws accurate bounding boxes for the images.
