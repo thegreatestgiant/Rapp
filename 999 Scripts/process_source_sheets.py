@@ -80,7 +80,14 @@ def decode_text(text):
         return "".join(res).replace('\x1b', '"')
     return text
 
-AUTHOR_CANONICAL_MAP = {
+AUTHOR_CANONICAL_MAP = {\n    'כלי יקר': 'כלי יקר',
+    'משך': 'משך חכמה',
+    'ספר מורה': 'רמב"ם',
+    'ספר יערות': 'רבי יהונתן אייבשיץ',
+    'רבי יעקב בן אשר - מקור': 'רבי יעקב בן אשר',
+    'בית יוסף': 'בית יוסף',
+    'שו"ת רדב"ז': 'רדב"ז',
+    "שו''ת רדב''ז": 'רדב"ז',
     'ר\' עובדיה מברטנורא': 'רבי עובדיה מברטנורא',
     'ר׳ עובדיה מברטנורא': 'רבי עובדיה מברטנורא',
     'ברטנורא': 'רבי עובדיה מברטנורא',
@@ -385,20 +392,42 @@ def process_source(source_data, sheet_stem, subject):
 
     if existing_file and existing_file.exists():
         existing_stem = existing_file.stem
-        print(f"Skipping existing source (already exists): {existing_file.name}")
+        print(f"Source already exists: {existing_file.name}. Checking for new D\"H or image.")
         
-        # Try to find the actual heading in the existing file
         actual_heading = heading_to_use
         try:
-            content = existing_file.read_text(encoding="utf-8")
+            file_content = existing_file.read_text(encoding="utf-8")
             import re
-            # Find all ### headings
-            headings = re.findall(r'^###\s+(.+)$', content, flags=re.MULTILINE)
-            # Filter out the "Source" heading
-            headings = [h.strip() for h in headings if h.strip().lower() != 'source']
-            if headings:
-                actual_heading = headings[-1]
+            
+            # Check if this heading already exists
+            headings = re.findall(r'^###\s+(.+)$', file_content, flags=re.MULTILINE)
+            clean_headings = [h.strip() for h in headings if 'source image' not in h.strip().lower()]
+            
+            # If the specific DH is not in the file, we append it
+            base_heading = actual_heading
+            counter = 2
+            while actual_heading in clean_headings:
+                actual_heading = f"{base_heading} ({counter})"
+                counter += 1
+                
+            print(f"Adding new D\"H '{actual_heading}' to existing file.")
+            # We need to add the new image to the ### Source Image block
+            img_embeds = "\n".join([f"> ![[{img}]]\n> *(Cropped from {sheet_stem})*" for img in img_names])
+            
+            if "### Source Image" in file_content:
+                # Insert the new image embeds right after ### Source Image
+                file_content = file_content.replace("### Source Image", f"### Source Image\n{img_embeds}")
+            else:
+                # Fallback, just append it
+                file_content += f"\n### Source Image\n{img_embeds}\n"
+                
+            # Append the new heading at the bottom
+            file_content += f"\n### {actual_heading}\n"
+            
+            existing_file.write_text(file_content, encoding="utf-8")
+                
         except Exception as e:
+            print(f"Error updating existing file: {e}")
             pass
             
         return existing_stem, actual_heading

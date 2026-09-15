@@ -10,15 +10,15 @@
             "type": "tabs",
             "children": [
               {
-                "id": "d526f9a5bc5c29e9",
+                "id": "8d90561c94ce797f",
                 "type": "leaf",
                 "state": {
                   "type": "pdf",
                   "state": {
-                    "file": "000 Source PDFs/911.pdf"
+                    "file": "000 Source PDFs/midos.pdf"
                   },
                   "icon": "lucide-file-text",
-                  "title": "911"
+                  "title": "midos"
                 }
               },
               {
@@ -27,17 +27,16 @@
                 "state": {
                   "type": "markdown",
                   "state": {
-                    "file": "111 Source Sheets/911.md",
+                    "file": "111 Source Sheets/midos.md",
                     "mode": "source",
                     "source": false,
                     "backlinks": false
                   },
                   "icon": "lucide-file",
-                  "title": "911"
+                  "title": "midos"
                 }
               }
-            ],
-            "currentTab": 1
+            ]
           }
         ],
         "direction": "vertical"
@@ -70,7 +69,10 @@
                 "type": "leaf",
                 "state": {
                   "type": "bookmarks",
-                  "state": {},
+                  "state": {
+                    "showSearch": false,
+                    "searchQuery": ""
+                  },
                   "icon": "lucide-bookmark",
                   "title": "Bookmarks"
                 }
@@ -182,8 +184,8 @@
           "pandoc-extended-markdown:Open list panel": false
         }
       },
-      "active": "061195d0a2cde066",
-      "mtime": "2026-09-14T09:43:12-04:00"
+      "active": "8d90561c94ce797f",
+      "mtime": "2026-09-15T09:33:44-04:00"
     },
     "Halacha": {
       "main": {
@@ -579,5 +581,5 @@
       "mtime": "2026-09-10T12:00:56-04:00"
     }
   },
-  "active": "Gemara"
+  "active": "Navi"
 }
