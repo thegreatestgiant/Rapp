@@ -255,13 +255,26 @@ def parse_citation(citation):
         words = book.split()
         if len(words) > 1 and words[0] in ['שו"ת', "שו''ת", 'חידושי', 'ספר', 'פ', 'פירוש', 'דרוש', 'חלקת', 'ערוך', 'תוספת', 'קונטרס']:
             author = " ".join(words[:2])
+            book = " ".join(words[2:]).strip()
         elif words and words[0] not in ["ר'", "ר׳", "ר"]:
             author = words[0]
+            book = " ".join(words[1:]).strip()
         else:
             author = "מקור"
 
-    if not book:
-        book = "מקור"
+    # Fix Shulchan Aruch / Tur Chelek topics
+    for chelek in ["אורח חיים", "יורה דעה", "אבן העזר", "חושן משפט"]:
+        if book.startswith(chelek + " הלכות"):
+            book = chelek
+            break
+
+    if not book or book == "מקור":
+        if author == "משנה ברורה":
+            book = "משנה ברורה"
+        elif author == "רבי חיים חזקיהו מדיני":
+            book = "שדי חמד"
+        else:
+            book = "מקור"
 
     location = re.sub(r"\s*\d+[\)\(]?$", "", location).strip()
 
