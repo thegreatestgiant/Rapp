@@ -81,6 +81,9 @@ def decode_text(text):
     return text
 
 AUTHOR_CANONICAL_MAP = {
+    'פירוש המשניות להרמב"ם': 'רמב"ם',
+    'פירוש המשניות': 'רמב"ם',
+    'ביאור הלכה': 'משנה ברורה',
     'שו"ת בית יהודה': 'רבי יהודה עייאש',
     "שו''ת בית יהודה": 'רבי יהודה עייאש',
     'שו"ת בית': 'רבי יהודה עייאש',
@@ -200,7 +203,8 @@ def parse_citation(citation):
     clean = re.sub(r"^\s*\d+[\)\.]?\s*", "", clean)
     clean = re.sub(r"\s*[\(\-]?[\s]*\d+\s*[\)]?\s*$", "", clean)
     clean = re.sub(r"^[א-ת]\"?[א-ת]?\s*[\)\.\-]\s*", "", clean)
-    clean = re.sub(r"^(פ['׳]|פי['׳]|פירוש)\s*", "", clean)
+    if not re.search(r"פירוש המשניות", clean):
+        clean = re.sub(r"^(פ['׳]|פי['׳]|פירוש)\s*", "", clean)
     clean = re.sub(r"\s+", " ", clean).strip()
     clean = clean.replace("''", '"') # Normalize quotes for matching
 
@@ -212,9 +216,6 @@ def parse_citation(citation):
     sorted_authors = sorted(ALL_KNOWN_AUTHORS, key=len, reverse=True)
     for a in sorted_authors:
         # Use a regex to match the author as a whole word or at boundaries.
-        # Since Hebrew text might have prefixes/suffixes, simple \b might not always be perfect,
-        # but it prevents "ר''ן" from matching inside "מוהר''ן".
-        # We can use a regex that ensures 'a' is not preceded or followed by Hebrew letters.
         pattern = r'(?<![א-ת])' + re.escape(a) + r'(?![א-ת])'
         if re.search(pattern, clean):
             matches.append(a)
@@ -241,6 +242,13 @@ def parse_citation(citation):
         book_part = book_part.replace('שו"ת ' + author, "").strip()
 
     book = re.sub(r"^[-\s:;]+|[-\s:;]+$", "", book_part).strip()
+
+    if matched_text in ["פירוש המשניות להרמב\"ם", "פירוש המשניות"]:
+        author = "רמב\"ם"
+        book = "פירוש המשניות"
+    elif matched_text == "ביאור הלכה":
+        author = "משנה ברורה"
+        book = "ביאור הלכה"
 
     if not author:
         for tb in TANACH_BOOKS:
@@ -312,6 +320,14 @@ def match_existing_source(author, book, location):
                         
     return None
 
+KNOWN_HEADER_KEYWORDS = [
+    "תלמוד בבלי", "תלמוד ירושלמי", "רש\"י", "רמב\"ם", "משנה ברורה", "שולחן ערוך", "רא\"ש",
+    "בית יוסף", "ביאור הלכה", "מגן אברהם", "טור", "ספרי", "מדרש", "פסיקתא", "בראשית רבה",
+    "במדבר רבה", "קהלת רבה", "אגרות משה", "חזון איש", "חתם סופר", "אבני נזר", "פתחי תשובה",
+    "ציץ אליעזר", "שמירת שבת כהלכתה", "ערוך השולחן", "פרי מגדים", "תוספות", "ריטב\"א",
+    "רשב\"א", "ר\"ן", "רי\"ף", "פירוש המשניות"
+]
+
 def extract_sources_and_images(pdf_path):
     doc = fitz.open(pdf_path)
     sources = []
@@ -320,10 +336,24 @@ def extract_sources_and_images(pdf_path):
         page = doc[page_num]
         blocks = page.get_text("blocks")
 
+        is_ocr = False
+        if not blocks or sum(len(b[4].strip()) for b in blocks) < 10:
+            try:
+                print(f"No text stream found on page {page_num+1}. Running OCR fallback...")
+                ocr_tp = page.get_textpage_ocr(dpi=300, language="heb+eng")
+                blocks = ocr_tp.extractBLOCKS()
+                is_ocr = True
+            except Exception as e:
+                print(f"OCR fallback failed on page {page_num+1}: {e}")
+
         headers = []
         for b in blocks:
             raw = b[4].strip()
-            if re.search(r"\( ?\d+|\d+ ?\)", raw):
+            if not raw:
+                continue
+            is_num = bool(re.search(r"\( ?\d+|\d+ ?\)|\b\d{1,2}\b", raw))
+            is_kw = any(kw in raw for kw in KNOWN_HEADER_KEYWORDS)
+            if (is_num and is_kw) or (re.search(r"\( ?\d+|\d+ ?\)", raw)) or (is_kw and b[1] > 30 and len(raw) < 150):
                 headers.append(b)
 
         headers.sort(key=lambda b: b[1])
@@ -340,35 +370,38 @@ def extract_sources_and_images(pdf_path):
         for i, h in enumerate(headers):
             raw_header = h[4].strip()
             
-            # If the header block ONLY contains a number (like '(2' or '11)'),
-            # the actual text might be in another block on the same horizontal line.
             if re.match(r"^[\(\)\s\d]+$", raw_header):
                 same_line_texts = []
                 for b in blocks:
-                    if b != h and abs(b[1] - h[1]) < 5:
+                    if b != h and abs(b[1] - h[1]) < 10:
                         same_line_texts.append(b[4].strip())
                 if same_line_texts:
                     raw_header = " ".join(same_line_texts) + " " + raw_header
 
-            decoded_header = decode_text(raw_header).replace("\n", " ")
+            if is_ocr:
+                cleaned_h = re.sub(r'[A-Za-z]+', ' ', raw_header)
+                decoded_header = cleaned_h.replace("\n", " ")
+            else:
+                decoded_header = decode_text(raw_header).replace("\n", " ")
             author, book, location = parse_citation(decoded_header)
 
-            # Attempt to extract Dibur Hamatchil (DH) from the next block
             dh = None
-            block_idx = blocks.index(h)
-            if block_idx + 1 < len(blocks):
-                first_line = blocks[block_idx+1][4].strip().split('\n')[0]
-                first_line_dec = decode_text(first_line).strip()
-                # Check for DH ending with hyphen or period
-                match = re.search(r'^(.*?)[\-\.](?:\s|$)', first_line_dec)
-                if match:
-                    candidate = match.group(1).strip()
-                    if len(candidate.split()) <= 8:
-                        dh = candidate
-                elif first_line_dec.endswith('-') or first_line_dec.endswith('.'):
-                    candidate = first_line_dec[:-1].strip()
-                    if len(candidate.split()) <= 8:
-                        dh = candidate
+            try:
+                block_idx = blocks.index(h)
+                if block_idx + 1 < len(blocks):
+                    first_line = blocks[block_idx+1][4].strip().split('\n')[0]
+                    first_line_dec = first_line.strip() if is_ocr else decode_text(first_line).strip()
+                    match = re.search(r'^(.*?)[\-\.](?:\s|$)', first_line_dec)
+                    if match:
+                        candidate = match.group(1).strip()
+                        if len(candidate.split()) <= 8:
+                            dh = candidate
+                    elif first_line_dec.endswith('-') or first_line_dec.endswith('.'):
+                        candidate = first_line_dec[:-1].strip()
+                        if len(candidate.split()) <= 8:
+                            dh = candidate
+            except ValueError:
+                pass
 
             y0 = max(0, h[1] - 5)
             if i + 1 < len(headers):
