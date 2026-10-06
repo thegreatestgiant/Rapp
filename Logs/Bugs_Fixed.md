@@ -9,3 +9,11 @@
 
 - **Bug**: If multiple sources mapped to the exact same file and the D"H extraction logic failed to find a valid hyphen/period (e.g., `קהלת רבה`), both sources fell back to identical default headings (the filename) and refused to append because the heading "already existed."
   - **Fix**: Upgraded the `process_source_sheets.py` existing file logic so that if the extracted `actual_heading` is already in the file, it automatically appends an incrementing counter suffix (e.g., `(2)`, `(3)`) to guarantee unique headings are generated for every new source block, and properly linked in the source sheet.
+
+### Date: 2026-10-06
+- **Bug**: Re-running the parser script on an existing source sheet created unwanted `(2)` and `(3)` heading duplicate anchors and duplicated image embeds in the source files.
+  - **Root Cause**: When re-processing a sheet, `process_source_sheets.py` saw the existing base heading and unconditionally incremented counter suffixes without checking whether the image and heading already existed for this sheet.
+  - **Fix**: Updated `process_source_sheets.py` to check `if already_has_image and heading_to_use in clean_headings: return existing_stem, heading_to_use`, preventing duplicate image embeds and counter increments on repeated script runs.
+
+- **Bug**: OCR fallback on scanned PDF `melachim 1.6.pdf` fragmented Tanach verses, missed headers, and produced filenames with nekudot.
+  - **Fix**: Re-processed all 27 sources using precise coordinates, stripped all nekudot, restored user-written notes from Obsidian recovery snapshots, and verified author mappings.

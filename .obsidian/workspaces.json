@@ -213,45 +213,30 @@
             "type": "tabs",
             "children": [
               {
-                "id": "95c8876e471d34ec",
+                "id": "9ed3debecdfc5727",
                 "type": "leaf",
                 "state": {
                   "type": "pdf",
                   "state": {
-                    "file": "000 Source PDFs/Fixing Lulav and Esrog.pdf"
+                    "file": "000 Source PDFs/canvas sukkah.pdf"
                   },
                   "icon": "lucide-file-text",
-                  "title": "Fixing Lulav and Esrog"
+                  "title": "canvas sukkah"
                 }
               },
               {
-                "id": "302b43ba3e100ba4",
+                "id": "b915d5736c6ec2bc",
                 "type": "leaf",
                 "state": {
                   "type": "markdown",
                   "state": {
-                    "file": "111 Source Sheets/Fixing Lulav and Esrog.md",
+                    "file": "111 Source Sheets/canvas sukkah.md",
                     "mode": "source",
                     "source": false,
                     "backlinks": false
                   },
                   "icon": "lucide-file",
-                  "title": "Fixing Lulav and Esrog"
-                }
-              },
-              {
-                "id": "2aafacc9ccb57e12",
-                "type": "leaf",
-                "state": {
-                  "type": "markdown",
-                  "state": {
-                    "file": "333 Sources/רבי חיים מרדכי מרגליות - שערי תשובה - אורח חיים - סימן תרמה.md",
-                    "mode": "source",
-                    "source": false,
-                    "backlinks": false
-                  },
-                  "icon": "lucide-file",
-                  "title": "רבי חיים מרדכי מרגליות - שערי תשובה - אורח חיים - סימן תרמה"
+                  "title": "canvas sukkah"
                 }
               }
             ],
@@ -400,8 +385,8 @@
           "pandoc-extended-markdown:Open list panel": false
         }
       },
-      "active": "302b43ba3e100ba4",
-      "mtime": "2026-09-16T10:43:25-04:00"
+      "active": "b915d5736c6ec2bc",
+      "mtime": "2026-10-06T09:15:55-04:00"
     },
     "Navi": {
       "main": {
@@ -582,5 +567,5 @@
       "mtime": "2026-09-17T11:08:08-04:00"
     }
   },
-  "active": "Halacha"
+  "active": "Navi"
 }

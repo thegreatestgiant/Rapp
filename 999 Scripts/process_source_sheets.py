@@ -464,6 +464,12 @@ def process_source(source_data, sheet_stem, subject):
             # Check if this heading already exists
             headings = re.findall(r'^###\s+(.+)$', file_content, flags=re.MULTILINE)
             clean_headings = [h.strip() for h in headings if 'source image' not in h.strip().lower()]
+
+            # Check if this image from the same sheet is already in the file (re-run)
+            already_has_image = any(img in file_content for img in img_names)
+            if already_has_image and heading_to_use in clean_headings:
+                print(f"Source already contains this image and heading '{heading_to_use}'. Reusing.")
+                return existing_stem, heading_to_use
             
             # If the specific DH is not in the file, we append it
             base_heading = actual_heading
@@ -474,14 +480,15 @@ def process_source(source_data, sheet_stem, subject):
                 
             print(f"Adding new D\"H '{actual_heading}' to existing file.")
             # We need to add the new image to the ### Source Image block
-            img_embeds = "\n".join([f"> ![[{img}]]\n> *(Cropped from {sheet_stem})*" for img in img_names])
+            img_embeds = "\n".join([f"> ![[{img}]]\n> *(Cropped from {sheet_stem})*" for img in img_names if img not in file_content])
             
-            if "### Source Image" in file_content:
-                # Insert the new image embeds right after ### Source Image
-                file_content = file_content.replace("### Source Image", f"### Source Image\n{img_embeds}")
-            else:
-                # Fallback, just append it
-                file_content += f"\n### Source Image\n{img_embeds}\n"
+            if img_embeds:
+                if "### Source Image" in file_content:
+                    # Insert the new image embeds right after ### Source Image
+                    file_content = file_content.replace("### Source Image", f"### Source Image\n{img_embeds}")
+                else:
+                    # Fallback, just append it
+                    file_content += f"\n### Source Image\n{img_embeds}\n"
                 
             # Append the new heading at the bottom
             file_content += f"\n### {actual_heading}\n"

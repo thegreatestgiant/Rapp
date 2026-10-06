@@ -64,5 +64,11 @@ We designed an automated workflow to process Gemara Source Sheet PDFs dropped in
 
 25. Audited `Fixing Lulav and Esrog.md` master sheet and fixed incorrectly parsed sources. Corrected bad author extraction for `סוכת שלם`, `בית יעקב`, `שבות יעקב`, `מהרש"ם`, `דברי מלכיאל`, `שאילת שלום`, `יד המלך`, `אליהו רבה`, `שואל ומשיב`, `שדי חמד`, `שערי תשובה`, `ארבעת המינים השלם`, `המתיבתא תשנ"ו`, `טור`, and `משנה ברורה`. Created missing author files, renamed sources, updated file metadata, and added new canonical mappings to `process_source_sheets.py`.
 
+26. Audited `melachim 1.6.md` master sheet and conducted full vault-wide author integrity audit:
+- Resolved `(2)` and `(3)` duplicate anchor generation bug in `process_source_sheets.py` when re-running on existing sheets.
+- Extracted and clean-cropped all 27 numbered sources for `melachim 1.6.pdf` with 0 nekudot.
+- Recovered user study notes from Obsidian IndexedDB File Recovery snapshots and restored them under Sources 1, 2, 3, and 5.
+- Audited all 400 source files vault-wide: resolved missing author files for `מהר''י שטייף`, `מושב זקנים`, and `רבי יעקב ממרויש`, and relocated vocabulary file `פטור אבל אסור.md` to `555 Vocabulary/`.
+
 ## Next Steps for WSL
 1. **Refine the PDF Parsing Heuristic:** The current regex/logic in `extract_sources_and_images()` in `process_source_sheets.py` still uses placeholder logic for detecting the headers. We need to feed the script a real PDF from `000 Source PDFs/` and adjust the text search so the script correctly identifies citations and draws accurate bounding boxes for the images.
