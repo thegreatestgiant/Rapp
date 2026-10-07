@@ -1,2 +1,7 @@
 .venv/
 .obsidian/workspace.json
+
+# Obsidian Workspace
+.obsidian/workspace
+.obsidian/workspace.json
+.obsidian/workspaces.json
