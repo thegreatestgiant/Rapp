@@ -351,14 +351,15 @@ def extract_sources_and_images(pdf_path):
             raw = b[4].strip()
             if not raw:
                 continue
-            is_num = bool(re.search(r"\( ?\d+|\d+ ?\)|\b\d{1,2}\b", raw))
-            is_kw = any(kw in raw for kw in KNOWN_HEADER_KEYWORDS)
-            if (is_num and is_kw) or (re.search(r"\( ?\d+|\d+ ?\)", raw)) or (is_kw and b[1] > 30 and len(raw) < 150):
+            raw_decoded = decode_text(raw) if not is_ocr else raw
+            is_num = bool(re.search(r"\( ?\d+|\d+ ?\)|\d+ ?\(", raw))
+            is_kw = any(kw in raw_decoded for kw in KNOWN_HEADER_KEYWORDS)
+            if (is_num and is_kw) or (re.search(r"\( ?\d+|\d+ ?\)|\d+ ?\(", raw)) or (is_kw and b[1] > 30 and len(raw_decoded) < 150):
                 headers.append(b)
 
         headers.sort(key=lambda b: b[1])
 
-        if page_num > 0 and sources and (not headers or headers[0][1] > 90):
+        if page_num > 0 and sources and (not headers or headers[0][1] > 50):
             max_b_y1 = max((b[3] for b in blocks), default=page.rect.height)
             cont_y1 = headers[0][1] - 5 if headers else min(page.rect.height, max_b_y1 + 5)
             cont_rect = fitz.Rect(0, 30, page.rect.width, cont_y1)
