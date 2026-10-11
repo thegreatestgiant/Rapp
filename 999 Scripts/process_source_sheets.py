@@ -73,12 +73,36 @@ def sanitize_filename(name):
     clean = re.sub(r'\s+', ' ', clean).strip()
     return clean
 
+COMMON_ENG_WORDS = {
+    'the', 'of', 'and', 'in', 'to', 'a', 'is', 'that', 'for', 'it', 'as', 'was', 'with', 'by',
+    'on', 'at', 'from', 'this', 'be', 'are', 'or', 'an', 'not', 'rabbi', 'rav', 'challenge',
+    'science', 'judaism', 'letter', 'age', 'universe', 'kaplan', 'schwab', 'belsky', 'einei',
+    'yisroel', 'translated', 'immortality', 'resurrection', 'kabbalistic', 'view', 'perspective',
+    'february', 'torah', 'printed', 'translation', 'how', 'old', 'pp', 'page', 'bereishis'
+}
+
+def is_line_english(line):
+    words = [re.sub(r'[^a-zA-Z]', '', w).lower() for w in line.split()]
+    words = [w for w in words if w]
+    if not words:
+        return False
+    eng_matches = sum(1 for w in words if w in COMMON_ENG_WORDS)
+    return (eng_matches / len(words)) >= 0.25 or any(w in {'rabbi', 'challenge', 'universe', 'kaplan', 'schwab', 'belsky'} for w in words)
+
+def decode_line(line):
+    if not any(c in "abcdefghijklmnopqrstuvwxyz\x1b" for c in line.lower()):
+        return line
+    if is_line_english(line):
+        return line
+    rev = line[::-1]
+    res = [QWERTY_TO_HEBREW.get(ch, ch) for ch in rev]
+    return "".join(res).replace('\x1b', '"')
+
 def decode_text(text):
-    if any(c in "abcdefghijklmnopqrstuvwxyz\x1b" for c in text.lower()):
-        rev = text[::-1]
-        res = [QWERTY_TO_HEBREW.get(ch, ch) for ch in rev]
-        return "".join(res).replace('\x1b', '"')
-    return text
+    if not text:
+        return text
+    lines = text.splitlines()
+    return "\n".join(decode_line(l) for l in lines)
 
 AUTHOR_CANONICAL_MAP = {
     'פירוש המשניות להרמב"ם': 'רמב"ם',
@@ -157,7 +181,25 @@ AUTHOR_CANONICAL_MAP = {
     'המתיבתא תשנ"ו': 'רבי ישראל רייזמן',
     "המתיבתא תשנ''ו": 'רבי ישראל רייזמן',
     'ארבעת המינים השלם': 'רבי אליהו וייספיש',
-    'טור': 'רבי יעקב בן אשר'
+    'טור': 'רבי יעקב בן אשר',
+    'עיני ישראל': 'רבי ישראל בלסקי',
+    'Einei Yisroel': 'רבי ישראל בלסקי',
+    'Rav Yisroel Belsky': 'רבי ישראל בלסקי',
+    'Rabbi Menachem M. Schneerson': 'הרבי מליובאוויטש',
+    'רבי מנחם מענדל שניאורסון': 'הרבי מליובאוויטש',
+    'הרבי מליובאוויטש': 'הרבי מליובאוויטש',
+    'Rabbi Shimon Schwab': 'רבי שמעון שוואב',
+    'Rabbi Aryeh Kaplan': 'רבי אריה קפלן',
+    'The Age of the Universe': 'רבי אריה קפלן',
+    'עולמות שחרבו': 'הרבי מסאטמאר',
+    'רבי יואל טייטלבוים': 'הרבי מסאטמאר',
+    'הרבי מסאטמאר': 'הרבי מסאטמאר',
+    'אוצר החיים': 'רבי יצחק דמן עכו',
+    'אבות דרבי נתן': 'אבות דרבי נתן',
+    'מסכתות קטנות': 'אבות דרבי נתן',
+    'מסכת אבות דרבי נתן': 'אבות דרבי נתן',
+    'תפארת ישראל': 'רבי ישראל ליפשיץ',
+    'דרוש אור החיים': 'רבי ישראל ליפשיץ'
 }
 
 def get_all_known_authors():
@@ -189,11 +231,63 @@ def get_all_known_authors():
 ALL_KNOWN_AUTHORS = get_all_known_authors()
 
 def parse_citation(citation):
-    clean = re.sub(r'^[א-ת]\s*-\s*', '', citation)
+    c_str = citation.strip()
+    audit_needed = False
+    audit_reason = ""
+
+    # 1. English citation heuristic parsing
+    if is_line_english(c_str):
+        c = re.sub(r'^\s*\(?\s*\d+[\)\.\-:]?\s*', '', c_str).strip()
+        author = ""
+        book = ""
+        location = ""
+
+        # Pattern A: Sefer/Title (Author) Location (e.g. Einei Yisroel (Rav Yisroel Belsky) Bereishis pp. 12-16)
+        m = re.match(r'^([^(]+)\s*\(([^)]+)\)\s*(.*)$', c)
+        if m:
+            book = m.group(1).strip()
+            author = m.group(2).strip()
+            location = m.group(3).strip()
+        else:
+            # Pattern B: Title by Author Date/Location (e.g. THE AGE OF THE UNIVERSE ... By Rabbi Aryeh Kaplan February 18, 1979)
+            m = re.search(r'^(.*?)\s+by\s+([A-Za-z\.\s\']+?)(?:\s+([A-Z][a-z]+ \d{1,2},? \d{4}|\b(?:pp?|vol|ch)\b.*|$))', c, re.IGNORECASE)
+            if m:
+                book = m.group(1).strip()
+                author = m.group(2).strip()
+                location = (m.group(3) or "").strip()
+            else:
+                # Pattern C: Author, Title, Location/Source (e.g. Rabbi Shimon Schwab, How old is the Universe?, Challenge p. 165)
+                parts = [p.strip() for p in re.split(r'[,;]\s*', c) if p.strip()]
+                if len(parts) >= 2:
+                    author = parts[0]
+                    if len(parts) >= 3 and re.search(r'\b(?:p\.|pp\.|page|vol\.|ch\.|§)\b', parts[-1], re.IGNORECASE):
+                        location = parts[-1]
+                        book = ", ".join(parts[1:-1])
+                    else:
+                        book = ", ".join(parts[1:])
+                else:
+                    author = c
+                    audit_needed = True
+                    audit_reason = "Unrecognized English citation structure"
+
+        # Resolve through canonical map
+        canonical_author = AUTHOR_CANONICAL_MAP.get(author, AUTHOR_CANONICAL_MAP.get(book, author))
+        if canonical_author != author or canonical_author in ALL_KNOWN_AUTHORS:
+            author = canonical_author
+        else:
+            audit_needed = True
+            audit_reason = f"English author '{author}' not in canonical author database"
+
+        return author, book, location, audit_needed, audit_reason
+
+    # 2. Hebrew citation heuristic parsing
+    clean = re.sub(r'^\s*\(?\s*\d+[\)\.\-:]?\s*', '', citation)
+    clean = re.sub(r'^[א-ת]\s*-\s*', '', clean)
     clean = re.sub(r'^מקור\s*-\s*', '', clean)
     clean = re.sub(r'^סוכת\s*-\s*', '', clean)
     clean = re.sub(r'^Succos\s*-\s*', '', clean, flags=re.IGNORECASE)
     clean = re.sub(r'^Makor\s*-\s*', '', clean, flags=re.IGNORECASE)
+    clean = re.sub(r'[\(\)][^\(\)]*[\(\)]', '', clean)
     clean = re.sub(r'\([^)]*\)', '', clean)
     clean = re.sub(r'\)[^(]*\(', '', clean)
     clean = re.sub(r'\[[^\]]*\]', '', clean)
@@ -215,7 +309,6 @@ def parse_citation(citation):
     # Sort authors by length descending so longer authors match first
     sorted_authors = sorted(ALL_KNOWN_AUTHORS, key=len, reverse=True)
     for a in sorted_authors:
-        # Use a regex to match the author as a whole word or at boundaries.
         pattern = r'(?<![א-ת])' + re.escape(a) + r'(?![א-ת])'
         if re.search(pattern, clean):
             matches.append(a)
@@ -269,6 +362,13 @@ def parse_citation(citation):
             book = " ".join(words[1:]).strip()
         else:
             author = "מקור"
+        audit_needed = True
+        audit_reason = f"Author fell back to token '{author}'"
+
+    # Check for possible gibberish or corrupt font stream
+    if re.search(r'\b[A-Za-z]{3,}\b', clean):
+        audit_needed = True
+        audit_reason = "Suspicious ASCII non-words / font stream in citation"
 
     # Fix Shulchan Aruch / Tur Chelek topics
     for chelek in ["אורח חיים", "יורה דעה", "אבן העזר", "חושן משפט"]:
@@ -286,7 +386,7 @@ def parse_citation(citation):
 
     location = re.sub(r"\s*\d+[\)\(]?$", "", location).strip()
 
-    return author, book, location
+    return author, book, location, audit_needed, audit_reason
 
 import difflib
 
@@ -352,9 +452,16 @@ def extract_sources_and_images(pdf_path):
             if not raw:
                 continue
             raw_decoded = decode_text(raw) if not is_ocr else raw
-            is_num = bool(re.search(r"\( ?\d+|\d+ ?\)|\d+ ?\(", raw))
+            lines = [l.strip() for l in raw.splitlines() if l.strip()]
+            has_num_prefix = any(
+                re.search(r'^\(?\s*\d{1,2}\s*[\)\.\-:]', l) or 
+                re.search(r'\(?\s*\d{1,2}\s*\)?$', l) or
+                re.search(r'\b\d{1,2}\s*\)', l)
+                for l in lines
+            )
+            has_special_num = any(re.search(r'\b13\b', l) and ('Translation' in l or 'Challenge' in l) for l in lines) or any('16)' in l and ('Translated' in l or 'Kaplan' in l) for l in lines)
             is_kw = any(kw in raw_decoded for kw in KNOWN_HEADER_KEYWORDS)
-            if (is_num and is_kw) or (re.search(r"\( ?\d+|\d+ ?\)|\d+ ?\(", raw)) or (is_kw and b[1] > 30 and len(raw_decoded) < 150):
+            if len(raw) < 350 and (has_num_prefix or has_special_num or (is_kw and b[1] > 30 and len(raw_decoded) < 150)):
                 headers.append(b)
 
         headers.sort(key=lambda b: b[1])
@@ -384,7 +491,29 @@ def extract_sources_and_images(pdf_path):
                 decoded_header = cleaned_h.replace("\n", " ")
             else:
                 decoded_header = decode_text(raw_header).replace("\n", " ")
-            author, book, location = parse_citation(decoded_header)
+            author, book, location, audit_needed, audit_reason = parse_citation(decoded_header)
+
+            # If citation parsing flagged an issue or non-words, try OCR retry on the header before AI flagging
+            if audit_needed and not is_ocr:
+                try:
+                    h_rect = fitz.Rect(h[0], max(0, h[1] - 5), h[2], min(page.rect.height, h[3] + 5))
+                    ocr_h_tp = page.get_textpage_ocr(clip=h_rect, dpi=300, language="heb+eng", full=True)
+                    ocr_header_text = ocr_h_tp.extractTEXT().strip().replace("\n", " ")
+                    if ocr_header_text:
+                        ocr_author, ocr_book, ocr_loc, ocr_audit, ocr_reason = parse_citation(ocr_header_text)
+                        # If OCR produced a valid parse without needing audit, use it!
+                        if not ocr_audit:
+                            author, book, location, audit_needed, audit_reason = ocr_author, ocr_book, ocr_loc, False, None
+                            decoded_header = ocr_header_text
+                            print(f"OCR successfully resolved header: '{ocr_header_text}' -> Author: {author}, Book: {book}, Loc: {location}")
+                        else:
+                            # Even if still needing audit, if it got a cleaner author/book, adopt it
+                            if ocr_author != "מקור" and not re.search(r'\b[A-Za-z]{3,}\b', ocr_header_text):
+                                author, book, location = ocr_author, ocr_book, ocr_loc
+                                decoded_header = ocr_header_text
+                                audit_reason = f"OCR attempted; {ocr_reason}"
+                except Exception as ocr_err:
+                    print(f"Header OCR retry failed: {ocr_err}")
 
             dh = None
             try:
@@ -423,7 +552,9 @@ def extract_sources_and_images(pdf_path):
                 "location": location,
                 "header": decoded_header,
                 "dibur_hamatchil": dh,
-                "image_filenames": [main_img_name]
+                "image_filenames": [main_img_name],
+                "audit_needed": audit_needed,
+                "audit_reason": audit_reason
             })
 
     return sources
@@ -500,7 +631,7 @@ def process_source(source_data, sheet_stem, subject):
             print(f"Error updating existing file: {e}")
             pass
             
-        return existing_stem, actual_heading
+        return existing_stem, actual_heading, False
 
     print(f"Creating new source: {file_name}")
     img_embeds = "\n".join([f"> ![[{img}]]" for img in img_names])
@@ -528,15 +659,28 @@ SORT book ASC, location ASC
 """
         author_file.write_text(author_content, encoding="utf-8")
 
-    # 2. Source note creation
+    # 2. Audit Flagging
+    audit_needed = source_data.get("audit_needed", False)
+    audit_reason = source_data.get("audit_reason", "")
+
+    audit_frontmatter = ""
+    audit_callout = ""
+    if audit_needed:
+        tag_list = f"[{tag_name}, needs-audit]"
+        audit_frontmatter = f'audit_needed: true\naudit_reason: "{audit_reason}"\n'
+        audit_callout = f"> [!warning] Audit Flag: Needs Verification\n> - **Reason**: {audit_reason}\n> - **AI Action**: Verify attribution against cropped source image and cross-reference with `222 Authors/`.\n\n"
+    else:
+        tag_list = f"[{tag_name}]"
+
+    # 3. Source note creation
     source_file = SOURCES_DIR / file_name
     source_content = f"""---
 author: "[[{display_author}]]"
 book: "{display_book}"
 location: "{display_loc}"
-tags: [{tag_name}]
----
-> [!info]- Reference
+tags: {tag_list}
+{audit_frontmatter}---
+{audit_callout}> [!info]- Reference
 > Author:: [[{display_author}]]
 > Book:: {display_book}
 > Location:: {display_loc}
@@ -547,7 +691,7 @@ tags: [{tag_name}]
 ### {heading_to_use}
 """
     source_file.write_text(source_content, encoding="utf-8")
-    return file_base, heading_to_use
+    return file_base, heading_to_use, audit_needed
 
 def main():
     config = load_config()
@@ -582,8 +726,8 @@ def main():
 
     linked_notes = []
     for s in sources:
-        note_stem, heading = process_source(s, sheet_stem, args.subject)
-        linked_notes.append((note_stem, heading))
+        note_stem, heading, needs_audit = process_source(s, sheet_stem, args.subject)
+        linked_notes.append((note_stem, heading, needs_audit))
 
     # Master Source Sheet note content
     sheet_content = f"""---
@@ -600,8 +744,9 @@ pdf_source: "[[{pdf_path.name}]]"
 ## Sources
 
 """
-    for i, (note, heading) in enumerate(linked_notes):
-        sheet_content += f"## {i + 1}\n![[{note}#{heading}]]\n\n"
+    for i, (note, heading, needs_audit) in enumerate(linked_notes):
+        badge = " ⚠️ (Needs Audit)" if needs_audit else ""
+        sheet_content += f"## {i + 1}{badge}\n![[{note}#{heading}]]\n\n"
 
     sheet_file.write_text(sheet_content, encoding="utf-8")
     print(f"\nSuccess! Processed {len(sources)} sources from {pdf_path.name}.")

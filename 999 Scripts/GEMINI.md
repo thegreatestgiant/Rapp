@@ -70,5 +70,11 @@ We designed an automated workflow to process Gemara Source Sheet PDFs dropped in
 - Recovered user study notes from Obsidian IndexedDB File Recovery snapshots and restored them under Sources 1, 2, 3, and 5.
 - Audited all 400 source files vault-wide: resolved missing author files for `מהר''י שטייף`, `מושב זקנים`, and `רבי יעקב ממרויש`, and relocated vocabulary file `פטור אבל אסור.md` to `555 Vocabulary/`.
 
+27. Audited `universe.md` master sheet and fixed systematic font encoding and citation parsing bugs in `process_source_sheets.py`:
+- Added smart line-by-line English text detection to `decode_text()` so legitimate English citations (Rav Yisroel Belsky, Lubavitcher Rebbe, Rav Shimon Schwab, Rabbi Aryeh Kaplan) are preserved without being corrupted by QWERTY/Davka conversion.
+- Constrained source header detection to line/block beginnings to prevent inline parenthetical scripture/Talmud citations from false-triggering new sources.
+- Expanded `AUTHOR_CANONICAL_MAP` and added canonical author files (`רבי ישראל בלסקי`, `רבי מנחם מענדל שניאורסון`, `רבי שמעון שוואב`, `רבי אריה קפלן`, `רבי יואל טייטלבוים`, `רבי יצחק דמן עכו`, `אבות דרבי נתן`).
+- Cleaned up 9 junk fallback author profiles and standardized all 16 canonical sources in `universe.md`.
+
 ## Next Steps for WSL
-1. **Refine the PDF Parsing Heuristic:** The current regex/logic in `extract_sources_and_images()` in `process_source_sheets.py` still uses placeholder logic for detecting the headers. We need to feed the script a real PDF from `000 Source PDFs/` and adjust the text search so the script correctly identifies citations and draws accurate bounding boxes for the images.
+1. **Refine the PDF Parsing Heuristic:** Continue testing on incoming PDFs from `000 Source PDFs/` to verify multi-column layout detection and boundary cropping.
