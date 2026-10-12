@@ -118,8 +118,9 @@ AUTHOR_CANONICAL_MAP = {
     'ספר מנחת': 'מנחת חינוך',
     'קובץ': 'רבי אלחנן וסרמן',
     'קובץ שעורים': 'רבי אלחנן וסרמן',
-    'מנחת': 'רבי אשר וייס',
     'מנחת אשר': 'רבי אשר וייס',
+    'שו"ת מנחת אשר': 'רבי אשר וייס',
+    "שו''ת מנחת אשר": 'רבי אשר וייס',
     'ספר החינוך': 'ספר החינוך',
     'חזון איש': 'חזון איש',
     'כלי יקר': 'כלי יקר',
@@ -199,7 +200,21 @@ AUTHOR_CANONICAL_MAP = {
     'מסכתות קטנות': 'אבות דרבי נתן',
     'מסכת אבות דרבי נתן': 'אבות דרבי נתן',
     'תפארת ישראל': 'רבי ישראל ליפשיץ',
-    'דרוש אור החיים': 'רבי ישראל ליפשיץ'
+    'דרוש אור החיים': 'רבי ישראל ליפשיץ',
+    'יחווה דעת': 'רב עובדיה יוסף',
+    'שו"ת יחווה דעת': 'רב עובדיה יוסף',
+    "שו''ת יחווה דעת": 'רב עובדיה יוסף',
+    'שו"ת יחווה': 'רב עובדיה יוסף',
+    "שו''ת יחווה": 'רב עובדיה יוסף',
+    'מנחת יצחק': 'רבי יצחק יעקב וייס',
+    'שו"ת מנחת יצחק': 'רבי יצחק יעקב וייס',
+    "שו''ת מנחת יצחק": 'רבי יצחק יעקב וייס',
+    'מנחת שלמה': 'רבי שלמה זלמן אויערבאך',
+    'שו"ת מנחת שלמה': 'רבי שלמה זלמן אויערבאך',
+    "שו''ת מנחת שלמה": 'רבי שלמה זלמן אויערבאך',
+    'הר צבי': 'רב צבי פסח פרנק',
+    'שו"ת הר צבי': 'רב צבי פסח פרנק',
+    "שו''ת הר צבי": 'רב צבי פסח פרנק'
 }
 
 def get_all_known_authors():
@@ -300,7 +315,28 @@ def parse_citation(citation):
     if not re.search(r"פירוש המשניות", clean):
         clean = re.sub(r"^(פ['׳]|פי['׳]|פירוש)\s*", "", clean)
     clean = re.sub(r"\s+", " ", clean).strip()
-    clean = clean.replace("''", '"') # Normalize quotes for matching
+    # Check for known responsa sefarim where book title implies author
+    RESPONSA_SPECIAL_MAP = {
+        'יחווה דעת': ('רב עובדיה יוסף', 'שו"ת יחווה דעת'),
+        'מנחת יצחק': ('רבי יצחק יעקב וייס', 'שו"ת מנחת יצחק'),
+        'מנחת שלמה': ('רבי שלמה זלמן אויערבאך', 'שו"ת מנחת שלמה'),
+        'הר צבי': ('רב צבי פסח פרנק', 'הר צבי'),
+    }
+    for sefer_key, (resp_author, resp_book) in RESPONSA_SPECIAL_MAP.items():
+        resp_pat = r'^(?:שו"ת\s+|שו\'\'ת\s+)?' + re.escape(sefer_key)
+        m_resp = re.search(resp_pat, clean)
+        if m_resp:
+            author = resp_author
+            rest = clean[m_resp.end():].strip()
+            loc_match = re.search(r'(חלק\s+[א-ת0-9\']+|או"ח\s+[א-ת0-9\']+|או\'\'ח\s+[א-ת0-9\']+|יו"ד\s+[א-ת0-9\']+|יו\'\'ד\s+[א-ת0-9\']+|אבהע"ז|חו"מ|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|טור|ס"ק|ס[\'׳]|ד"ה|משנה|פיסקא|ח"א|ח"ב|ח"ג|ח"ד).*', rest)
+            if loc_match:
+                location = loc_match.group(0).strip()
+                extra_book = rest[:loc_match.start()].strip()
+                book = f"{resp_book} {extra_book}".strip()
+            else:
+                location = rest
+                book = resp_book
+            return author, book, location, False, None
 
     author = None
     matched_text = None
@@ -399,6 +435,21 @@ def get_normalized_location(t):
     return t
 
 def match_existing_source(author, book, location):
+    display_author = sanitize_filename(author)[:60].strip()
+    display_book = sanitize_filename(book)[:60].strip()
+    display_loc = sanitize_filename(location)[:60].strip()
+    title_parts = [display_author]
+    if display_book and display_book != display_author:
+        title_parts.append(display_book)
+    if display_loc:
+        title_parts.append(display_loc)
+    direct_base = " - ".join(title_parts)
+    if len(direct_base) > 100:
+        direct_base = direct_base[:100].strip()
+    direct_file = SOURCES_DIR / f"{direct_base}.md"
+    if direct_file.exists():
+        return direct_file
+
     norm_author = normalize_text_for_match(author)
     norm_loc = get_normalized_location(location)
     norm_book = normalize_text_for_match(book)
@@ -417,6 +468,12 @@ def match_existing_source(author, book, location):
                 if get_normalized_location(ex_loc) == norm_loc:
                     if difflib.SequenceMatcher(None, norm_book, normalize_text_for_match(ex_book)).ratio() >= 0.7:
                         return f
+        elif len(parts) == 2:
+            ex_author = parts[0]
+            ex_loc = parts[1]
+            if normalize_text_for_match(ex_author) == norm_author:
+                if get_normalized_location(ex_loc) == norm_loc:
+                    return f
                         
     return None
 
@@ -431,6 +488,19 @@ KNOWN_HEADER_KEYWORDS = [
 def extract_sources_and_images(pdf_path):
     doc = fitz.open(pdf_path)
     sources = []
+
+    # Detect if document has numbered headers across pages
+    has_numbered_doc = False
+    for p in doc:
+        for b in p.get_text("blocks"):
+            for l in [line.strip() for line in b[4].strip().splitlines() if line.strip()]:
+                if re.search(r'^\(?\s*\d{1,2}\s*[\)\.\-:]', l) or re.search(r'\(?\s*\d{1,2}\s*\)?$', l) or re.search(r'\b\d{1,2}\s*\)', l):
+                    has_numbered_doc = True
+                    break
+            if has_numbered_doc:
+                break
+        if has_numbered_doc:
+            break
 
     for page_num in range(len(doc)):
         page = doc[page_num]
@@ -461,19 +531,32 @@ def extract_sources_and_images(pdf_path):
             )
             has_special_num = any(re.search(r'\b13\b', l) and ('Translation' in l or 'Challenge' in l) for l in lines) or any('16)' in l and ('Translated' in l or 'Kaplan' in l) for l in lines)
             is_kw = any(kw in raw_decoded for kw in KNOWN_HEADER_KEYWORDS)
-            if len(raw) < 350 and (has_num_prefix or has_special_num or (is_kw and b[1] > 30 and len(raw_decoded) < 150)):
+            
+            is_header = False
+            if len(raw) < 350:
+                if has_numbered_doc:
+                    is_header = has_num_prefix or has_special_num
+                else:
+                    is_header = has_num_prefix or has_special_num or (is_kw and b[1] > 30 and len(raw_decoded) < 150)
+
+            if is_header:
                 headers.append(b)
 
         headers.sort(key=lambda b: b[1])
 
-        if page_num > 0 and sources and (not headers or headers[0][1] > 50):
-            max_b_y1 = max((b[3] for b in blocks), default=page.rect.height)
-            cont_y1 = headers[0][1] - 5 if headers else min(page.rect.height, max_b_y1 + 5)
-            cont_rect = fitz.Rect(0, 30, page.rect.width, cont_y1)
-            pix = page.get_pixmap(clip=cont_rect, dpi=150)
-            cont_img_name = sanitize_filename(f"{pdf_path.stem}_p{page_num+1}_cont.png")
-            pix.save(str(ATTACHMENTS_DIR / cont_img_name))
-            sources[-1]["image_filenames"].append(cont_img_name)
+        if page_num > 0 and sources and headers:
+            top_y = headers[0][1] - 5
+            top_blocks = [b for b in blocks if b[3] <= top_y + 10]
+            # filter out standalone short running headers (e.g. single-line header like הלכות ציצית)
+            content_blocks = [b for b in top_blocks if len((b[4] if is_ocr else decode_text(b[4])).strip().splitlines()) > 1 or len((b[4] if is_ocr else decode_text(b[4])).strip()) > 20]
+            if content_blocks:
+                min_y = max(30, min(b[1] for b in content_blocks) - 5)
+                max_y = max(b[3] for b in content_blocks) + 5
+                cont_rect = fitz.Rect(0, min_y, page.rect.width, max_y)
+                pix = page.get_pixmap(clip=cont_rect, dpi=150)
+                cont_img_name = sanitize_filename(f"{pdf_path.stem}_p{page_num+1}_cont.png")
+                pix.save(str(ATTACHMENTS_DIR / cont_img_name))
+                sources[-1]["image_filenames"].append(cont_img_name)
 
         for i, h in enumerate(headers):
             raw_header = h[4].strip()
@@ -558,7 +641,7 @@ def extract_sources_and_images(pdf_path):
             })
 
     return sources
-def process_source(source_data, sheet_stem, subject):
+def process_source(source_data, sheet_stem, subject, seen_in_sheet=None):
     author = source_data["author"]
     book = source_data["book"]
     location = source_data["location"]
@@ -586,6 +669,10 @@ def process_source(source_data, sheet_stem, subject):
 
     if existing_file and existing_file.exists():
         existing_stem = existing_file.stem
+        times_used = seen_in_sheet.get(existing_stem, 0) if seen_in_sheet is not None else 0
+        if seen_in_sheet is not None:
+            seen_in_sheet[existing_stem] = times_used + 1
+
         print(f"Source already exists: {existing_file.name}. Checking for new D\"H or image.")
         
         actual_heading = heading_to_use
@@ -597,13 +684,41 @@ def process_source(source_data, sheet_stem, subject):
             headings = re.findall(r'^###\s+(.+)$', file_content, flags=re.MULTILINE)
             clean_headings = [h.strip() for h in headings if 'source image' not in h.strip().lower()]
 
-            # Check if this image from the same sheet is already in the file (re-run)
             already_has_image = any(img in file_content for img in img_names)
+
+            # If this is the first time this file is referenced in this sheet run,
+            # and the heading already exists, it is a re-run / existing match -> reuse!
+            if times_used == 0 and heading_to_use in clean_headings:
+                if not already_has_image:
+                    # Update images from this sheet if crop filenames changed
+                    new_img_embeds = "\n".join([f"> ![[{img}]]\n> *(Cropped from {sheet_stem})*" for img in img_names])
+                    sheet_pattern = rf"> !\[\[[^\n]*\]\]\n> \*\([Cc]ropped from {re.escape(sheet_stem)}\)\*"
+                    if re.search(sheet_pattern, file_content):
+                        # Replace old crop block from this sheet
+                        first = True
+                        def repl_crop(m):
+                            nonlocal first
+                            if first:
+                                first = False
+                                return new_img_embeds
+                            return ""
+                        file_content = re.sub(sheet_pattern, repl_crop, file_content)
+                        # Clean up any leftover empty lines in Source Image block
+                        file_content = re.sub(r'(\n> \*\([Cc]ropped from [^\n]+\)\*\n)\s*\n', r'\1', file_content)
+                    else:
+                        if "### Source Image" in file_content:
+                            file_content = file_content.replace("### Source Image", f"### Source Image\n{new_img_embeds}")
+                        else:
+                            file_content += f"\n### Source Image\n{new_img_embeds}\n"
+                    existing_file.write_text(file_content, encoding="utf-8")
+                print(f"Source already contains heading '{heading_to_use}'. Reusing without duplicate.")
+                return existing_stem, heading_to_use, False
+
             if already_has_image and heading_to_use in clean_headings:
                 print(f"Source already contains this image and heading '{heading_to_use}'. Reusing.")
-                return existing_stem, heading_to_use
+                return existing_stem, heading_to_use, False
             
-            # If the specific DH is not in the file, we append it
+            # If genuinely another occurrence in this sheet run (times_used > 0)
             base_heading = actual_heading
             counter = 2
             while actual_heading in clean_headings:
@@ -616,10 +731,8 @@ def process_source(source_data, sheet_stem, subject):
             
             if img_embeds:
                 if "### Source Image" in file_content:
-                    # Insert the new image embeds right after ### Source Image
                     file_content = file_content.replace("### Source Image", f"### Source Image\n{img_embeds}")
                 else:
-                    # Fallback, just append it
                     file_content += f"\n### Source Image\n{img_embeds}\n"
                 
             # Append the new heading at the bottom
@@ -725,8 +838,9 @@ def main():
     sheet_file = SHEETS_DIR / f"{sheet_stem}.md"
 
     linked_notes = []
+    seen_in_sheet = {}
     for s in sources:
-        note_stem, heading, needs_audit = process_source(s, sheet_stem, args.subject)
+        note_stem, heading, needs_audit = process_source(s, sheet_stem, args.subject, seen_in_sheet=seen_in_sheet)
         linked_notes.append((note_stem, heading, needs_audit))
 
     # Master Source Sheet note content

@@ -74,7 +74,14 @@ We designed an automated workflow to process Gemara Source Sheet PDFs dropped in
 - Added smart line-by-line English text detection to `decode_text()` so legitimate English citations (Rav Yisroel Belsky, Lubavitcher Rebbe, Rav Shimon Schwab, Rabbi Aryeh Kaplan) are preserved without being corrupted by QWERTY/Davka conversion.
 - Constrained source header detection to line/block beginnings to prevent inline parenthetical scripture/Talmud citations from false-triggering new sources.
 - Expanded `AUTHOR_CANONICAL_MAP` and added canonical author files (`רבי ישראל בלסקי`, `רבי מנחם מענדל שניאורסון`, `רבי שמעון שוואב`, `רבי אריה קפלן`, `רבי יואל טייטלבוים`, `רבי יצחק דמן עכו`, `אבות דרבי נתן`).
-- Cleaned up 9 junk fallback author profiles and standardized all 16 canonical sources in `universe.md`.
+77. Cleaned up 9 junk fallback author profiles and standardized all 16 canonical sources in `universe.md`.
+
+28. Audited `tzitzis.md` master sheet and fixed systematic false header detections and responsa parsing in `process_source_sheets.py`:
+- Added `has_numbered_doc` detection to enforce numbered header prefixes when a PDF is numbered, suppressing 14 false header triggers from body text keywords (`טלית`, `מלבושים`, `פטור`, `מדאורייתא`). Corrected total source count from 66 down to 52 canonical sources.
+- Implemented `RESPONSA_SPECIAL_MAP` in `parse_citation()` for responsa sefarim (`שו"ת יחווה דעת` -> `רב עובדיה יוסף`, `שו"ת מנחת יצחק` -> `רבי יצחק יעקב וייס`, `שו"ת מנחת שלמה` -> `רבי שלמה זלמן אויערבאך`, `שו"ת הר צבי` -> `רב צבי פסח פרנק`).
+- Created canonical author file `רבי יצחק יעקב וייס.md` with aliases and background, and enriched profiles for `רב עובדיה יוסף.md`, `רב צבי פסח פרנק.md`, and `רבי שלמה זלמן אויערבאך.md`.
+- Purged 13 junk author files, 14 phantom sources, and 13 orphaned attachment crops from earlier flawed runs.
+- Preserved user notes on Source 1 (`תלמוד בבלי - מסכת מנחות - דף מא עמוד א.md`).
 
 ## Next Steps for WSL
 1. **Refine the PDF Parsing Heuristic:** Continue testing on incoming PDFs from `000 Source PDFs/` to verify multi-column layout detection and boundary cropping.
