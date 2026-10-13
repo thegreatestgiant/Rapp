@@ -78,16 +78,38 @@ COMMON_ENG_WORDS = {
     'on', 'at', 'from', 'this', 'be', 'are', 'or', 'an', 'not', 'rabbi', 'rav', 'challenge',
     'science', 'judaism', 'letter', 'age', 'universe', 'kaplan', 'schwab', 'belsky', 'einei',
     'yisroel', 'translated', 'immortality', 'resurrection', 'kabbalistic', 'view', 'perspective',
-    'february', 'torah', 'printed', 'translation', 'how', 'old', 'pp', 'page', 'bereishis'
+    'february', 'torah', 'printed', 'translation', 'how', 'old', 'pp', 'page', 'bereishis',
+    'talmud', 'tanakh', 'mishnah', 'midrash', 'munk', 'max', 'shalosh', 'handasiyot', 'baayot',
+    'kings', 'shmuel', 'sefer', 'jewish'
 }
 
 def is_line_english(line):
+    # If there are Hebrew chars, it is not an English-only line
+    if re.search(r'[\u0590-\u05FF]', line):
+        return False
+    # If there is a comma stuck between two letters without space (e.g. h,cr), it is QWERTY-scrambled Hebrew
+    if re.search(r'[a-zA-Z],[a-zA-Z]', line):
+        return False
+
     words = [re.sub(r'[^a-zA-Z]', '', w).lower() for w in line.split()]
     words = [w for w in words if w]
     if not words:
         return False
+
     eng_matches = sum(1 for w in words if w in COMMON_ENG_WORDS)
-    return (eng_matches / len(words)) >= 0.25 or any(w in {'rabbi', 'challenge', 'universe', 'kaplan', 'schwab', 'belsky'} for w in words)
+    if (eng_matches / len(words)) >= 0.20 or any(w in {'rabbi', 'challenge', 'universe', 'kaplan', 'schwab', 'belsky', 'munk', 'talmud', 'tanakh'} for w in words):
+        return True
+
+    # Check vowel ratio for transliterated or other English text
+    vowels = set('aeiouy')
+    total_chars = sum(len(w) for w in words)
+    vowel_count = sum(sum(1 for c in w if c in vowels) for w in words)
+    vowel_ratio = vowel_count / total_chars if total_chars else 0
+
+    if vowel_ratio >= 0.32 and len(words) >= 2:
+        return True
+
+    return False
 
 def decode_line(line):
     if not any(c in "abcdefghijklmnopqrstuvwxyz\x1b" for c in line.lower()):
@@ -197,7 +219,13 @@ AUTHOR_CANONICAL_MAP = {
     'הרבי מסאטמאר': 'הרבי מסאטמאר',
     'אוצר החיים': 'רבי יצחק דמן עכו',
     'אבות דרבי נתן': 'אבות דרבי נתן',
-    'מסכתות קטנות': 'אבות דרבי נתן',
+    'מסכתות קטנות': 'מסכתות קטנות',
+    'מסכת כלה רבתי': 'מסכתות קטנות',
+    'מסכת כלה': 'מסכתות קטנות',
+    'כלה רבתי': 'מסכתות קטנות',
+    'מסכת סופרים': 'מסכתות קטנות',
+    'מסכת שמחות': 'מסכתות קטנות',
+    'מסכת דרך ארץ': 'מסכתות קטנות',
     'מסכת אבות דרבי נתן': 'אבות דרבי נתן',
     'תפארת ישראל': 'רבי ישראל ליפשיץ',
     'דרוש אור החיים': 'רבי ישראל ליפשיץ',
@@ -228,7 +256,10 @@ AUTHOR_CANONICAL_MAP = {
     'הלכה ברורה בירור הלכה': 'מכון הלכה ברורה',
     'הלכה ברורה ובירור הלכה': 'מכון הלכה ברורה',
     'בירור הלכה': 'מכון הלכה ברורה',
-    'מכון הלכה ברורה': 'מכון הלכה ברורה'
+    'מכון הלכה ברורה': 'מכון הלכה ברורה',
+    'Max Munk': 'Max Munk',
+    'מקס מונק': 'Max Munk',
+    'מתתיהו הכהן מונק': 'Max Munk'
 }
 
 def get_all_known_authors():
@@ -310,17 +341,15 @@ def parse_citation(citation):
         return author, book, location, audit_needed, audit_reason
 
     # 2. Hebrew citation heuristic parsing
-    clean = re.sub(r'^\s*\(?\s*\d+[\)\.\-:]?\s*', '', citation)
+    clean = re.sub(r'^\s*\(?\s*\d+[\)\(\.\-:]*\s*', '', citation)
+    clean = re.sub(r'^\s*[\(\)]\s*', '', clean)
     clean = re.sub(r'^[א-ת]\s*-\s*', '', clean)
     clean = re.sub(r'^מקור\s*-\s*', '', clean)
     clean = re.sub(r'^סוכת\s*-\s*', '', clean)
     clean = re.sub(r'^Succos\s*-\s*', '', clean, flags=re.IGNORECASE)
     clean = re.sub(r'^Makor\s*-\s*', '', clean, flags=re.IGNORECASE)
     clean = re.sub(r'[\(\)][^\(\)]*[\(\)]', '', clean)
-    clean = re.sub(r'\([^)]*\)', '', clean)
-    clean = re.sub(r'\)[^(]*\(', '', clean)
-    clean = re.sub(r'\[[^\]]*\]', '', clean)
-    clean = re.sub(r'\][^\[]*\[', '', clean)
+    clean = re.sub(r'[\[\]][^\[\]]*[\[\]]', '', clean)
     clean = re.sub(r"[()\[\]]", "", clean)
     clean = re.sub(r"\b\d+[\)\(]|\([\)\d]+", "", clean)
     clean = re.sub(r"^\s*\d+[\)\.]?\s*", "", clean)
@@ -402,13 +431,24 @@ def parse_citation(citation):
         book = "ביאור הלכה"
 
     if not author:
-        for tb in TANACH_BOOKS:
-            pattern = r'^(ספר\s+|חומש\s+)?' + re.escape(tb) + r'(?![א-ת])'
-            if re.search(pattern, clean):
-                author = 'תנ"ך'
-                if not book:
-                    book = tb
-                break
+        m_rabbah = re.search(r'^(?:ספר\s+|חומש\s+)?(בראשית|שמות|ויקרא|במדבר|דברים|שיר השירים|רות|איכה|קהלת|אסתר)\s+רבה(?![א-ת])', clean)
+        if m_rabbah:
+            author = 'מדרש רבה'
+            book = f"{m_rabbah.group(1)} רבה"
+            rest = clean[m_rabbah.end():].strip()
+            loc_m = re.search(r'(פרשה|פרק|דף|פסוק|אות|ד"ה).*', rest)
+            if loc_m:
+                location = loc_m.group(0).strip()
+            else:
+                location = rest
+        else:
+            for tb in TANACH_BOOKS:
+                pattern = r'^(ספר\s+|חומש\s+)?' + re.escape(tb) + r'(?![א-ת])'
+                if re.search(pattern, clean):
+                    author = 'תנ"ך'
+                    if not book:
+                        book = tb
+                    break
 
     if not author:
         words = book.split()

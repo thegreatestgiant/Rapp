@@ -1,87 +1,78 @@
-# Antigravity Session Handoff Summary
+# Antigravity PDF Parser & Vault System Architecture
 
-> [!important] CRITICAL SYSTEM INSTRUCTION
-> Before finishing any task or ending a session, you **MUST** document all changes, bugs fixed, and architectural decisions in the `Logs/` directory and update the `Current Progress` section in this file (`GEMINI.md`). You are encouraged to use and create multiple `.md` files inside `Logs/` (e.g., `Bugs_Fixed.md`, `Features_Added.md`, `Architectural_Decisions.md`) to save a comprehensive record of your work.
-> 
-> **CRITICAL REQUIREMENT:** Any solution or fix you implement MUST work for BOTH existing files and newly generated future files (e.g., if you fix a query, you must also update the Python template that generates future files).
-## Context & Goal
-We designed an automated workflow to process Gemara Source Sheet PDFs dropped into the Obsidian vault. The goal is to detect sources inside the PDF, extract them as image screenshots, intelligently match them against existing Obsidian vault sources, create new sources/authors if they are missing, and generate a master Source Sheet note linking them all together.
+> [!important] CRITICAL SYSTEM INSTRUCTIONS
+> 1. **Preserve User Notes**: NEVER overwrite existing source notes or user study annotations. Append new information under `> [!todo] Pending Edit Approval` at the bottom of the source note. If notes are ever displaced, restore immediately via Obsidian File Recovery snapshots or Git history.
+> 2. **Dual Compatibility**: Any parser fix or script update MUST work for both existing vault notes and newly generated future notes.
+> 3. **Audit Order of Operations**: When auditing, **first fix the sheets and vault files** so notes and embeds are immediately functional and clean, and **then fix the root issue in the scripts** (`process_source_sheets.py`) so future runs parse correctly out-of-the-box.
+> 4. **Session Logging**: Document audit results and architectural updates in `Logs/` (e.g., `Logs/<Topic>_Audit.md` or `Logs/Bugs_Fixed.md`). Keep this file focused on enduring system rules and capabilities, not chronological logs.
+> 5. **Git Safety**: Do not commit changes directly; the user reviews and commits all changes.
 
-## Architecture
-* **Input Folder:** `000 School/Rapp/000 Source PDFs/`
-* **Output Folders:** `111 Source Sheets/` (Master sheet), `333 Sources/` (Individual source notes), `222 Authors/` (Author indexes), `444 Attachments/` (Cropped images).
-* **Execution:** A Python script triggered manually or via an Obsidian shortcut (e.g. Templater `tp.user.system` or Shell Commands) using `Run PDF Parser.md`. 
+---
 
-## Rules & Safety
-1. **Never overwrite existing sources directly.** Instead, append new information (like new screenshots) under a `> [!todo] Pending Edit Approval` block at the bottom of the existing source note.
-2. **Template Adherence:** Ensure new source notes strictly follow the `Gemara Source.md` frontmatter and formatting.
-3. **Screenshots over Text:** The Python script uses `PyMuPDF` (`fitz`) to crop the source's bounding box and saves it to `999 Attachments/` as an image, rather than relying on extracted text which can be messy.
-4. **Source File Conventions:** 
-    - Naming convention: `Author - Book - Location.md`
-    - Headline convention: The main `###` headline inside the source must exactly match the file name.
-    - Author Links: Author metadata must point to an actual author in `222 Authors` (named after the person, e.g., `רב אפרים גרינבלט.md`), not a book title.
-    - Sheet Links: Embed links in Source Sheets must always use `![[Author - Book - Location#Author - Book - Location]]` to point directly to the headline.
-    - Mishnah Commentaries: For commentaries like Bartenura and Tosafos Yom Tov, append the Maseches to the Book name (e.g., Book: `תוספות יום טוב מסכת שבת`) and leave only the Perek/Mishnah in the Location (e.g., Location: `פרק א משנה א`).
-5. **Cleanup Test Files:** Always clean up any test scripts, dummy outputs, or temporary testing files (e.g., `test.py`) that were created during your workflow once you are done with them.
+## Vault Architecture & Directory Structure
+* `000 Source PDFs/`: Incoming Gemara source sheet PDFs to process.
+* `111 Source Sheets/`: Master source sheets linking individual sources via block/headline embeds.
+* `222 Authors/`: Canonical author index notes (named by author, e.g. `רב אפרים גרינבלט.md`, or famous Sefer for universally recognized figures like `חזון איש.md`).
+* `333 Sources/`: Modular, reusable individual source notes (`Author - Book - Location.md`).
+* `444 Attachments/`: High-resolution source screenshot crops (`.png`).
+* `555 Vocabulary/`: Vocabulary and concept definitions.
+* `666 Exam Review/`: Review sheets and summary notes.
+* `888 Templates/`: Note templates (`Gemara Source.md`).
+* `999 Scripts/`: Python automation engine (`process_source_sheets.py`, `Run PDF Parser.md`).
+* `Logs/`: Dedicated audit records and bug fix documentation.
 
-## Current Progress
-1. Created the `Scripts/` folder and initial architecture.
-2. Migrated the Gemara workflow into a standalone Git repository (`Rapp`), and integrated it back into the main vault as a submodule (`000 School/Rapp`).
-3. Decoupled all Python script paths and attachment destinations so they point to the `Rapp` root natively.
-4. Refactored Dataview queries to use the `#gemara-source` tag instead of hardcoded folder paths for maximum portability.
-5. Fixed critical parsing bugs in `process_source_sheets.py` related to author name matching order, fallback logic, and overlapping PDF rects.
-6. Rewrote Git history to permanently purge `.venv` and `.tmp.drive*` directories to prevent rebase locks.
-7. Purged `.obsidian/workspace.json` from git history across the entire parent vault to resolve annoying git changes.
-8. Documented that Obsidian Dataview cache drops new files pulled via git submodule, requiring an application restart (`Ctrl+R`) to re-index the tags. Validated that `author: "[[Link]]"` is properly supported as a link object natively in Obsidian 1.4+ Properties.
-9. Fixed folder paths in auxiliary scripts (`clean_pending_edits.py`, `scratch.py`, `scratch_match.py`) to align with the new numbered directory structure (`333 Sources`, etc.).
-10. Updated the `Run PDF Parser.md` Templater script to point to the correct `Rapp` directories for PDFs and sheets, and updated the WSL python call to use `../.venv/bin/python`.
-11. Copied the `.obsidian` folder from the main vault into the `Rapp` folder to allow testing as a standalone vault.
-12. Updated `Run PDF Parser.md` so it automatically opens the generated Source Sheet after processing, and cleanly deletes any empty "Untitled" files left behind by QuickAdd executions or cancellations.
-13. Overhauled the citation matching engine in `process_source_sheets.py` to dynamically load known authors from the `222 Authors` folder, resolve font-encoding glitches with quotation marks, and implement positional string matching. It now flawlessly identifies complex authors like `רא"ש`, `ריטב"א`, `הר"ן`, `רבבות אפרים`, and `הר צבי` even if they have prefixes like `שו"ת` or `חידושי`.
-14. Fixed a critical fuzzy-matching false positive bug in `process_source_sheets.py`. Upgraded the `match_existing_source` logic from basic full-string fuzzy matching to a strict component-based architecture. This prevents off-by-one errors (e.g. `הלכה ט` incorrectly matching `הלכה ח`) by verifying that the normalized author and the final location token match exactly before permitting fuzzy matching on the book title.
-15. Developed an automated *Dibur Hamatchil* (DH) extraction heuristic in `process_source_sheets.py`. The parser now reads the raw text stream immediately following citations in the PDF to detect leading phrases terminated by hyphens or periods. It leverages these extracted phrases to automatically generate specific subsection anchors (e.g., `![[רש''י...#אבל לא במדינה]]`), perfectly disambiguating multiple quotes from the same page source.
-16. Re-added the explicit wikilink to the original PDF directly beneath the top-level `# Heading` in generated Master Source Sheets.
-17. Fixed a PyMuPDF text block splitting bug in `process_source_sheets.py` where isolated numbers (e.g., `(2`) disconnected from their Hebrew text caused the parser to fallback to `מקור - מקור`. The parser now scans horizontally across the Y-axis to reconnect orphaned text chunks back to their numerical headers before parsing.
-18. Resolved single-letter author false extraction for `ר' עובדיה מברטנורא` / `ר׳ עובדיה מברטנורא` / `ברטנורא` in `process_source_sheets.py`, mapping them canonically to `רבי עובדיה מברטנורא` with `מסכת שבת` as the book, and fixed bad fallback parsing on single-letter honorifics. Audited and updated existing source, author file, and source sheet.
+---
 
-*See `Logs/Bugs_Fixed.md`, `Logs/Features_Added.md`, and `Logs/Architectural_Decisions.md` for a detailed breakdown of these updates.*
+## Source Note & Sheet Conventions
+1. **File Naming**: `[Author Name] - [Book Name] - [Location].md` (e.g., `רב אפרים גרינבלט - רבבות אפרים - ח''ד או''ח קפ''א.md`).
+2. **2-Header Note Architecture**:
+   - `### Source Image`: Contains the cropped image embed (`![[image.png]]`) at the top of the note. **Never embed this header in master sheets.**
+   - `### [Author - Book - Location]` or `### [Dibur Hamatchil]`: Contains study notes. Master sheets embed **only** this heading: `![[Author - Book - Location#Author - Book - Location]]` (or `![[Author - Book - Location#DH]]`), keeping image crops hidden from the sheet.
+3. **Link Updates**: Renaming any source file or headline requires updating all embed links across `111 Source Sheets/`.
+4. **Metadata**: The YAML `author` field must be an internal wikilink to an author note in `222 Authors/` (not a book title), except for universally famous figures recognized by their primary Sefer (`חזון איש`, `חתם סופר`, `שולחן ערוך`, `משנה ברורה`, `מגן אברהם`).
+5. **Mishnah Commentaries**: The Maseches belongs in the Book name (e.g., `תוספות יום טוב מסכת שבת`), with only the Perek/Mishnah in the Location (`פרק א משנה א`).
+6. **Cleanup**: Always remove temporary testing files, dummy scripts, and scratch files.
 
-19. Audited `melachim 2.md` master sheet and fixed incorrectly parsed sources. Patched `process_source_sheets.py` to fix systematic parsing errors: added regex strip for Hebrew bulleted numbering (e.g., `ה - `), and expanded `AUTHOR_CANONICAL_MAP` to automatically infer missing authors from well-known books (e.g., `שיחות מוסר` -> `רבי חיים שמואלביץ`).
+---
 
-20. Restored the 2-header layout (`### Source Image` and `### Author - Book - Location`) in `process_source_sheets.py` and across all 26 `melachim 2` sources.
+## Parser Engine Architecture (`process_source_sheets.py`)
+1. **Dual Text Decoding (`decode_text`)**:
+   - Reverse QWERTY-to-Hebrew translation decodes Davka/Word font streams.
+   - Smart English detection (`is_line_english()` using vowel ratio >=0.32, letter-comma anomaly checks, and rabbinic/academic keywords) protects legitimate English citations (e.g., Rav Yisroel Belsky, Aryeh Kaplan, Max Munk) from font scrambling.
+2. **Citation Normalization & Author Mapping**:
+   - `AUTHOR_CANONICAL_MAP`: Normalizes book titles, abbreviations, and honorific variations to canonical author files.
+   - `RESPONSA_SPECIAL_MAP`: Maps responsa sefarim directly to their poskim (`שו"ת יחווה דעת` -> `רב עובדיה יוסף`, `שו"ת מנחת יצחק` -> `רבי יצחק יעקב וייס`, `שו"ת מנחת שלמה` -> `רבי שלמה זלמן אויערבאך`, `שו"ת הר צבי` -> `רב צבי פסח פרנק`).
+   - `has_numbered_doc`: PDF-wide numbered header enforcement; suppresses false source triggers from body text keywords when the PDF is numbered.
+   - Cleans dangling parentheses, Hebrew bullet prefixes (`ה - `), and prioritizes Midrash Rabbah regex over generic Tanach matching.
+   - Scans horizontally across the Y-axis to reconnect orphaned numbers (`(2`) to Hebrew text headers.
+3. **Component-Based Source Matching (`match_existing_source`)**:
+   - Enforces strict exact matches on normalized author and final location token before allowing fuzzy matching on book titles, eliminating off-by-one false positives (`הלכה ח` vs `הלכה ט`).
+4. **Dibur Hamatchil (DH) Extraction**:
+   - Detects leading phrases terminated by periods/hyphens to create disambiguated subsection anchors for quotes from the same page.
+5. **Dynamic Bounding Box Cropping**:
+   - Uses PyMuPDF (`fitz`) to crop dynamically to the lowest text block on the page, eliminating excess whitespace when sources end early.
 
-21. Audited `chatzi shiur.md` master sheet and fixed incorrectly parsed sources. Corrected bad author extraction for `לחם שמים`, `בית מאיר`, `אשי ישראל`, `תפארת ישראל`, `שש"כ`, and `ביצחק יקרא`. Created missing author files, renamed sources, updated file metadata, and added new canonical mappings to `process_source_sheets.py`.
+---
 
-22. Audited `eating erev yom kippur.md` master sheet and fixed incorrectly parsed sources. Corrected bad author extraction for `טור`, `שבלי הלקט`, `שערי תשובה`, `מנחת חינוך`, and `משנה ברורה`. Created missing author files, renamed sources, updated file metadata, and added new canonical mappings to `process_source_sheets.py`.
+## Source Sheet Auditor Protocol
+When auditing or fixing a master source sheet, adhere to a strict two-stage process: **first fix the sheets and vault files, and then fix the root issue in the scripts**.
 
-23. Fixed a premature cropping bug for the final source on a page by updating `process_source_sheets.py` to crop dynamically to the bottom of the lowest text block on the page, eliminating excess whitespace when a source ends early. Manually recropped Source 18 in `eating erev yom kippur.md` to restore the missing bottom text.
+### Stage 1: Fix the Sheets and Sources First
+1. **Check for AI Audit Flags First**:
+   - Immediately scan the sheet and source notes for active audit markers (`⚠️ (Needs Audit)` badges in the sheet, `audit_needed: true` or `#needs-audit` in frontmatter, `> [!warning] Audit Flag: Needs Verification` callouts).
+   - Prioritize investigating and resolving these flagged sources first, clearing the flags and badges once verified and fixed.
+2. **Identify All Sources**: Parse all embeds in the target sheet from `111 Source Sheets/`.
+3. **Parallelize Subagents**: Use `invoke_subagent` to verify sources concurrently.
+4. **Verify and Fix Each Source**:
+   - Ensure author metadata links to a canonical author file in `222 Authors/` (not a book title).
+   - Standardize source note filenames (`[Author] - [Book] - [Location].md`), headlines, and 2-header layout (`### Source Image` at top, study notes under content heading). Preserve any user study notes!
+   - Ensure canonical author notes exist in `222 Authors/`.
+   - Update embeds in `111 Source Sheets/` to match corrected filenames and headlines (`![[Author - Book - Location#Author - Book - Location]]`).
+   - Confirm 0 broken links, 0 missing images, and clean embeds across the sheet.
 
-24. Audited `melachim 2.md` master sheet for convention violations. 
-- Added second image (melachim 2) to Source 24 (`סנהדרין מט עמוד א`).
-- Fixed incorrectly mapped author `זית רענן` to `מגן אברהם`, renamed file and updated canonical map in `process_source_sheets.py`.
-- Fixed Dibur Hamatchil headline issue in Source 12 (`בבא בתרא צא עמוד ב`).
-- Cleaned up duplicate image embeds in Sources 4 and 26.
-
-25. Audited `Fixing Lulav and Esrog.md` master sheet and fixed incorrectly parsed sources. Corrected bad author extraction for `סוכת שלם`, `בית יעקב`, `שבות יעקב`, `מהרש"ם`, `דברי מלכיאל`, `שאילת שלום`, `יד המלך`, `אליהו רבה`, `שואל ומשיב`, `שדי חמד`, `שערי תשובה`, `ארבעת המינים השלם`, `המתיבתא תשנ"ו`, `טור`, and `משנה ברורה`. Created missing author files, renamed sources, updated file metadata, and added new canonical mappings to `process_source_sheets.py`.
-
-26. Audited `melachim 1.6.md` master sheet and conducted full vault-wide author integrity audit:
-- Resolved `(2)` and `(3)` duplicate anchor generation bug in `process_source_sheets.py` when re-running on existing sheets.
-- Extracted and clean-cropped all 27 numbered sources for `melachim 1.6.pdf` with 0 nekudot.
-- Recovered user study notes from Obsidian IndexedDB File Recovery snapshots and restored them under Sources 1, 2, 3, and 5.
-- Audited all 400 source files vault-wide: resolved missing author files for `מהר''י שטייף`, `מושב זקנים`, and `רבי יעקב ממרויש`, and relocated vocabulary file `פטור אבל אסור.md` to `555 Vocabulary/`.
-
-27. Audited `universe.md` master sheet and fixed systematic font encoding and citation parsing bugs in `process_source_sheets.py`:
-- Added smart line-by-line English text detection to `decode_text()` so legitimate English citations (Rav Yisroel Belsky, Lubavitcher Rebbe, Rav Shimon Schwab, Rabbi Aryeh Kaplan) are preserved without being corrupted by QWERTY/Davka conversion.
-- Constrained source header detection to line/block beginnings to prevent inline parenthetical scripture/Talmud citations from false-triggering new sources.
-- Expanded `AUTHOR_CANONICAL_MAP` and added canonical author files (`רבי ישראל בלסקי`, `רבי מנחם מענדל שניאורסון`, `רבי שמעון שוואב`, `רבי אריה קפלן`, `רבי יואל טייטלבוים`, `רבי יצחק דמן עכו`, `אבות דרבי נתן`).
-77. Cleaned up 9 junk fallback author profiles and standardized all 16 canonical sources in `universe.md`.
-
-28. Audited `tzitzis.md` master sheet and fixed systematic false header detections and responsa parsing in `process_source_sheets.py`:
-- Added `has_numbered_doc` detection to enforce numbered header prefixes when a PDF is numbered, suppressing 14 false header triggers from body text keywords (`טלית`, `מלבושים`, `פטור`, `מדאורייתא`). Corrected total source count from 66 down to 52 canonical sources.
-- Implemented `RESPONSA_SPECIAL_MAP` in `parse_citation()` for responsa sefarim (`שו"ת יחווה דעת` -> `רב עובדיה יוסף`, `שו"ת מנחת יצחק` -> `רבי יצחק יעקב וייס`, `שו"ת מנחת שלמה` -> `רבי שלמה זלמן אויערבאך`, `שו"ת הר צבי` -> `רב צבי פסח פרנק`).
-- Created canonical author file `רבי יצחק יעקב וייס.md` with aliases and background, and enriched profiles for `רב עובדיה יוסף.md`, `רב צבי פסח פרנק.md`, and `רבי שלמה זלמן אויערבאך.md`.
-- Purged 13 junk author files, 14 phantom sources, and 13 orphaned attachment crops from earlier flawed runs.
-- Preserved user notes on Source 1 (`תלמוד בבלי - מסכת מנחות - דף מא עמוד א.md`).
-
-## Next Steps for WSL
-1. **Refine the PDF Parsing Heuristic:** Continue testing on incoming PDFs from `000 Source PDFs/` to verify multi-column layout detection and boundary cropping.
+### Stage 2: Fix the Root Cause in the Scripts
+4. **Root-Cause Analysis & Script Patching**:
+   - Only after all sheets and vault files are completely fixed and verified, trace systematic extraction errors back to `process_source_sheets.py` (e.g., missing author mappings in `AUTHOR_CANONICAL_MAP`, responsa handling in `RESPONSA_SPECIAL_MAP`, header regex, English font decoding, or crop boundaries).
+   - Patch the Python script directly so future runs parse correctly automatically.
+5. **Log Results**: Document the audit and script fixes in `Logs/<Topic>_Audit.md` (e.g., `Melachim_Audit.md`, `Two_Do_Audit.md`, `Tzitzis_Audit.md`, `Universe_Audit.md`, `Fixing_Lulav_and_Esrog_Audit.md`).
+6. **Report Back**: Summarize all sources corrected on the sheet, followed by the script root cause patches implemented.

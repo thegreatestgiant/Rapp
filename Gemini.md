@@ -20,18 +20,30 @@ When fixing or creating source files, the following conventions must be adhered 
 
 ## Source Sheet Auditor Protocol
 
-When the user asks you to "audit", "check", or "fix" a Source Sheet, you must automatically execute the following protocol:
+When the user asks you to "audit", "check", or "fix" a Source Sheet, you must strictly follow this two-stage order of operations: **first fix the sheets and vault files, and then fix the root issue in the scripts**.
 
-1. **Read the Source Sheet**: Identify every source embedded in the sheet (e.g., links formatted like `![[Author - Book - Location#Author - Book - Location]]`).
-2. **Spawn Subagents**: For each source, spawn a subagent (using `invoke_subagent` with a lightweight model if possible, or handle them directly if there are only a few) to verify the source.
-3. **Verification Steps per Source**:
+### Stage 1: Fix the Sheets and Sources First
+1. **Check for Flagged Sources First**:
+   - Immediately scan the sheet and vault for any sources marked for AI audit:
+     - Badges in the master sheet: `⚠️ (Needs Audit)`
+     - Frontmatter: `audit_needed: true`
+     - Tags: `#needs-audit`
+     - Callouts: `> [!warning] Audit Flag: Needs Verification`
+   - Prioritize investigating and resolving these flagged sources first, clearing the flags once verified and fixed.
+2. **Read the Full Source Sheet**: Identify all sources embedded in the sheet (e.g., links formatted like `![[Author - Book - Location#Author - Book - Location]]`).
+3. **Spawn Subagents**: For each source, spawn a subagent (using `invoke_subagent` with a lightweight model if possible, or handle them directly if there are only a few) to verify and fix the source.
+4. **Verification & Vault Fixes per Source**:
    - Check if the author metadata in the source file points to a real author, not a book title. Cross-reference this by doing a web search for the book to find the actual author.
    - Cross-reference the author with existing authors in the `222 Authors/` folder to maintain consistent naming conventions.
-   - If the author or book is wrong, update the source file's metadata, its internal headline, and rename the file according to the `[Author Name] - [Book Name] - [Location].md` convention.
-   - Verify that an author file exists in `222 Authors/` and is named after the person, updating or renaming it if necessary.
+   - If the author or book is wrong, update the source file's metadata, its internal headline, and rename the file according to the `[Author Name] - [Book Name] - [Location].md` convention. Preserve any existing user study notes!
+   - Verify that an author file exists in `222 Authors/` and is named after the person, updating or creating it if necessary.
    - Update the original Source Sheet link to reflect the corrected filename and headline.
-   - **Root Cause Patching**: If a systematic parsing error is discovered (e.g., misinterpreting an honorific like `ר'` or mangling English text), trace the bug to the Python parser (`999 Scripts/process_source_sheets.py`) and patch the script directly so it parses correctly next time. Document these fixes in the `Logs/` folder.
-4. **Report Back**: Once all subagents have completed their checks and fixes, provide a summarized report of all the sources that were corrected.
+   - Ensure the sheet has 0 broken links, 0 missing images, and clean embeds.
+
+### Stage 2: Fix the Root Cause in the Scripts
+4. **Root Cause Patching**: Only after the sheet and all its sources are completely fixed and verified in the vault, identify any systematic parsing errors that caused the issues (e.g., misinterpreting an honorific like `ר'`, unmapped books/responsa, flawed header regex, or mangled English text). Trace the bug to the Python parser (`999 Scripts/process_source_sheets.py`) and patch the script directly so it parses correctly next time.
+5. **Document in Logs**: Record all audit findings, vault corrections, and script patches in the `Logs/` folder (e.g., `Logs/<Topic>_Audit.md`).
+6. **Report Back**: Provide a summarized report of all sources corrected on the sheet, followed by the script root cause patches implemented.
 
 ## Scripting and PDF Parsing Guidelines
 
