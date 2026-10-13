@@ -76,3 +76,40 @@ When auditing or fixing a master source sheet, adhere to a strict two-stage proc
    - Patch the Python script directly so future runs parse correctly automatically.
 5. **Log Results**: Document the audit and script fixes in `Logs/<Topic>_Audit.md` (e.g., `Melachim_Audit.md`, `Two_Do_Audit.md`, `Tzitzis_Audit.md`, `Universe_Audit.md`, `Fixing_Lulav_and_Esrog_Audit.md`).
 6. **Report Back**: Summarize all sources corrected on the sheet, followed by the script root cause patches implemented.
+
+---
+
+## Sheet Revision & Update Protocol (Rebbi Document Updates)
+When a source sheet PDF is revised after initial study, execute the following protocol:
+
+### 1. PDF File Ingestion & Consolidation
+- Support both direct overwrite (`000 Source PDFs/<name>.pdf`) and browser download numbered duplicates (`<name> (1).pdf`).
+- When `<name> (1).pdf` is supplied, identify target base `<name>`. Compare and process against `<name>`, replace the old `<name>.pdf` with the updated content, and delete `<name> (1).pdf`.
+- **Enforce Single File Invariant**: At the end of the update, only the single updated `000 Source PDFs/<name>.pdf` must exist in the vault.
+
+### 2. Diffing & Source Classification
+- Compare newly extracted sources against the existing `111 Source Sheets/<name>.md`:
+  - **Added (🟢)**: New sources appearing in the revision.
+  - **Unchanged (⚪)**: Identical author, book, and location.
+  - **Modified (🟡)**: Changed crop boundaries or corrected citation/Daf.
+  - **Omitted (🔴)**: Present in previous sheet, omitted in the new PDF.
+
+### 3. Note Preservation & Reconciliation
+- **Zero Data Loss**: Existing notes beneath the main header in `333 Sources/` must never be wiped or overwritten.
+- **Citations Corrected**: When a citation is adjusted, rename the existing note file and header to match the new citation; update embeds in the sheet so existing user study notes follow the source. Never create a blank new note leaving the previous notes stranded.
+- **Image Crops Updated**: Only modify or append content inside the `### Source Image` block. Never disturb user notes below it.
+- **Omitted Sources Kept**: Do NOT delete omitted source notes from `333 Sources/`. Move their embed links on the master sheet into a bottom section:
+  ```markdown
+  ---
+  ## 📦 Omitted by Rebbi (From Previous Revision)
+  > [!note] These sources were removed by the Rebbi in the updated PDF, but are preserved here because they contain your study notes.
+  ### [Old #X] ![[Author - Book - Location#Author - Book - Location]]
+  ```
+
+### 4. Renumbering & Shiur Prep Brief
+- Update sequence numbers (`## 1`, `## 2`, etc.) on the master sheet to match the new PDF order.
+- Mark new sources temporarily with `🆕` (e.g. `## 3 🆕`).
+- Produce a concise Shiur Prep Brief:
+  - Mapping table (`Old #` $\to$ `New #`) showing what shifted, what was added (🟢), and what was omitted (🔴).
+  - Bullet points of newly added sources requiring preparation before shiur.
+

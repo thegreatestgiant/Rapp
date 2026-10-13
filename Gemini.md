@@ -49,5 +49,35 @@ When the user asks you to "audit", "check", or "fix" a Source Sheet, you must st
 
 When making changes to the Python scripts, the PDF parser workflow, or any files inside the `999 Scripts/` directory, you **must** read and adhere to the architectural guidelines and rules documented in `999 Scripts/GEMINI.md`.
 
+## Sheet Update Protocol (Rebbi Document Revisions)
+
+When a Rebbi updates or revises a source sheet after the user has already studied and taken notes on it, adhere strictly to this protocol:
+
+### 1. Ingestion & File Cleanup
+- **Accepted Ingestion Formats**: The updated PDF may arrive either with the **exact same name** (overwriting `000 Source PDFs/<name>.pdf`) or with browser download numbering like **`<name> (1).pdf`**.
+- **Consolidation**: If `<name> (1).pdf` is provided, compare and process against `<name>`, then replace `<name>.pdf` with the updated file and delete the `(1)` file. **Only the single updated `<name>.pdf` must exist at the end**.
+
+### 2. Zero-Loss Note Reconciliation
+- **Preserve Existing Notes**: User notes under `### [Heading]` in `333 Sources/` and custom text on master sheets must never be overwritten or deleted.
+- **Classification & Triage**:
+  - 🟢 **Added Sources**: Parse and create new notes in `333 Sources/`. In the master sheet, temporarily badge as `## X 🆕` for quick identification.
+  - ⚪ **Unchanged Sources**: Leave the source note completely untouched.
+  - 🟡 **Modified Crops**: Update or append only the image link under `### Source Image`. Never alter text below the main study heading.
+  - 🟡 **Corrected Citations**: If the Rebbi modified a source's citation (e.g., changed Daf or Sefer title), rename the existing file and its internal headline so existing study notes travel with the source; update the embed link on the sheet. Do NOT create an empty new note leaving the annotated note orphaned.
+  - 🔴 **Dropped/Removed Sources**: **NEVER delete the source note file from `333 Sources/`** (to protect previous learning). In the master sheet, move it to a dedicated section at the bottom:
+    ```markdown
+    ---
+    ## 📦 Omitted by Rebbi (From Previous Revision)
+    > [!note] These sources were removed by the Rebbi in the updated PDF, but are preserved here because they contain your study notes.
+    ### [Old #X] ![[Author - Book - Location#Author - Book - Location]]
+    ```
+
+### 3. Renumbering & Shiur Prep Brief
+- Update the master sheet sequence numbers (`## 1`, `## 2`, etc.) to match the Rebbi's revised order.
+- Always present the user with a concise **Shiur Prep Brief** containing:
+  1. A mapping table (`Old #` $\to$ `New #`) showing what shifted, what was added (🟢), and what was omitted (🔴).
+  2. A bulleted list of newly added sources that need preparation before shiur.
+
 ## Git Commits
 - **Do not commit changes yourself**: The user will review and commit all changes.
+
