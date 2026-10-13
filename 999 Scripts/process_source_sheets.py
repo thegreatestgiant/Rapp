@@ -40,7 +40,8 @@ KNOWN_AUTHORS = [
     'שו"ת ציץ אליעזר', 'שמירת שבת כהלכתה', 'מדרש תנחומא', 'תנחומא', 'ספרי',
     'בראשית רבה', 'במדבר רבה', 'קהלת רבה', 'מדרש רבה', 'מדרש תהלים', 'זוהר',
     'הגרמ"צ ברגמן', 'הגראי"ל שטיינמן', 'חכם צבי', 'שו"ת חכם צבי', 'מזרחי',
-    'יוסף אומץ', 'אוצר המדרשים', 'ברוך שאמר'
+    'יוסף אומץ', 'אוצר המדרשים', 'ברוך שאמר', 'פני יהושע', 'רי"ז גוסטמן',
+    'גוסטמן', 'רמ"א', 'הרמ"א', 'ט"ז', 'ריטב"א', 'חדושי הריטב"א'
 ]
 
 def ensure_dirs():
@@ -87,8 +88,8 @@ def is_line_english(line):
     # If there are Hebrew chars, it is not an English-only line
     if re.search(r'[\u0590-\u05FF]', line):
         return False
-    # If there is a comma stuck between two letters without space (e.g. h,cr), it is QWERTY-scrambled Hebrew
-    if re.search(r'[a-zA-Z],[a-zA-Z]', line):
+    # If there is punctuation stuck between letters or semicolons without spaces (e.g. h,cr, ;s, sunk,), it is QWERTY-scrambled Hebrew
+    if re.search(r'[a-zA-Z][,.;/][a-zA-Z]', line) or re.search(r';[a-zA-Z]|[a-zA-Z];', line):
         return False
 
     words = [re.sub(r'[^a-zA-Z]', '', w).lower() for w in line.split()]
@@ -100,14 +101,14 @@ def is_line_english(line):
     if (eng_matches / len(words)) >= 0.20 or any(w in {'rabbi', 'challenge', 'universe', 'kaplan', 'schwab', 'belsky', 'munk', 'talmud', 'tanakh'} for w in words):
         return True
 
-    # Check vowel ratio for transliterated or other English text
-    vowels = set('aeiouy')
-    total_chars = sum(len(w) for w in words)
-    vowel_count = sum(sum(1 for c in w if c in vowels) for w in words)
-    vowel_ratio = vowel_count / total_chars if total_chars else 0
-
-    if vowel_ratio >= 0.32 and len(words) >= 2:
-        return True
+    # Transliterated English check requires at least 1 common English word and high vowel ratio
+    if eng_matches >= 1:
+        vowels = set('aeiouy')
+        total_chars = sum(len(w) for w in words)
+        vowel_count = sum(sum(1 for c in w if c in vowels) for w in words)
+        vowel_ratio = vowel_count / total_chars if total_chars else 0
+        if vowel_ratio >= 0.32 and len(words) >= 2:
+            return True
 
     return False
 
@@ -138,6 +139,20 @@ AUTHOR_CANONICAL_MAP = {
     'ביאור הגר"א': 'הגר"א',
     "ביאור הגר''א": 'הגר"א',
     'ספר מנחת': 'מנחת חינוך',
+    'פני יהושע': 'פני יהושע',
+    'קונטרסי שעורים': 'רבי ישראל זאב גוסטמן',
+    'רי"ז גוסטמן': 'רבי ישראל זאב גוסטמן',
+    "רי''ז גוסטמן": 'רבי ישראל זאב גוסטמן',
+    'גוסטמן': 'רבי ישראל זאב גוסטמן',
+    'שו"ת הרמ"א': "רמ''א",
+    "שו''ת הרמ''א": "רמ''א",
+    'הרמ"א': "רמ''א",
+    'רמ"א': "רמ''א",
+    'חדושי הריטב"א': "ריטב''א",
+    "חדושי הריטב''א": "ריטב''א",
+    'ט"ז': "ט''ז",
+    "ט''ז": "ט''ז",
+    'מגן אברהם': 'מגן אברהם',
     'קובץ': 'רבי אלחנן וסרמן',
     'קובץ שעורים': 'רבי אלחנן וסרמן',
     'מנחת אשר': 'רבי אשר וייס',
@@ -367,11 +382,15 @@ def parse_citation(citation):
         'משנת יעבץ': ('רב יעקב בצלאל זולטי', 'משנת יעב"ץ'),
         'משנת יעב"ץ': ('רב יעקב בצלאל זולטי', 'משנת יעב"ץ'),
         "משנת יעב''ץ": ('רב יעקב בצלאל זולטי', 'משנת יעב"ץ'),
-        'קונטרסי שעורים': ('רבי שמואל רוזובסקי', 'קונטרסי שעורים'),
-        'קונטרס שיעורים': ('רבי שמואל רוזובסקי', 'קונטרסי שעורים'),
+        'קונטרסי שעורים': ('רבי ישראל זאב גוסטמן', 'קונטרסי שעורים'),
+        'קונטרס שיעורים': ('רבי ישראל זאב גוסטמן', 'קונטרסי שעורים'),
         'הלכה ברורה בירור הלכה': ('מכון הלכה ברורה', 'בירור הלכה'),
         'הלכה ברורה ובירור הלכה': ('מכון הלכה ברורה', 'בירור הלכה'),
         'בירור הלכה': ('מכון הלכה ברורה', 'בירור הלכה'),
+        'שו"ת הרמ"א': ("רמ''א", 'שו"ת הרמ"א'),
+        "שו''ת הרמ''א": ("רמ''א", 'שו"ת הרמ"א'),
+        'הרמ"א': ("רמ''א", 'שו"ת הרמ"א'),
+        "הרמ''א": ("רמ''א", 'שו"ת הרמ"א'),
     }
     for sefer_key, (resp_author, resp_book) in RESPONSA_SPECIAL_MAP.items():
         resp_pat = r'^(?:שו"ת\s+|שו\'\'ת\s+)?' + re.escape(sefer_key)
@@ -429,6 +448,14 @@ def parse_citation(citation):
     elif matched_text == "ביאור הלכה":
         author = "משנה ברורה"
         book = "ביאור הלכה"
+    elif author == "מגן אברהם" and (not book or book in ["מקור", "מגן אברהם"]):
+        book = "אורח חיים"
+    elif author in ["ט''ז", 'ט"ז'] and (not book or book in ["מקור", 'ט"ז']):
+        book = "אורח חיים"
+    elif author in ["ריטב''א", 'ריטב"א']:
+        author = "ריטב''א"
+        if book.startswith("חדושי "):
+            book = book.replace("חדושי ", "חידושי ")
 
     if not author:
         m_rabbah = re.search(r'^(?:ספר\s+|חומש\s+)?(בראשית|שמות|ויקרא|במדבר|דברים|שיר השירים|רות|איכה|קהלת|אסתר)\s+רבה(?![א-ת])', clean)
