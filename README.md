@@ -39,3 +39,5 @@ For contributors, we use a specific emoji-based styling guide for our commit mes
   * *Example:* `⏳ Halacha - under 20`
 * **🎓 Completed Sheets:** Use the graduation cap emoji for source sheets that were newly created and completed.
   * *Example:* `🎓 Gemara - Maseches Kesubos`
+* **🧐 Audited Sheets:** Use the monocle emoji for source sheets that have been created/updated and then audited.
+  * *Example:* `🧐 Navi - Melachim 1.8`

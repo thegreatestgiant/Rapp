@@ -408,6 +408,15 @@ def parse_citation(citation):
                 book = resp_book
             return author, book, location, False, None
 
+    # Special case: Rambam Sefer HaMitzvot (responsa-like title where author is Rambam)
+    sefer_hamitzvot = "\u05e1\u05e4\u05e8 \u05d4\u05de\u05e6\u05d5\u05d5\u05ea"
+    rambam_author = "\u05e8\u05de\u05d1''\u05dd"
+    if clean.startswith(sefer_hamitzvot):
+        author = rambam_author
+        book = sefer_hamitzvot
+        location = ""
+        return author, book, location, False, None
+
     author = None
     matched_text = None
     matches = []
