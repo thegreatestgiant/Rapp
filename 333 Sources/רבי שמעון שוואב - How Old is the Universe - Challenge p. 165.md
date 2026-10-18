@@ -13,3 +13,4 @@ tags: [ikarim-source]
 > *(Cropped from universe)*
 
 ### רבי שמעון שוואב - How Old is the Universe - Challenge p. 165
+The definition of a day wasn't the same because it was prob different on the 1st few days, but across all 6 days of creation, it was probably the same length for a day

@@ -13,3 +13,6 @@ tags: [ikarim-source]
 > *(Cropped from universe)*
 
 ### רבי יצחק דמן עכו - אוצר החיים - Immortality, Resurrection and the Age of the Universe
+We are in the 7th cycle of the world of 7 years each. A year is 365,250 of our years
+The earth is 17-18 billion years old
+Written by a Isaac of Akko.

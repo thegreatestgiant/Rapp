@@ -14,3 +14,5 @@ tags: [ikarim-source]
 > *(Cropped from universe)*
 
 ### הרבי מליובאוויטש - A Letter on Science and Judaism - Challenge p. 145
+1. You are relying on carbon dating, but you cannot prove that this works. Perhaps the מבול changed stuff
+2. The world could have been created with fossils inside

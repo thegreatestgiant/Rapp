@@ -13,3 +13,5 @@ tags: [ikarim-source]
 > *(Cropped from universe)*
 
 ### רבי אריה קפלן - The Age of the Universe - February 18, 1979
+It seems like some people thought that [[רבי ישראל ליפשיץ - דרוש אור החיים - Challenge]] was trying to answer Darwin, even though he was before darwin
+People ripped it out of their books
