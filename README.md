@@ -11,6 +11,7 @@ Welcome to the Rapp repository! This repository contains all of my notes from Ra
   - [Viewing Directly on GitHub](#viewing-directly-on-github)
   - [For Obsidian Users](#for-obsidian-users)
 - [Commit Message Styling](#-commit-message-styling)
+- [Working with AI Assistants](#-working-with-ai-assistants)
 
 ## How to View These Files
 
@@ -28,6 +29,12 @@ This is a special link telling Obsidian to automatically insert a picture or tex
 1. **Look at the name inside the brackets:** In the example above, the name of the file is `Author - Book - Location`. It is the text that comes right before the `#` symbol.
 2. **Find that file:** Simply navigate around the repository folders (usually inside the `333 Sources` or `111 Source Sheets` folders) and click on the file with that exact name.
 3. **What does the `#` mean?:** The `#` symbol just points to a specific **Heading** inside that file. So if you see `![[Note Name#Background Info]]`, it just means you should open the file called `Note Name`, and then scroll down to the "Background Info" section of that page.
+
+---
+
+## 🤖 Working with AI Assistants
+
+If you ask an AI assistant (like OpenCode) to fix or translate a "source" without naming the sheet, **check your current workspace first** — the file you have open in Obsidian is almost always the one being referred to (e.g., `111 Source Sheets/tzitzis.md` when that sheet is open). Only fall back to searching the vault if nothing is open or the reference doesn't match.
 
 ---
 
