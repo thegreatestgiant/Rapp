@@ -420,6 +420,8 @@ def parse_citation(citation):
         'קנין תורה בהלכה': ('אברהם דויד הורוויץ', 'קנין תורה בהלכה'),
         'קנין תורה': ('אברהם דויד הורוויץ', 'קנין תורה בהלכה'),
         'מישרים אהבוך': ('ישי מזלומין', 'שו"ת מישרים אהבוך'),
+        # Multi-word Sefer titles (non-responsa) that must not fall back to their first word
+        'נחלת שמעון': ('שמעון קרסנר', 'נחלת שמעון'),
     }
     for sefer_key, (resp_author, resp_book) in RESPONSA_SPECIAL_MAP.items():
         resp_pat = r'^(?:שו"ת\s+|שו\'\'ת\s+)?' + re.escape(sefer_key)
