@@ -38,7 +38,7 @@ KNOWN_AUTHORS = [
     'שו"ת חתם סופר', 'פתחי תשובה', 'באר היטב', 'רב פעלים', 'שו"ת רב פעלים',
     'אבני נזר', 'שו"ת אבני נזר', 'מגן אברהם', 'ביאור הלכה', 'ציץ אליעזר',
     'שו"ת ציץ אליעזר', 'שמירת שבת כהלכתה', 'מדרש תנחומא', 'תנחומא', 'ספרי',
-    'בראשית רבה', 'במדבר רבה', 'קהלת רבה', 'מדרש רבה', 'מדרש תהלים', 'זוהר',
+    'בראשית רבה', 'במדבר רבה', 'קהלת רבה', 'מדרש רבה', 'מדרש תהלים', 'מדרש משלי', 'זוהר',
     'הגרמ"צ ברגמן', 'הגראי"ל שטיינמן', 'חכם צבי', 'שו"ת חכם צבי', 'מזרחי',
     'יוסף אומץ', 'אוצר המדרשים', 'ברוך שאמר', 'פני יהושע', 'רי"ז גוסטמן',
     'גוסטמן', 'רמ"א', 'הרמ"א', 'ט"ז', 'ריטב"א', 'חדושי הריטב"א'
@@ -81,13 +81,16 @@ COMMON_ENG_WORDS = {
     'yisroel', 'translated', 'immortality', 'resurrection', 'kabbalistic', 'view', 'perspective',
     'february', 'torah', 'printed', 'translation', 'how', 'old', 'pp', 'page', 'bereishis',
     'talmud', 'tanakh', 'mishnah', 'midrash', 'munk', 'max', 'shalosh', 'handasiyot', 'baayot',
-    'kings', 'shmuel', 'sefer', 'jewish'
+    'kings', 'shmuel', 'sefer', 'jewish', 'wikipedia', 'origins', 'israel', 'beta'
 }
 
 def is_line_english(line):
     # If there are Hebrew chars, it is not an English-only line
     if re.search(r'[\u0590-\u05FF]', line):
         return False
+    # If it is a web URL, it is English
+    if re.search(r'https?://|www\.|\.org\b|\.com\b|\.edu\b|\.net\b', line, re.IGNORECASE):
+        return True
     # If there is punctuation stuck between letters or semicolons without spaces (e.g. h,cr, ;s, sunk,), it is QWERTY-scrambled Hebrew
     if re.search(r'[a-zA-Z][,.;/][a-zA-Z]', line) or re.search(r';[a-zA-Z]|[a-zA-Z];', line):
         return False
@@ -298,7 +301,16 @@ AUTHOR_CANONICAL_MAP = {
     "מועדי הגר''ח": 'הרב חיים קניבסקי',
     'שו"ת מישרים אהבוך': 'ישי מזלומין',
     "שו''ת מישרים אהבוך": 'ישי מזלומין',
-    'מישרים אהבוך': 'ישי מזלומין'
+    'מישרים אהבוך': 'ישי מזלומין',
+    'ויקיפדיה': 'Wikipedia',
+    'Wikipedia': 'Wikipedia',
+    'ספר הברית': 'רבי פנחס אליהו הורביץ',
+    'ספר חסידים': 'רבי יהודה החסיד',
+    'ספר השל"ה': "של''ה",
+    "ספר השל''ה": "של''ה",
+    'השל"ה': "של''ה",
+    "השל''ה": "של''ה",
+    'מדרש משלי': 'מדרש משלי'
 }
 
 def get_all_known_authors():
@@ -333,6 +345,15 @@ def parse_citation(citation):
     c_str = citation.strip()
     audit_needed = False
     audit_reason = ""
+
+    # Check for Wikipedia citation / URL
+    m_wiki = re.search(r'https?://(?:[a-z]+\.)?wikipedia\.org/wiki/([^#\s]+)(?:#([^\s]+))?', c_str, re.IGNORECASE)
+    if m_wiki:
+        author = "Wikipedia"
+        topic = m_wiki.group(1).replace('_', ' ').strip()
+        book = topic
+        location = m_wiki.group(2).replace('_', ' ').strip() if m_wiki.group(2) else ""
+        return author, book, location, False, None
 
     # 1. English citation heuristic parsing
     if is_line_english(c_str):
@@ -387,6 +408,7 @@ def parse_citation(citation):
     clean = re.sub(r'^סוכת\s*-\s*', '', clean)
     clean = re.sub(r'^Succos\s*-\s*', '', clean, flags=re.IGNORECASE)
     clean = re.sub(r'^Makor\s*-\s*', '', clean, flags=re.IGNORECASE)
+    clean = re.sub(r"\s*[\(\)][0-9א-ת\s]+[\(\)]\s*$", "", clean)
     clean = re.sub(r'[\(\)][^\(\)]*[\(\)]', '', clean)
     clean = re.sub(r'[\[\]][^\[\]]*[\[\]]', '', clean)
     clean = re.sub(r"[()\[\]]", "", clean)
@@ -422,6 +444,13 @@ def parse_citation(citation):
         'מישרים אהבוך': ('ישי מזלומין', 'שו"ת מישרים אהבוך'),
         # Multi-word Sefer titles (non-responsa) that must not fall back to their first word
         'נחלת שמעון': ('שמעון קרסנר', 'נחלת שמעון'),
+        'ספר הברית': ('רבי פנחס אליהו הורביץ', 'ספר הברית'),
+        'ספר חסידים': ('רבי יהודה החסיד', 'ספר חסידים'),
+        'ספר השל"ה': ("של''ה", "של''ה"),
+        "ספר השל''ה": ("של''ה", "של''ה"),
+        'השל"ה': ("של''ה", "של''ה"),
+        "השל''ה": ("של''ה", "של''ה"),
+        'מדרש משלי': ('מדרש משלי', 'מדרש משלי'),
     }
     for sefer_key, (resp_author, resp_book) in RESPONSA_SPECIAL_MAP.items():
         resp_pat = r'^(?:שו"ת\s+|שו\'\'ת\s+)?' + re.escape(sefer_key)
@@ -429,11 +458,21 @@ def parse_citation(citation):
         if m_resp:
             author = resp_author
             rest = clean[m_resp.end():].strip()
-            loc_match = re.search(r'(חלק\s+[א-ת0-9\']+|או"ח\s+[א-ת0-9\']+|או\'\'ח\s+[א-ת0-9\']+|יו"ד\s+[א-ת0-9\']+|יו\'\'ד\s+[א-ת0-9\']+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|טור|ס"ק|ס[\'׳]|ס׳|ס\'|ד"ה|משנה|פיסקא|שיעור|שעור|ח"א|ח"ב|ח"ג|ח"ד).*', rest)
+            rest = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', rest).strip()
+            loc_match = re.search(r'(חלק\s+[א-ת0-9\']+|או"ח\s+[א-ת0-9\']+|או\'\'ח\s+[א-ת0-9\']+|יו"ד\s+[א-ת0-9\']+|יו\'\'ד\s+[א-ת0-9\']+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דרוש|פרשה|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|טור|ס"ק|ס[\'׳]|ס׳|ס\'|ד"ה|משנה|פיסקא|שיעור|שעור|ח"א|ח"ב|ח"ג|ח"ד).*', rest)
             if loc_match:
                 location = loc_match.group(0).strip()
                 extra_book = rest[:loc_match.start()].strip()
-                book = f"{resp_book} {extra_book}".strip()
+                extra_book = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', extra_book).strip()
+                extra_book = re.sub(r'\bהקדוש\b', '', extra_book).strip(' -')
+                if extra_book:
+                    if sefer_key == 'ספר חסידים':
+                        location = f"{extra_book} - {location}"
+                        book = resp_book
+                    else:
+                        book = f"{resp_book} {extra_book}".strip()
+                else:
+                    book = resp_book
             else:
                 location = rest
                 book = resp_book
@@ -653,16 +692,17 @@ def extract_sources_and_images(pdf_path):
             raw_decoded = decode_text(raw) if not is_ocr else raw
             lines = [l.strip() for l in raw.splitlines() if l.strip()]
             has_num_prefix = any(
-                re.search(r'^\(?\s*\d{1,2}\s*[\)\.\-:]', l) or 
+                re.search(r'^\(?\s*\d{1,2}\s*(?:[\)\.\-]|:(?!\d))', l) or 
                 re.search(r'\(?\s*\d{1,2}\s*\)?$', l) or
                 re.search(r'\b\d{1,2}\s*\)', l)
                 for l in lines
             )
             has_special_num = any(re.search(r'\b13\b', l) and ('Translation' in l or 'Challenge' in l) for l in lines) or any('16)' in l and ('Translated' in l or 'Kaplan' in l) for l in lines)
             is_kw = any(kw in raw_decoded for kw in KNOWN_HEADER_KEYWORDS)
+            has_words = bool(re.search(r'[\u0590-\u05FFa-zA-Z]{2,}', raw_decoded))
             
             is_header = False
-            if len(raw) < 350:
+            if len(raw) < 350 and has_words:
                 if has_numbered_doc:
                     is_header = has_num_prefix or has_special_num
                 else:
@@ -677,7 +717,7 @@ def extract_sources_and_images(pdf_path):
             top_y = headers[0][1] - 5
             top_blocks = [b for b in blocks if b[3] <= top_y + 10]
             # filter out standalone short running headers (e.g. single-line header like הלכות ציצית)
-            content_blocks = [b for b in top_blocks if len((b[4] if is_ocr else decode_text(b[4])).strip().splitlines()) > 1 or len((b[4] if is_ocr else decode_text(b[4])).strip()) > 20]
+            content_blocks = [b for b in top_blocks if len((b[4] if is_ocr else decode_text(b[4])).strip().splitlines()) > 1 or len((b[4] if is_ocr else decode_text(b[4])).strip()) > 20 or (b[1] > 35 and any(c.isdigit() or c.isalpha() for c in b[4]))]
             if content_blocks:
                 min_y = max(30, min(b[1] for b in content_blocks) - 5)
                 max_y = max(b[3] for b in content_blocks) + 5
