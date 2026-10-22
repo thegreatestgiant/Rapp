@@ -74,15 +74,40 @@ Audited `111 Source Sheets/melachim 1.10.md` (`000 Source PDFs/melachim 1.10.pdf
    - Added `מדרש משלי` $\to$ `('מדרש משלי', 'מדרש משלי')`.
    - Added `דרוש` and `פרשה` handling to `RESPONSA_SPECIAL_MAP` location matching; cleans honorifics like `הקדוש` from intermediate book strings.
    - Added parenthesized Hebrew section suffix stripper `\s*[\(\)][0-9א-ת\s]+[\(\)]\s*$` to safely remove sheet markers like `(ב)` without truncating trailing Hebrew letters of legitimate locations (e.g. `עמוד ב`, `פרשה א`).
+   - Added mappings for `הלכות קטנות` $\to$ `רבי יעקב חגיז`, `נודע ביהודה` $\to$ `רבי יחזקאל לנדא`, and `ראבי"ה` $\to$ `רבי אליעזר בן יואל הלוי`.
 
 4. **Numbered Header Regex & Continuation Protection (`extract_sources_and_images`)**:
    - Guarded colon separator in header numbering: `^\(?\s*\d{1,2}\s*(?:[\)\.\-]|:(?!\d))` ensures timestamps/citations like `19:15.` are not treated as numbered headers.
    - Required `has_words = bool(re.search(r'[\u0590-\u05FFa-zA-Z]{2,}', raw_decoded))` for any block to qualify as a source header.
    - Allowed blocks at $y > 35$ before the first header on continuation pages to be captured as continuation crops (`p2_cont`), preventing trailing lines from becoming orphan sources.
 
+5. **Dibur Hamatchil (DH) Colon Support**:
+   - Expanded DH regex to `r'^(.*?)[\-\.:](?:\s|$)'` to naturally extract leading phrases terminating with a colon (e.g., `רב יהודה רמי:`, `רב יצחק רמי:`, `תנו רבנן:`).
+
 ---
 
-## 4. Verification Results
+## 4. Source 11 Differentiation (`Sanhedrin 21b`)
+
+- Both `melachim 1.4 5` and `melachim 1.10` cite **Gemara Sanhedrin 21b**, but cover distinct passages:
+  - **Portion 1 (`melachim 1.4 5`, `melachim 1.4 5_p2_s3.png`)**: Begins `רב יהודה רמי:` (addressing King Solomon's 40,000 stalls vs 4,000 stalls of horses). User study notes retained beneath this heading.
+  - **Portion 2 (`melachim 1.10`, `melachim 1.10_p2_s5.png`)**: Begins `רב יצחק רמי:` (addressing silver accounted as stones in Jerusalem, marriage to Pharaoh's daughter, and the reasons of Torah).
+- **Resolution**:
+  - In [`333 Sources/תלמוד בבלי - מסכת סנהדרין - דף כא עמוד ב.md`](file:///home/sean/Obsidian/Rapp/333%20Sources/%D7%52%D7%9C%D7%9E%D7%95%D7%93%20%D7%91%D7%91%D7%9C%D7%99%20-%20%D7%9E%D7%A1%D7%93%D7%52%20%D7%A1%D7%A0%D7%94%D7%93%D7%50%D7%99%D7%9F%20-%20%D7%93%D7%A3%20%D7%9B%D7%90%20%D7%A2%D7%9E%D7%95%D7%93%20%D7%91.md), both crops are displayed under `### Source Image`, followed by separate subsections: `### רב יהודה רמי` (with existing user study notes) and `### רב יצחק רמי`.
+  - In [`111 Source Sheets/melachim 1.4 5.md`](file:///home/sean/Obsidian/Rapp/111%20Source%20Sheets/melachim%201.4%205.md#L45): embed updated to `![[תלמוד בבלי - מסכת סנהדרין - דף כא עמוד ב#רב יהודה רמי]]`.
+  - In [`111 Source Sheets/melachim 1.10.md`](file:///home/sean/Obsidian/Rapp/111%20Source%20Sheets/melachim%201.10.md#L45): embed updated to `![[תלמוד בבלי - מסכת סנהדרין - דף כא עמוד ב#רב יצחק רמי]]`.
+
+---
+
+## 5. Authors Directory Cleanup (`222 Authors/`)
+
+- **Purged 14 Orphan Corrupt Fallbacks**: Removed zero-reference truncated author token files (`ביאור.md`, `מנחת.md`, `משך.md`, `ספר יערות.md`, `ספר מורה.md`, `ספר מנחת.md`, `קובץ.md`, `שו''ת בית.md`, `שו''ת הלכות.md`, `שו''ת יביע.md`, `שו''ת נודע.md`, `שו''ת רדב''ז.md`, `הר צבי.md`, `מדרש.md`).
+- **Standardized Frontmatter & Dataview Blocks**: Fixed missing YAML, tags, or Dataview queries across 7 legitimate author notes (`הרבי מסאטמאר.md`, `משך חכמה.md`, `רדב''ז.md`, `רבי אליעזר בן יואל הלוי.md`, `רבי יחזקאל לנדא.md`, `רבי יעקב חגיז.md`, `שולחן ערוך הרב.md`).
+- **Fixed Citation Link**: Updated single non-standard link `author: "[[Gemara]]"` in `תלמוד בבלי - מסכת חגיגה - דף יג עמוד א.md` to `author: "[[תלמוד בבלי]]"`.
+- **Author Invariant**: 100% of the 202 canonical author notes in `222 Authors/` strictly follow vault formatting, and 100% of source notes in `333 Sources/` link to valid author notes.
+
+---
+
+## 6. Verification Results
 
 - **Parse Test**: `process_source_sheets.py` extracts exactly **13 sources** from `melachim 1.10.pdf` with **0 audit flags**.
 - **Idempotency**: All 13 sources match existing vault files in `333 Sources/` with `match_existing_source()`, resulting in 0 duplicate files.

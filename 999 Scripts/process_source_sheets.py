@@ -310,7 +310,23 @@ AUTHOR_CANONICAL_MAP = {
     "ספר השל''ה": "של''ה",
     'השל"ה': "של''ה",
     "השל''ה": "של''ה",
-    'מדרש משלי': 'מדרש משלי'
+    'מדרש משלי': 'מדרש משלי',
+    'הלכות קטנות': 'רבי יעקב חגיז',
+    'נודע ביהודה': 'רבי יחזקאל לנדא',
+    'שו"ת נודע ביהודה': 'רבי יחזקאל לנדא',
+    "שו''ת נודע ביהודה": 'רבי יחזקאל לנדא',
+    'ראבי"ה': 'רבי אליעזר בן יואל הלוי',
+    "ראבי''ה": 'רבי אליעזר בן יואל הלוי',
+    'אבי העזרי': 'רבי אליעזר בן יואל הלוי',
+    'עונג יום טוב': 'רבי רפאל יום טוב ליפמן היילפרין',
+    'שו"ת עונג יום טוב': 'רבי רפאל יום טוב ליפמן היילפרין',
+    "שו''ת עונג יום טוב": 'רבי רפאל יום טוב ליפמן היילפרין',
+    'אז נדברו': 'רבי בנימין יהושע זילבר',
+    'שו"ת אז נדברו': 'רבי בנימין יהושע זילבר',
+    "שו''ת אז נדברו": 'רבי בנימין יהושע זילבר',
+    'ארחות שבת': 'ארחות שבת',
+    'פניני הלכה': 'הרב אליעזר מלמד',
+    'פסקי תשובות': 'הרב שמחה רבינוביץ'
 }
 
 def get_all_known_authors():
@@ -451,6 +467,11 @@ def parse_citation(citation):
         'השל"ה': ("של''ה", "של''ה"),
         "השל''ה": ("של''ה", "של''ה"),
         'מדרש משלי': ('מדרש משלי', 'מדרש משלי'),
+        'עונג יום טוב': ('רבי רפאל יום טוב ליפמן היילפרין', 'שו"ת עונג יום טוב'),
+        'אז נדברו': ('רבי בנימין יהושע זילבר', 'שו"ת אז נדברו'),
+        'ארחות שבת': ('ארחות שבת', 'ארחות שבת'),
+        'פניני הלכה': ('הרב אליעזר מלמד', 'פניני הלכה'),
+        'פסקי תשובות': ('הרב שמחה רבינוביץ', 'פסקי תשובות'),
     }
     for sefer_key, (resp_author, resp_book) in RESPONSA_SPECIAL_MAP.items():
         resp_pat = r'^(?:שו"ת\s+|שו\'\'ת\s+)?' + re.escape(sefer_key)
@@ -459,7 +480,7 @@ def parse_citation(citation):
             author = resp_author
             rest = clean[m_resp.end():].strip()
             rest = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', rest).strip()
-            loc_match = re.search(r'(חלק\s+[א-ת0-9\']+|או"ח\s+[א-ת0-9\']+|או\'\'ח\s+[א-ת0-9\']+|יו"ד\s+[א-ת0-9\']+|יו\'\'ד\s+[א-ת0-9\']+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דרוש|פרשה|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|טור|ס"ק|ס[\'׳]|ס׳|ס\'|ד"ה|משנה|פיסקא|שיעור|שעור|ח"א|ח"ב|ח"ג|ח"ד).*', rest)
+            loc_match = re.search(r'(חלק\s+[א-ת0-9\'׳]+|או"ח\s+[א-ת0-9\'׳]+|או\'\'ח\s+[א-ת0-9\'׳]+|יו"ד\s+[א-ת0-9\'׳]+|יו\'\'ד\s+[א-ת0-9\'׳]+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דרוש|פרשה|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|טור|ס"ק|ס[\'׳]|ס׳|ס\'|ד"ה|משנה|פיסקא|שיעור|שעור|ח"א|ח"ב|ח"ג|ח"ד).*', rest)
             if loc_match:
                 location = loc_match.group(0).strip()
                 extra_book = rest[:loc_match.start()].strip()
@@ -773,12 +794,12 @@ def extract_sources_and_images(pdf_path):
                 if block_idx + 1 < len(blocks):
                     first_line = blocks[block_idx+1][4].strip().split('\n')[0]
                     first_line_dec = first_line.strip() if is_ocr else decode_text(first_line).strip()
-                    match = re.search(r'^(.*?)[\-\.](?:\s|$)', first_line_dec)
+                    match = re.search(r'^(.*?)[\-\.:](?:\s|$)', first_line_dec)
                     if match:
                         candidate = match.group(1).strip()
                         if len(candidate.split()) <= 8:
                             dh = candidate
-                    elif first_line_dec.endswith('-') or first_line_dec.endswith('.'):
+                    elif first_line_dec.endswith('-') or first_line_dec.endswith('.') or first_line_dec.endswith(':'):
                         candidate = first_line_dec[:-1].strip()
                         if len(candidate.split()) <= 8:
                             dh = candidate
@@ -1006,18 +1027,40 @@ def main():
     sheet_stem = sanitize_filename(pdf_path.stem)
     sheet_file = SHEETS_DIR / f"{sheet_stem}.md"
 
+    subject = args.subject
+    season = args.season
+    year = args.year
+    test_target = args.test_target
+
+    if sheet_file.exists():
+        existing_text = sheet_file.read_text(encoding="utf-8")
+        m_subj = re.search(r'^subject:\s*"?\[\[(.*?)\]\]"?', existing_text, re.MULTILINE)
+        if m_subj and '--subject' not in sys.argv:
+            subject = m_subj.group(1)
+        m_seas = re.search(r'^season:\s*"?([^"\n\r]+)"?', existing_text, re.MULTILINE)
+        if m_seas and '--season' not in sys.argv:
+            season = m_seas.group(1)
+        m_yr = re.search(r'^year:\s*"?([^"\n\r]+)"?', existing_text, re.MULTILINE)
+        if m_yr and '--year' not in sys.argv:
+            year = m_yr.group(1)
+        m_tt = re.search(r'^test_target:\s*"?([^"\n\r]+)"?', existing_text, re.MULTILINE)
+        if m_tt and '--test-target' not in sys.argv:
+            test_target = m_tt.group(1)
+    elif "melachim" in sheet_stem.lower() and '--subject' not in sys.argv:
+        subject = "Navi"
+
     linked_notes = []
     seen_in_sheet = {}
     for s in sources:
-        note_stem, heading, needs_audit = process_source(s, sheet_stem, args.subject, seen_in_sheet=seen_in_sheet)
+        note_stem, heading, needs_audit = process_source(s, sheet_stem, subject, seen_in_sheet=seen_in_sheet)
         linked_notes.append((note_stem, heading, needs_audit))
 
     # Master Source Sheet note content
     sheet_content = f"""---
-subject: "[[{args.subject}]]"
-season: "{args.season}"
-year: "{args.year}"
-test_target: "{args.test_target}"
+subject: "[[{subject}]]"
+season: "{season}"
+year: "{year}"
+test_target: "{test_target}"
 pdf_source: "[[{pdf_path.name}]]"
 ---
 # {sheet_stem}
