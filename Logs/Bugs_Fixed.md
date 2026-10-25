@@ -17,3 +17,8 @@
 
 - **Bug**: OCR fallback on scanned PDF `melachim 1.6.pdf` fragmented Tanach verses, missed headers, and produced filenames with nekudot.
   - **Fix**: Re-processed all 27 sources using precise coordinates, stripped all nekudot, restored user-written notes from Obsidian recovery snapshots, and verified author mappings.
+
+### Date: 2026-10-25
+- **Enhancement**: Migrated subject name from `Ikarim` to `Sunday` and decoupled templates from hardcoded fallback configs.
+  - **Centralization**: Updated `config.json` subjects list to `["Gemara", "Halacha", "Navi", "Sunday"]`.
+  - **Template Cleanup**: Removed redundant hardcoded fallback subject arrays across `888 Templates/` (`Source Sheet.md`, `Source Sheet Generator.md`, `Run PDF Parser.md`, `New Note.md`, and `Gemara Source.md`). Templates now cleanly delegate subject definitions to `config.json` as the single source of truth.

@@ -53,14 +53,14 @@ if (rootFolder) {
     const rappRoot = (sourcePdfFolder && sourcePdfFolder.parent.path !== "/") ? sourcePdfFolder.parent.path : '';
     function rappPath(subpath) { return rappRoot ? `${rappRoot}/${subpath}` : subpath; }
     
-    let config = { subjects: ['Gemara', 'Halacha', 'Navi', 'Ikarim'] };
+    let config = {};
     const configFile = app.vault.getAbstractFileByPath(rappPath('config.json'));
     if (configFile) {
         try { config = JSON.parse(await app.vault.read(configFile)); } catch(e) {}
     }
     
     // 2. Prompt for Subject
-    const subjects = config.subjects || ["Gemara", "Halacha", "Navi", "Ikarim"];
+    const subjects = config.subjects || [];
     let subject = await tp.system.suggester(subjects, subjects, false, "Select Subject for Note");
     if (!subject) return;
     

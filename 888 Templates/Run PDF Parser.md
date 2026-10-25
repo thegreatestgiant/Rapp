@@ -29,7 +29,7 @@ function getAcademicMetadata() {
 
 // Load config from the Rapp root
 const configFile = app.vault.getAbstractFileByPath(rappPath('config.json'));
-let config = { subjects: ['Gemara', 'Halacha', 'Navi', 'Ikarim'], seasons: ['Spring', 'Fall'], test_types: ['Final', 'Midterm'] };
+let config = {};
 if (configFile) {
   try {
     config = JSON.parse(await app.vault.read(configFile));
@@ -54,7 +54,7 @@ async function cleanupUntitled() {
 }
 
 // 0. Add a subject selector
-const subjects = config.subjects || ["Gemara", "Halacha", "Navi", "Ikarim"];
+const subjects = config.subjects || [];
 let selectedSubject = await tp.system.suggester(subjects, subjects, false, "Select Subject for PDF");
 if (!selectedSubject) { await cleanupUntitled(); return; }
 
