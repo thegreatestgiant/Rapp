@@ -1,5 +1,5 @@
 ---
-subject: "[[Ikarim]]"
+subject: "[[Machshava]]"
 season: "Fall"
 year: "2026"
 test_target: "Midterm"

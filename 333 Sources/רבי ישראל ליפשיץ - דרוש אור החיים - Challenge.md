@@ -2,7 +2,7 @@
 author: "[[רבי ישראל ליפשיץ]]"
 book: "דרוש אור החיים"
 location: "Challenge"
-tags: [ikarim-source]
+tags: [machshava-source]
 ---
 > [!info]- Reference
 > Author:: [[רבי ישראל ליפשיץ]]

@@ -2,7 +2,7 @@
 author: "[[רבי שמעון שוואב]]"
 book: "How Old is the Universe"
 location: "Challenge p. 165"
-tags: [ikarim-source]
+tags: [machshava-source]
 ---
 > [!info]- Reference
 > Author:: [[רבי שמעון שוואב]]

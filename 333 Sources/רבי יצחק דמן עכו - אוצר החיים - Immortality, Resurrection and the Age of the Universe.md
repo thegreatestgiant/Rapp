@@ -2,7 +2,7 @@
 author: "[[רבי יצחק דמן עכו]]"
 book: "אוצר החיים"
 location: "Immortality, Resurrection and the Age of the Universe"
-tags: [ikarim-source]
+tags: [machshava-source]
 ---
 > [!info]- Reference
 > Author:: [[רבי יצחק דמן עכו]]

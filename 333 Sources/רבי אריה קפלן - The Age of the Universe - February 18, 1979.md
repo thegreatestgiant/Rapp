@@ -2,7 +2,7 @@
 author: "[[רבי אריה קפלן]]"
 book: "The Age of the Universe"
 location: "February 18, 1979"
-tags: [ikarim-source]
+tags: [machshava-source]
 ---
 > [!info]- Reference
 > Author:: [[רבי אריה קפלן]]

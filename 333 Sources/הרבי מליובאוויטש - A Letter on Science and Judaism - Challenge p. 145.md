@@ -2,7 +2,7 @@
 author: "[[הרבי מליובאוויטש]]"
 book: "A Letter on Science and Judaism"
 location: "Challenge p. 145"
-tags: [ikarim-source]
+tags: [machshava-source]
 ---
 > [!info]- Reference
 > Author:: [[הרבי מליובאוויטש]]

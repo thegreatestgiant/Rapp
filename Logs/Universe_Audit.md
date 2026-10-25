@@ -1,7 +1,7 @@
 # Universe Source Sheet Audit
 
 ## Summary
-Audited the `universe.md` master source sheet (`000 Source PDFs/universe.pdf`, Subject: *Ikarim*, Fall 2026 Midterm). Resolved systematic parsing errors where English headers and citations were mangled into gibberish Hebrew, mid-paragraph parenthetical citations were falsely detected as new source headers, and missing canonical authors caused erroneous author generation.
+Audited the `universe.md` master source sheet (`000 Source PDFs/universe.pdf`, Subject: *Machshava*, Fall 2026 Midterm). Resolved systematic parsing errors where English headers and citations were mangled into gibberish Hebrew, mid-paragraph parenthetical citations were falsely detected as new source headers, and missing canonical authors caused erroneous author generation.
 
 ---
 

@@ -19,6 +19,7 @@
   - **Fix**: Re-processed all 27 sources using precise coordinates, stripped all nekudot, restored user-written notes from Obsidian recovery snapshots, and verified author mappings.
 
 ### Date: 2026-10-25
-- **Enhancement**: Migrated subject name from `Ikarim` to `Sunday` and decoupled templates from hardcoded fallback configs.
-  - **Centralization**: Updated `config.json` subjects list to `["Gemara", "Halacha", "Navi", "Sunday"]`.
+- **Enhancement**: Migrated subject name from `Ikarim` to `Machshava` and decoupled templates from hardcoded fallback configs.
+  - **Centralization**: Updated `config.json` subjects list to `["Gemara", "Halacha", "Navi", "Machshava"]`.
   - **Template Cleanup**: Removed redundant hardcoded fallback subject arrays across `888 Templates/` (`Source Sheet.md`, `Source Sheet Generator.md`, `Run PDF Parser.md`, `New Note.md`, and `Gemara Source.md`). Templates now cleanly delegate subject definitions to `config.json` as the single source of truth.
+  - **Vault Migration**: Updated Fall 2026 sheet `111 Source Sheets/universe.md` frontmatter to `subject: "[[Machshava]]"`, and updated its 16 source notes to tag `#machshava-source`.

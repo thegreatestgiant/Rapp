@@ -1,5 +1,5 @@
 {
-  "subjects": ["Gemara", "Halacha", "Navi", "Sunday"],
+  "subjects": ["Gemara", "Halacha", "Navi", "Machshava"],
   "seasons": ["Spring", "Fall"],
   "test_types": ["Final", "Midterm"],
   "quiz_options": ["1", "2", "3", "4", "5", "6", "7", "Midterm", "Final"],
