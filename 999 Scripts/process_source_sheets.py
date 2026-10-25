@@ -326,7 +326,31 @@ AUTHOR_CANONICAL_MAP = {
     "שו''ת אז נדברו": 'רבי בנימין יהושע זילבר',
     'ארחות שבת': 'ארחות שבת',
     'פניני הלכה': 'הרב אליעזר מלמד',
-    'פסקי תשובות': 'הרב שמחה רבינוביץ'
+    'פסקי תשובות': 'הרב שמחה רבינוביץ',
+    'ספר המקנה': 'בעל הפלאה',
+    'המקנה': 'בעל הפלאה',
+    'דעת זקנים': 'בעלי התוספות',
+    'דעת זקנים מבעלי התוספות': 'בעלי התוספות',
+    'בעלי התוספות': 'בעלי התוספות',
+    'חזקוני': 'חזקוני',
+    'קדושת לוי': 'רבי לוי יצחק מברדיטשוב',
+    'קדושת הלוי': 'רבי לוי יצחק מברדיטשוב',
+    'נפש החיים': "רבי חיים מוולוז'ין",
+    'גור אריה': "מהר''ל",
+    'מהר"ל': "מהר''ל",
+    'הטור הארוך': 'רבי יעקב בן אשר',
+    'טור הארוך': 'רבי יעקב בן אשר',
+    'קובץ שיעורים': 'רבי אלחנן וסרמן',
+    'קובץ שיערים': 'רבי אלחנן וסרמן',
+    'קובץ שעורים': 'רבי אלחנן וסרמן',
+    'בראשית רבה': 'מדרש רבה',
+    'שמות רבה': 'מדרש רבה',
+    'ויקרא רבה': 'מדרש רבה',
+    'דברים רבה': 'מדרש רבה',
+    'שיר השירים רבה': 'מדרש רבה',
+    'איכה רבה': 'מדרש רבה',
+    'קהלת רבה': 'מדרש רבה',
+    'אסתר רבה': 'מדרש רבה'
 }
 
 def get_all_known_authors():
@@ -472,6 +496,18 @@ def parse_citation(citation):
         'ארחות שבת': ('ארחות שבת', 'ארחות שבת'),
         'פניני הלכה': ('הרב אליעזר מלמד', 'פניני הלכה'),
         'פסקי תשובות': ('הרב שמחה רבינוביץ', 'פסקי תשובות'),
+        'ספר המקנה': ('בעל הפלאה', 'ספר המקנה'),
+        'המקנה': ('בעל הפלאה', 'ספר המקנה'),
+        'דעת זקנים': ('בעלי התוספות', 'דעת זקנים'),
+        'קדושת לוי': ('רבי לוי יצחק מברדיטשוב', 'קדושת לוי'),
+        'קדושת הלוי': ('רבי לוי יצחק מברדיטשוב', 'קדושת לוי'),
+        'נפש החיים': ("רבי חיים מוולוז'ין", 'נפש החיים'),
+        'גור אריה': ("מהר''ל", 'גור אריה'),
+        'הטור הארוך': ('רבי יעקב בן אשר', 'הטור הארוך'),
+        'טור הארוך': ('רבי יעקב בן אשר', 'הטור הארוך'),
+        'קובץ שיעורים': ('רבי אלחנן וסרמן', 'קובץ שעורים'),
+        'קובץ שעורים': ('רבי אלחנן וסרמן', 'קובץ שעורים'),
+        'קובץ שיערים': ('רבי אלחנן וסרמן', 'קובץ שעורים'),
     }
     for sefer_key, (resp_author, resp_book) in RESPONSA_SPECIAL_MAP.items():
         resp_pat = r'^(?:שו"ת\s+|שו\'\'ת\s+)?' + re.escape(sefer_key)
@@ -480,15 +516,28 @@ def parse_citation(citation):
             author = resp_author
             rest = clean[m_resp.end():].strip()
             rest = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', rest).strip()
-            loc_match = re.search(r'(חלק\s+[א-ת0-9\'׳]+|או"ח\s+[א-ת0-9\'׳]+|או\'\'ח\s+[א-ת0-9\'׳]+|יו"ד\s+[א-ת0-9\'׳]+|יו\'\'ד\s+[א-ת0-9\'׳]+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דרוש|פרשה|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|טור|ס"ק|ס[\'׳]|ס׳|ס\'|ד"ה|משנה|פיסקא|שיעור|שעור|ח"א|ח"ב|ח"ג|ח"ד).*', rest)
+            loc_match = re.search(r'(חלק\s+[א-ת0-9\'׳]+|או"ח\s+[א-ת0-9\'׳]+|או\'\'ח\s+[א-ת0-9\'׳]+|יו"ד\s+[א-ת0-9\'׳]+|יו\'\'ד\s+[א-ת0-9\'׳]+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דרוש|פרשה|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|שער|(?<![א-ת])טור\s+[א-ד0-9]|ס!|ס"ק|ס[\'׳]|ס׳|ס\'|ד"ה|משנה|פיסקא|שיעור|שעור|ח"א|ח"ב|ח"ג|ח"ד).*', rest)
             if loc_match:
                 location = loc_match.group(0).strip()
                 extra_book = rest[:loc_match.start()].strip()
                 extra_book = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', extra_book).strip()
-                extra_book = re.sub(r'\bהקדוש\b', '', extra_book).strip(' -')
+                extra_book = re.sub(r'\bמבעלי התוספות\b|\bהקדוש\b', '', extra_book).strip(' -')
                 if extra_book:
+                    extra_clean = re.sub(r'^על\s+', '', extra_book).strip()
                     if sefer_key == 'ספר חסידים':
                         location = f"{extra_book} - {location}"
+                        book = resp_book
+                    elif sefer_key in ['דעת זקנים', 'קדושת לוי', 'קדושת הלוי', 'גור אריה', 'הטור הארוך', 'טור הארוך']:
+                        location = f"{extra_clean} {location}".strip()
+                        book = resp_book
+                    elif sefer_key in ['ספר המקנה', 'המקנה']:
+                        if extra_clean in ['קידושין', 'קדושין']:
+                            location = f"מסכת קידושין {location}".strip()
+                        else:
+                            location = f"{extra_clean} {location}".strip()
+                        book = resp_book
+                    elif sefer_key in ['קובץ שיעורים', 'קובץ שעורים', 'קובץ שיערים']:
+                        location = f"{extra_clean} {location}".strip()
                         book = resp_book
                     else:
                         book = f"{resp_book} {extra_book}".strip()
@@ -497,6 +546,13 @@ def parse_citation(citation):
             else:
                 location = rest
                 book = resp_book
+
+            # Post-clean location anomalies
+            location = re.sub(r'ס!\s*', 'סימן ', location)
+            location = re.sub(r'!', "'", location)
+            location = re.sub(r'[:-]+$', '', location).strip()
+            if 'קמ א' in location and 'אות א' not in location:
+                location = location.replace('קמ א', 'קמ אות א')
             return author, book, location, False, None
 
     # Special case: Rambam Sefer HaMitzvot (responsa-like title where author is Rambam)
@@ -525,7 +581,7 @@ def parse_citation(citation):
         author = best_match.replace('שו"ת ', '')
         author = AUTHOR_CANONICAL_MAP.get(author, AUTHOR_CANONICAL_MAP.get(best_match, author))
 
-    loc_match = re.search(r"(דף|פרק|סימן|פסוק|סעיף|מאמר|אות|טור|ס\"ק|ס['׳]|ד\"ה|משנה|פיסקא|ח\"א|ח\"ב|ח\"ג|ח\"ד).*", clean)
+    loc_match = re.search(r"(דף|פרק|סימן|פסוק|סעיף|מאמר|אות|פרשה|(?<![א-ת])טור\s+[א-ד0-9]|ס\"ק|ס['׳]|ד\"ה|משנה|פיסקא|ח\"א|ח\"ב|ח\"ג|ח\"ד).*", clean)
     if loc_match:
         location = loc_match.group(0).strip()
         book_part = clean[:loc_match.start()].strip()
@@ -541,6 +597,12 @@ def parse_citation(citation):
         book_part = book_part.replace('שו"ת ' + author, "").strip()
 
     book = re.sub(r"^[-\s:;]+|[-\s:;]+$", "", book_part).strip()
+
+    if author == "חזקוני" and book.startswith("על "):
+        book = re.sub(r"^על\s+", "", book)
+    elif author == "מדרש רבה" and (not book or book == "מקור"):
+        if matched_text and matched_text.endswith("רבה"):
+            book = matched_text
 
     if matched_text in ["פירוש המשניות להרמב\"ם", "פירוש המשניות"]:
         author = "רמב\"ם"
@@ -803,6 +865,9 @@ def extract_sources_and_images(pdf_path):
                         candidate = first_line_dec[:-1].strip()
                         if len(candidate.split()) <= 8:
                             dh = candidate
+                if dh:
+                    dh = re.sub(r'^\s*[\(\)][א-ת0-9\s\'\"״׳]+[\(\)]\s*', '', dh).strip()
+                    dh = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', dh).strip()
             except ValueError:
                 pass
 
