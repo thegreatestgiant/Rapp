@@ -10,10 +10,11 @@ test_target: "Final"
 ```dataview
 TABLE
   subject as "Subject",
+  default(date, file.cday) as "Date",
   file.link as "Source Sheet"
 FROM "111 Source Sheets"
 WHERE season = this.season AND year = this.year AND test_target = this.test_target
-SORT subject ASC, file.name ASC
+SORT subject ASC, default(date, file.cday) ASC, file.name ASC
 ```
 
 

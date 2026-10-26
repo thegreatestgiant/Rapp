@@ -3,6 +3,7 @@ subject: "[[Gemara]]"
 season: "Fall"
 year: "2026"
 test_target: "Midterm"
+date: "2026-09-15"
 pdf_source: "[[lifnei iver non-jew.pdf]]"
 ---
 # lifnei iver non-jew

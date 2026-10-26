@@ -3,6 +3,7 @@ subject: "[[Sunday]]"
 season: "Fall"
 year: "2026"
 test_target: "Midterm"
+date: "2026-10-25"
 pdf_source: "[[avos.pdf]]"
 ---
 # avos

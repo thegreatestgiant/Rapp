@@ -3,6 +3,7 @@ subject: "[[Halacha]]"
 season: "Fall"
 year: "2026"
 test_target: "Midterm"
+date: "2026-10-26"
 pdf_source: "[[tekhelet.pdf]]"
 ---
 # tekhelet

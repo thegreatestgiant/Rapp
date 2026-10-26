@@ -3,6 +3,7 @@ subject: "[[Halacha]]"
 season: "Fall"
 year: "2026"
 test_target: "Midterm"
+date: "2026-09-24"
 pdf_source: "[[canvas sukkah.pdf]]"
 ---
 # canvas sukkah

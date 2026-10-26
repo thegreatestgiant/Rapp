@@ -1222,6 +1222,7 @@ def main():
     parser.add_argument('--season', default=auto_season, help="Season")
     parser.add_argument('--year', default=auto_year, help="Year")
     parser.add_argument('--test-target', default=auto_test, help="Test Target")
+    parser.add_argument('--date', default=None, help="Date (YYYY-MM-DD)")
     args = parser.parse_args()
 
     pdf_path = Path(args.pdf_path)
@@ -1246,6 +1247,7 @@ def main():
     season = args.season
     year = args.year
     test_target = args.test_target
+    sheet_date = args.date or date.today().strftime("%Y-%m-%d")
 
     if sheet_file.exists():
         existing_text = sheet_file.read_text(encoding="utf-8")
@@ -1261,6 +1263,9 @@ def main():
         m_tt = re.search(r'^test_target:\s*"?([^"\n\r]+)"?', existing_text, re.MULTILINE)
         if m_tt and '--test-target' not in sys.argv:
             test_target = m_tt.group(1)
+        m_date = re.search(r'^date:\s*"?([^"\n\r]+)"?', existing_text, re.MULTILINE)
+        if m_date and '--date' not in sys.argv:
+            sheet_date = m_date.group(1)
     elif "melachim" in sheet_stem.lower() and '--subject' not in sys.argv:
         subject = "Navi"
 
@@ -1276,6 +1281,7 @@ subject: "[[{subject}]]"
 season: "{season}"
 year: "{year}"
 test_target: "{test_target}"
+date: "{sheet_date}"
 pdf_source: "[[{pdf_path.name}]]"
 ---
 # {sheet_stem}

@@ -3,6 +3,7 @@ subject: "[[Navi]]"
 season: "Fall"
 year: "2026"
 test_target: "Midterm"
+date: "2026-10-13"
 pdf_source: "[[melachim 1.7.pdf]]"
 ---
 # melachim 1.7

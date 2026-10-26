@@ -3,6 +3,7 @@ subject: "[[Gemara]]"
 season: "Fall"
 year: "2026"
 test_target: "Midterm"
+date: "2026-09-17"
 pdf_source: "[[mesayaiya.pdf]]"
 ---
 # mesayaiya

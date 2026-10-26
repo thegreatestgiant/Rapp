@@ -3,6 +3,7 @@ subject: "[[Gemara]]"
 season: "Fall"
 year: "2026"
 test_target: "Midterm"
+date: "2026-10-21"
 pdf_source: "[[asking unrelated.pdf]]"
 ---
 # asking unrelated

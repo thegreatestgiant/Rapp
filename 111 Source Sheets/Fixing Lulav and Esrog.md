@@ -3,6 +3,7 @@ subject: "[[Halacha]]"
 season: "Fall"
 year: "2026"
 test_target: "Midterm"
+date: "2026-09-14"
 pdf_source: "[[Fixing Lulav and Esrog.pdf]]"
 ---
 # Fixing Lulav and Esrog

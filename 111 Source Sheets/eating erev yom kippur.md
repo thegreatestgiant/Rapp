@@ -3,6 +3,7 @@ subject: "[[Halacha]]"
 season: "Fall"
 year: "2026"
 test_target: "Midterm"
+date: "2026-09-09"
 pdf_source: "[[eating erev yom kippur.pdf]]"
 ---
 # eating erev yom kippur

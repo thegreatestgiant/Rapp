@@ -3,6 +3,7 @@ subject: "[[Navi]]"
 season: "Fall"
 year: "2026"
 test_target: "Midterm"
+date: "2026-10-15"
 pdf_source: "[[combined siyum.pdf]], [[combined siyum2.pdf]]"
 ---
 # combined siyum

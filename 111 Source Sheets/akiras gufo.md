@@ -3,6 +3,7 @@ subject: "[[Gemara]]"
 season: "Fall"
 year: "2026"
 test_target: "Midterm"
+date: "2026-10-19"
 pdf_source: "[[akiras gufo.pdf]]"
 ---
 # akiras gufo

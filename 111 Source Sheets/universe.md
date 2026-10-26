@@ -3,6 +3,7 @@ subject: "[[Machshava]]"
 season: "Fall"
 year: "2026"
 test_target: "Midterm"
+date: "2026-10-11"
 pdf_source: "[[universe.pdf]]"
 ---
 # universe

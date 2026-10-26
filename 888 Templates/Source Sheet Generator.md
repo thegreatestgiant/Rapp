@@ -92,6 +92,7 @@ subject: "[[${selectedSubject}]]"
 season: "${selectedSeason !== "None" ? selectedSeason : ""}"
 year: "${selectedYear}"
 test_target: "${testType !== "None" ? testType : ""}"
+date: "${tp.date.now("YYYY-MM-DD")}"
 ---
 # ${sheetName}
 

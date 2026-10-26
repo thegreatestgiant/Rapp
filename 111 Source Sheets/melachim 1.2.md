@@ -1,8 +1,9 @@
 ---
 subject: "[[Navi]]"
-season: Fall
+season: "Fall"
 year: "2026"
-test_target: Midterm
+test_target: "Midterm"
+date: "2026-09-08"
 pdf_source: "[[melachim 2.pdf]]"
 ---
 # melachim 2
