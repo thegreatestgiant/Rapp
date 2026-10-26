@@ -1,9 +1,9 @@
 ---
-subject: "[[Gemara]]"
-season: "Fall"
+subject: "[[Machshava]]"
+season: "Spring"
 year: "2026"
-test_target: "Midterm"
-date: "2026-09-01"
+test_target: "Final"
+date: "2026-08-02"
 pdf_source: "[[ikar 12.pdf]]"
 ---
 # ikar 12
