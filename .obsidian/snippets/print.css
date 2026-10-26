@@ -22,12 +22,29 @@
     margin: 0 !important;
   }
 
-  .markdown-preview-view h2 {
+  /* Page break before each source sheet (h1), but NOT before each numbered source (h2) */
+  .markdown-preview-view h1 {
+    break-before: page;
     page-break-before: always;
   }
 
-  .markdown-preview-view h2:first-of-type {
+  .markdown-preview-view h1:first-of-type {
+    break-before: avoid;
     page-break-before: avoid;
+  }
+
+  /* Prevent page breaks before each individual source */
+  .markdown-preview-view h2 {
+    break-before: auto;
+    page-break-before: auto;
+  }
+
+  /* Keep headings with their content */
+  .markdown-preview-view h1,
+  .markdown-preview-view h2,
+  .markdown-preview-view h3 {
+    break-after: avoid;
+    page-break-after: avoid;
   }
 
   /* Readable font sizing */
