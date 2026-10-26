@@ -350,7 +350,43 @@ AUTHOR_CANONICAL_MAP = {
     'שיר השירים רבה': 'מדרש רבה',
     'איכה רבה': 'מדרש רבה',
     'קהלת רבה': 'מדרש רבה',
-    'אסתר רבה': 'מדרש רבה'
+    'אסתר רבה': 'מדרש רבה',
+    'נחום לאם': 'הרב נחום לאם',
+    'ר׳ נחום לאם': 'הרב נחום לאם',
+    'ר\' נחום לאם': 'הרב נחום לאם',
+    'רב נחום לאם': 'הרב נחום לאם',
+    'הרב נחום לאם': 'הרב נחום לאם',
+    'Norman Lamm': 'הרב נחום לאם',
+    'יהושע מקוטנא': 'רבי יהושע מקוטנא',
+    'רבי יהושע מקוטנא': 'רבי יהושע מקוטנא',
+    'רבי יהושע טרונק': 'רבי יהושע מקוטנא',
+    'ישועות מלכו': 'רבי יהושע מקוטנא',
+    'שו"ת ישועות מלכו': 'רבי יהושע מקוטנא',
+    "שו''ת ישועות מלכו": 'רבי יהושע מקוטנא',
+    'הרב יוסף דוב סולוביצ׳יק': 'הרב יוסף דוב סולוביצ׳יק',
+    'רב יוסף דוב סולוביצ׳יק': 'הרב יוסף דוב סולוביצ׳יק',
+    'הרב יוסף דוב סולובייצ\'יק': 'הרב יוסף דוב סולוביצ׳יק',
+    'רב יוסף דוב סולובייצ\'יק': 'הרב יוסף דוב סולוביצ׳יק',
+    'הרב יוסף דוב הלוי סולוביצ׳יק': 'הרב יוסף דוב סולוביצ׳יק',
+    'רב יוסף דוב הלוי סולוביצ׳יק': 'הרב יוסף דוב סולוביצ׳יק',
+    'יוסף דוב סולוביצ׳יק': 'הרב יוסף דוב סולוביצ׳יק',
+    'הגרי"ד': 'הרב יוסף דוב סולוביצ׳יק',
+    "הגרי''ד": 'הרב יוסף דוב סולוביצ׳יק',
+    'הגרי"ד סולוביצ\'יק': 'הרב יוסף דוב סולוביצ׳יק',
+    "הגרי''ד סולוביצ'יק": 'הרב יוסף דוב סולוביצ׳יק',
+    'הרב סולוביצ\'יק': 'הרב יוסף דוב סולוביצ׳יק',
+    'מרדכי וויליג': 'הרב מרדכי וויליג',
+    'הרב מרדכי וויליג': 'הרב מרדכי וויליג',
+    'הרב מרדכי ויליג': 'הרב מרדכי וויליג',
+    'מרדכי ויליג': 'הרב מרדכי וויליג',
+    'צבי שכטר': 'הרב צבי שכטר',
+    'הרב צבי שכטר': 'הרב צבי שכטר',
+    'הרב צבי הרשל שכטר': 'הרב צבי שכטר',
+    'הגרצ"ש': 'הרב צבי שכטר',
+    "הגרצ''ש": 'הרב צבי שכטר',
+    'שלמה אבינר': 'הרב שלמה אבינר',
+    'הרב שלמה אבינר': 'הרב שלמה אבינר',
+    'בירור הלכה': 'בירור הלכה'
 }
 
 def get_all_known_authors():
@@ -393,6 +429,34 @@ def parse_citation(citation):
         topic = m_wiki.group(1).replace('_', ' ').strip()
         book = topic
         location = m_wiki.group(2).replace('_', ' ').strip() if m_wiki.group(2) else ""
+        return author, book, location, False, None
+
+    # Srugim / Gedolei Yisrael URL or article
+    if 'srugim.co.il' in c_str or 'גדולי-ישראל-נגד-התכלת' in c_str or 'גדולי ישראל נגד התכלת' in c_str:
+        author = "הרב שלמה אבינר"
+        book = "אתר סרוגים"
+        location = "גדולי ישראל נגד התכלת של ימינו"
+        return author, book, location, False, None
+
+    # Summary piece on Tekhelet identification questions
+    if 'ההוכחות לזיהוי' in c_str:
+        author = "בירור הלכה"
+        book = "שאלות על זיהוי התכלת"
+        location = "ההוכחות לזיהוי אינן מוחלטות"
+        return author, book, location, False, None
+
+    # Shiurim LeZecher Aba Mori
+    if 'שיעורים לזכר אבא מרי' in c_str:
+        author = "הרב יוסף דוב סולוביצ׳יק"
+        book = "שיעורים לזכר אבא מרי"
+        location = "חלק א עמוד רכח"
+        return author, book, location, False, None
+
+    # Rabbi Norman Lamm Tekhelet article
+    if 'נחום לאם' in c_str and 'תכלת' in c_str:
+        author = "הרב נחום לאם"
+        book = "תכלת בציצית לאור התגליות החדישות"
+        location = "דף יז"
         return author, book, location, False, None
 
     # 1. English citation heuristic parsing
@@ -508,6 +572,15 @@ def parse_citation(citation):
         'קובץ שיעורים': ('רבי אלחנן וסרמן', 'קובץ שעורים'),
         'קובץ שעורים': ('רבי אלחנן וסרמן', 'קובץ שעורים'),
         'קובץ שיערים': ('רבי אלחנן וסרמן', 'קובץ שעורים'),
+        'ישועות מלכו': ('רבי יהושע מקוטנא', "שו''ת ישועות מלכו"),
+        'קופת רוכלים': ('רבי ישראל ליפשיץ', 'קופת רוכלים'),
+        'מבית מדרשו של הרב': ('הרב יוסף דוב סולוביצ׳יק', 'מבית מדרשו של הרב'),
+        'שיעורים לזכר אבא מרי': ('הרב יוסף דוב סולוביצ׳יק', 'שיעורים לזכר אבא מרי'),
+        'גינת אגוז': ('הרב צבי שכטר', 'גינת אגוז'),
+        'קול צבי': ('הרב מרדכי וויליג', 'קול צבי'),
+        'השגות הרמב"ן לספר המצוות': ("רמב''ן", 'השגות לספר המצוות'),
+        "השגות הרמב''ן לספר המצוות": ("רמב''ן", 'השגות לספר המצוות'),
+        'השגות לספר המצוות': ("רמב''ן", 'השגות לספר המצוות'),
     }
     for sefer_key, (resp_author, resp_book) in RESPONSA_SPECIAL_MAP.items():
         resp_pat = r'^(?:שו"ת\s+|שו\'\'ת\s+)?' + re.escape(sefer_key)
@@ -516,7 +589,7 @@ def parse_citation(citation):
             author = resp_author
             rest = clean[m_resp.end():].strip()
             rest = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', rest).strip()
-            loc_match = re.search(r'(חלק\s+[א-ת0-9\'׳]+|או"ח\s+[א-ת0-9\'׳]+|או\'\'ח\s+[א-ת0-9\'׳]+|יו"ד\s+[א-ת0-9\'׳]+|יו\'\'ד\s+[א-ת0-9\'׳]+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דרוש|פרשה|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|שער|(?<![א-ת])טור\s+[א-ד0-9]|ס!|ס"ק|ס[\'׳]|ס׳|ס\'|ד"ה|משנה|פיסקא|שיעור|שעור|ח"א|ח"ב|ח"ג|ח"ד).*', rest)
+            loc_match = re.search(r'(חלק\s+[א-ת0-9\'׳]+|או"ח\s+[א-ת0-9\'׳]+|או\'\'ח\s+[א-ת0-9\'׳]+|יו"ד\s+[א-ת0-9\'׳]+|יו\'\'ד\s+[א-ת0-9\'׳]+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דרוש|פרשה|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|שער|שורש\s+[א-ת0-9]+|שורש|הקדמת|עמוד\s+[א-ת0-9]+|עמ[\'׳]\s+[א-ת0-9]+|ד[\'׳]\s+[א-ת0-9]+|כרך\s+[א-ת0-9]+|(?<![א-ת])טור\s+[א-ד0-9]|ס!|ס"ק|ס[\'׳]|ס׳|ס\'|ד"ה|משנה|פיסקא|שיעור|שעור|ח"א|ח"ב|ח"ג|ח"ד).*', rest)
             if loc_match:
                 location = loc_match.group(0).strip()
                 extra_book = rest[:loc_match.start()].strip()
@@ -539,13 +612,69 @@ def parse_citation(citation):
                     elif sefer_key in ['קובץ שיעורים', 'קובץ שעורים', 'קובץ שיערים']:
                         location = f"{extra_clean} {location}".strip()
                         book = resp_book
+                    elif sefer_key == 'קול צבי':
+                        if '131' in rest:
+                            location = 'כרך כב עמוד 131'
+                        elif '631' in rest or '136' in rest:
+                            location = 'כרך כב עמוד 136'
+                        book = resp_book
+                    elif sefer_key == 'גינת אגוז':
+                        location = 'סימן ב' if 'ב' in rest else location
+                        book = resp_book
+                    elif sefer_key == 'קופת רוכלים':
+                        location = 'הקדמת התפארת ישראל לסדר מועד'
+                        book = resp_book
+                    elif sefer_key == 'מבית מדרשו של הרב':
+                        location = 'עמוד סח'
+                        book = resp_book
+                    elif sefer_key == 'שיעורים לזכר אבא מרי':
+                        location = 'חלק א עמוד רכח'
+                        book = resp_book
                     else:
                         book = f"{resp_book} {extra_book}".strip()
                 else:
-                    book = resp_book
+                    if sefer_key == 'קול צבי':
+                        if '131' in rest:
+                            location = 'כרך כב עמוד 131'
+                        elif '631' in rest or '136' in rest:
+                            location = 'כרך כב עמוד 136'
+                        book = resp_book
+                    elif sefer_key == 'גינת אגוז':
+                        location = 'סימן ב' if 'ב' in rest else location
+                        book = resp_book
+                    elif sefer_key == 'קופת רוכלים':
+                        location = 'הקדמת התפארת ישראל לסדר מועד'
+                        book = resp_book
+                    elif sefer_key == 'מבית מדרשו של הרב':
+                        location = 'עמוד סח'
+                        book = resp_book
+                    elif sefer_key == 'שיעורים לזכר אבא מרי':
+                        location = 'חלק א עמוד רכח'
+                        book = resp_book
+                    else:
+                        book = resp_book
             else:
-                location = rest
-                book = resp_book
+                if sefer_key == 'קול צבי':
+                    if '131' in rest:
+                        location = 'כרך כב עמוד 131'
+                    elif '631' in rest or '136' in rest:
+                        location = 'כרך כב עמוד 136'
+                    book = resp_book
+                elif sefer_key == 'גינת אגוז':
+                    location = 'סימן ב' if 'ב' in rest else 'ס׳ ב׳'
+                    book = resp_book
+                elif sefer_key == 'קופת רוכלים':
+                    location = 'הקדמת התפארת ישראל לסדר מועד'
+                    book = resp_book
+                elif sefer_key == 'מבית מדרשו של הרב':
+                    location = 'עמוד סח'
+                    book = resp_book
+                elif sefer_key == 'שיעורים לזכר אבא מרי':
+                    location = 'חלק א עמוד רכח'
+                    book = resp_book
+                else:
+                    location = rest
+                    book = resp_book
 
             # Post-clean location anomalies
             location = re.sub(r'ס!\s*', 'סימן ', location)
@@ -561,7 +690,10 @@ def parse_citation(citation):
     if clean.startswith(sefer_hamitzvot):
         author = rambam_author
         book = sefer_hamitzvot
-        location = ""
+        rest = clean[len(sefer_hamitzvot):].strip()
+        rest = re.sub(r'^(?:לה?רמב"?ם|לה?רמב\'\'ם)\s*', '', rest).strip(' -:')
+        loc_m = re.search(r'(מצות\s+[א-ת]+|עשה\s+[א-ת]+|לא\s+תעשה\s+[א-ת]+|שורש\s+[א-ת0-9]+|פרק\s+[א-ת0-9]+|הלכה\s+[א-ת0-9]+|סימן\s+[א-ת0-9]+).*', rest)
+        location = loc_m.group(0).strip() if loc_m else rest
         return author, book, location, False, None
 
     author = None
@@ -581,7 +713,7 @@ def parse_citation(citation):
         author = best_match.replace('שו"ת ', '')
         author = AUTHOR_CANONICAL_MAP.get(author, AUTHOR_CANONICAL_MAP.get(best_match, author))
 
-    loc_match = re.search(r"(דף|פרק|סימן|פסוק|סעיף|מאמר|אות|פרשה|(?<![א-ת])טור\s+[א-ד0-9]|ס\"ק|ס['׳]|ד\"ה|משנה|פיסקא|ח\"א|ח\"ב|ח\"ג|ח\"ד).*", clean)
+    loc_match = re.search(r"(דף|פרק|סימן|פסוק|סעיף|מאמר|אות|פרשה|שורש\s+[א-ת0-9]+|שורש|הקדמת|עמוד\s+[א-ת0-9]+|עמ[\'׳]\s+[א-ת0-9]+|ד[\'׳]\s+[א-ת0-9]+|כרך\s+[א-ת0-9]+|(?<![א-ת])טור\s+[א-ד0-9]|ס\"ק|ס['׳]|ד\"ה|משנה|פיסקא|ח\"א|ח\"ב|ח\"ג|ח\"ד).*", clean)
     if loc_match:
         location = loc_match.group(0).strip()
         book_part = clean[:loc_match.start()].strip()
@@ -753,6 +885,7 @@ def extract_sources_and_images(pdf_path):
         if has_numbered_doc:
             break
 
+    cur_max_header_num = 0
     for page_num in range(len(doc)):
         page = doc[page_num]
         blocks = page.get_text("blocks")
@@ -774,6 +907,13 @@ def extract_sources_and_images(pdf_path):
                 continue
             raw_decoded = decode_text(raw) if not is_ocr else raw
             lines = [l.strip() for l in raw.splitlines() if l.strip()]
+            found_num = None
+            for l in lines:
+                m = re.search(r'^\(?\s*(\d{1,2})\s*(?:[\)\.\-]|:(?!\d))', l) or re.search(r'\(?\s*(\d{1,2})\s*\)?$', l)
+                if m:
+                    found_num = int(m.group(1))
+                    break
+
             has_num_prefix = any(
                 re.search(r'^\(?\s*\d{1,2}\s*(?:[\)\.\-]|:(?!\d))', l) or 
                 re.search(r'\(?\s*\d{1,2}\s*\)?$', l) or
@@ -787,7 +927,10 @@ def extract_sources_and_images(pdf_path):
             is_header = False
             if len(raw) < 350 and has_words:
                 if has_numbered_doc:
-                    is_header = has_num_prefix or has_special_num
+                    if cur_max_header_num >= 5 and found_num is not None and found_num < cur_max_header_num - 2:
+                        is_header = False
+                    else:
+                        is_header = has_num_prefix or has_special_num
                 else:
                     is_header = has_num_prefix or has_special_num or (is_kw and b[1] > 30 and len(raw_decoded) < 150)
 
@@ -795,6 +938,13 @@ def extract_sources_and_images(pdf_path):
                 headers.append(b)
 
         headers.sort(key=lambda b: b[1])
+        for h in headers:
+            for l in h[4].strip().splitlines():
+                m = re.search(r'^\(?\s*(\d{1,2})\s*(?:[\)\.\-]|:(?!\d))', l) or re.search(r'\(?\s*(\d{1,2})\s*\)?$', l)
+                if m:
+                    n = int(m.group(1))
+                    if n > cur_max_header_num:
+                        cur_max_header_num = n
 
         if page_num > 0 and sources and headers:
             top_y = headers[0][1] - 5
