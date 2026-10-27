@@ -16,3 +16,4 @@ tags: [navi-source]
 
 ### Wikipedia - Beta Israel - Origins
 
+The Ethiopians claim to be descendants of שלמה and the queen of sheba
