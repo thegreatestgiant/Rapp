@@ -386,7 +386,32 @@ AUTHOR_CANONICAL_MAP = {
     "הגרצ''ש": 'הרב צבי שכטר',
     'שלמה אבינר': 'הרב שלמה אבינר',
     'הרב שלמה אבינר': 'הרב שלמה אבינר',
-    'בירור הלכה': 'בירור הלכה'
+    'בירור הלכה': 'בירור הלכה',
+    'רבנו בחיי': 'רבנו בחיי',
+    'קלמן כהנא': 'הרב קלמן כהנא',
+    'הרב קלמן כהנא': 'הרב קלמן כהנא',
+    "ר' קלמן כהנא": 'הרב קלמן כהנא',
+    'בן איש חי': 'בן איש חי',
+    'הראי"ה קוק': 'הרב אברהם יצחק הכהן קוק',
+    "הראי''ה קוק": 'הרב אברהם יצחק הכהן קוק',
+    'הרב קוק': 'הרב אברהם יצחק הכהן קוק',
+    'הראי"ה': 'הרב אברהם יצחק הכהן קוק',
+    "הראי''ה": 'הרב אברהם יצחק הכהן קוק',
+    'הרב אברהם יצחק הכהן קוק': 'הרב אברהם יצחק הכהן קוק',
+    'הרב בן ציון מאיר חי עוזיאל': 'הרב בן ציון מאיר חי עוזיאל',
+    'בן ציון מאיר חי עוזיאל': 'הרב בן ציון מאיר חי עוזיאל',
+    'משפטי עוזיאל': 'הרב בן ציון מאיר חי עוזיאל',
+    'יביע אומר': 'רב עובדיה יוסף',
+    'דבר אברהם': 'רבי אברהם דובער כהנא שפירא',
+    'שו"ת דבר אברהם': 'רבי אברהם דובער כהנא שפירא',
+    "שו''ת דבר אברהם": 'רבי אברהם דובער כהנא שפירא',
+    'אגלי טל': 'אבני נזר',
+    'שמע שלמה': 'הרב שלמה משה עמאר',
+    'שו"ת שמע שלמה': 'הרב שלמה משה עמאר',
+    "שו''ת שמע שלמה": 'הרב שלמה משה עמאר',
+    'הרב שלמה משה עמאר': 'הרב שלמה משה עמאר',
+    'שלמה משה עמאר': 'הרב שלמה משה עמאר',
+    'תיבת משה': 'תיבת משה'
 }
 
 def get_all_known_authors():
@@ -408,7 +433,7 @@ def get_all_known_authors():
         authors.add(k)
         
     # Remove some generic prefixes that might have slipped into authors if we don't want them as strict authors
-    bad = {'שו"ת', 'ספר', 'פ', 'חידושי', 'ערוך', 'תוספת', 'דרוש', 'חלקת', 'ר', "ר'", "ר׳", 'מקור'}
+    bad = {'שו"ת', 'ספר', 'פ', 'חידושי', 'ערוך', 'תוספת', 'דרוש', 'חלקת', 'ר', "ר'", "ר׳", 'מקור', 'רבנו', 'שו"ת דבר', "שו''ת דבר", 'שו"ת שמע', "שו''ת שמע", 'תיבת', 'אגלי'}
     for b in bad:
         if b in authors:
             authors.remove(b)
@@ -581,6 +606,22 @@ def parse_citation(citation):
         'השגות הרמב"ן לספר המצוות': ("רמב''ן", 'השגות לספר המצוות'),
         "השגות הרמב''ן לספר המצוות": ("רמב''ן", 'השגות לספר המצוות'),
         'השגות לספר המצוות': ("רמב''ן", 'השגות לספר המצוות'),
+        'יביע אומר': ('רב עובדיה יוסף', 'שו"ת יביע אומר'),
+        'רב פעלים': ('בן איש חי', 'רב פעלים'),
+        'אורח משפט': ('הרב אברהם יצחק הכהן קוק', 'שו"ת אורח משפט'),
+        'משפטי עוזיאל': ('הרב בן ציון מאיר חי עוזיאל', 'שו"ת משפטי עוזיאל'),
+        'חקר ועיון': ('הרב קלמן כהנא', 'חקר ועיון'),
+        'תפארת ישראל להמהר"ל': ("מהר''ל", 'תפארת ישראל'),
+        "תפארת ישראל להמהר''ל": ("מהר''ל", 'תפארת ישראל'),
+        'תפארת ישראל למהר"ל': ("מהר''ל", 'תפארת ישראל'),
+        "תפארת ישראל למהר''ל": ("מהר''ל", 'תפארת ישראל'),
+        'ספר תפארת ישראל להמהר"ל': ("מהר''ל", 'תפארת ישראל'),
+        "ספר תפארת ישראל להמהר''ל": ("מהר''ל", 'תפארת ישראל'),
+        'רבנו בחיי': ('רבנו בחיי', 'פירוש רבנו בחיי'),
+        'דבר אברהם': ('רבי אברהם דובער כהנא שפירא', 'שו"ת דבר אברהם'),
+        'אגלי טל': ('אבני נזר', 'אגלי טל'),
+        'שמע שלמה': ('הרב שלמה משה עמאר', 'שו"ת שמע שלמה'),
+        'תיבת משה': ('תיבת משה', 'תיבת משה'),
     }
     for sefer_key, (resp_author, resp_book) in RESPONSA_SPECIAL_MAP.items():
         resp_pat = r'^(?:שו"ת\s+|שו\'\'ת\s+)?' + re.escape(sefer_key)
@@ -589,7 +630,7 @@ def parse_citation(citation):
             author = resp_author
             rest = clean[m_resp.end():].strip()
             rest = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', rest).strip()
-            loc_match = re.search(r'(חלק\s+[א-ת0-9\'׳]+|או"ח\s+[א-ת0-9\'׳]+|או\'\'ח\s+[א-ת0-9\'׳]+|יו"ד\s+[א-ת0-9\'׳]+|יו\'\'ד\s+[א-ת0-9\'׳]+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דרוש|פרשה|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|שער|שורש\s+[א-ת0-9]+|שורש|הקדמת|עמוד\s+[א-ת0-9]+|עמ[\'׳]\s+[א-ת0-9]+|ד[\'׳]\s+[א-ת0-9]+|כרך\s+[א-ת0-9]+|(?<![א-ת])טור\s+[א-ד0-9]|ס!|ס"ק|ס[\'׳]|ס׳|ס\'|ד"ה|משנה|פיסקא|שיעור|שעור|ח"א|ח"ב|ח"ג|ח"ד).*', rest)
+            loc_match = re.search(r'(חלק\s+[א-ת0-9\'׳]+|או"ח\s+[א-ת0-9\'׳]+|או\'\'ח\s+[א-ת0-9\'׳]+|יו"ד\s+[א-ת0-9\'׳]+|יו\'\'ד\s+[א-ת0-9\'׳]+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דרוש|פרשה|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|שער|שורש\s+[א-ת0-9]+|שורש|הקדמת|עמוד\s+[א-ת0-9]+|עמ[\'׳]\s+[א-ת0-9]+|ד[\'׳]\s+[א-ת0-9]+|כרך\s+[א-ת0-9]+|(?<![א-ת])טור\s+[א-ד0-9]|ס!|ס"ק|ס[\'׳]|ס׳|ס\'|ד"ה|משנה|פיסקא|שיעור|שעור|ח\"[א-ת]|ח\'\'[א-ת]|ח[\'׳][א-ת]).*', rest)
             if loc_match:
                 location = loc_match.group(0).strip()
                 extra_book = rest[:loc_match.start()].strip()
@@ -630,6 +671,8 @@ def parse_citation(citation):
                     elif sefer_key == 'שיעורים לזכר אבא מרי':
                         location = 'חלק א עמוד רכח'
                         book = resp_book
+                    elif sefer_key == 'רבנו בחיי':
+                        book = extra_clean
                     else:
                         book = f"{resp_book} {extra_book}".strip()
                 else:
@@ -651,6 +694,8 @@ def parse_citation(citation):
                     elif sefer_key == 'שיעורים לזכר אבא מרי':
                         location = 'חלק א עמוד רכח'
                         book = resp_book
+                    elif sefer_key == 'רבנו בחיי':
+                        book = extra_clean
                     else:
                         book = resp_book
             else:
@@ -679,6 +724,7 @@ def parse_citation(citation):
             # Post-clean location anomalies
             location = re.sub(r'ס!\s*', 'סימן ', location)
             location = re.sub(r'!', "'", location)
+            location = re.sub(r'(?:^|\s)ד[׳\']\s*([א-ת]+)', r' דף \1', location).strip()
             location = re.sub(r'[:-]+$', '', location).strip()
             if 'קמ א' in location and 'אות א' not in location:
                 location = location.replace('קמ א', 'קמ אות א')
@@ -713,7 +759,7 @@ def parse_citation(citation):
         author = best_match.replace('שו"ת ', '')
         author = AUTHOR_CANONICAL_MAP.get(author, AUTHOR_CANONICAL_MAP.get(best_match, author))
 
-    loc_match = re.search(r"(דף|פרק|סימן|פסוק|סעיף|מאמר|אות|פרשה|שורש\s+[א-ת0-9]+|שורש|הקדמת|עמוד\s+[א-ת0-9]+|עמ[\'׳]\s+[א-ת0-9]+|ד[\'׳]\s+[א-ת0-9]+|כרך\s+[א-ת0-9]+|(?<![א-ת])טור\s+[א-ד0-9]|ס\"ק|ס['׳]|ד\"ה|משנה|פיסקא|ח\"א|ח\"ב|ח\"ג|ח\"ד).*", clean)
+    loc_match = re.search(r"(דף|פרק|סימן|פסוק|סעיף|מאמר|אות|פרשה|שורש\s+[א-ת0-9]+|שורש|הקדמת|עמוד\s+[א-ת0-9]+|עמ[\'׳]\s+[א-ת0-9]+|ד[\'׳]\s+[א-ת0-9]+|כרך\s+[א-ת0-9]+|(?<![א-ת])טור\s+[א-ד0-9]|ס\"ק|ס['׳]|ד\"ה|משנה|פיסקא|ח\"[א-ת]|ח\'\'[א-ת]|ח[\'׳][א-ת]).*", clean)
     if loc_match:
         location = loc_match.group(0).strip()
         book_part = clean[:loc_match.start()].strip()
@@ -1095,27 +1141,13 @@ def process_source(source_data, sheet_stem, subject, seen_in_sheet=None):
             # and the heading already exists, it is a re-run / existing match -> reuse!
             if times_used == 0 and heading_to_use in clean_headings:
                 if not already_has_image:
-                    # Update images from this sheet if crop filenames changed
-                    new_img_embeds = "\n".join([f"> ![[{img}]]\n> *(Cropped from {sheet_stem})*" for img in img_names])
-                    sheet_pattern = rf"> !\[\[[^\n]*\]\]\n> \*\([Cc]ropped from {re.escape(sheet_stem)}\)\*"
-                    if re.search(sheet_pattern, file_content):
-                        # Replace old crop block from this sheet
-                        first = True
-                        def repl_crop(m):
-                            nonlocal first
-                            if first:
-                                first = False
-                                return new_img_embeds
-                            return ""
-                        file_content = re.sub(sheet_pattern, repl_crop, file_content)
-                        # Clean up any leftover empty lines in Source Image block
-                        file_content = re.sub(r'(\n> \*\([Cc]ropped from [^\n]+\)\*\n)\s*\n', r'\1', file_content)
-                    else:
+                    new_img_embeds = "\n".join([f"> ![[{img}]]\n> *(Cropped from {sheet_stem})*" for img in img_names if img not in file_content])
+                    if new_img_embeds:
                         if "### Source Image" in file_content:
                             file_content = file_content.replace("### Source Image", f"### Source Image\n{new_img_embeds}")
                         else:
                             file_content += f"\n### Source Image\n{new_img_embeds}\n"
-                    existing_file.write_text(file_content, encoding="utf-8")
+                        existing_file.write_text(file_content, encoding="utf-8")
                 print(f"Source already contains heading '{heading_to_use}'. Reusing without duplicate.")
                 return existing_stem, heading_to_use, False
 
