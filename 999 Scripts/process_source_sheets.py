@@ -42,7 +42,8 @@ KNOWN_AUTHORS = [
     'הגרמ"צ ברגמן', 'הגראי"ל שטיינמן', 'חכם צבי', 'שו"ת חכם צבי', 'מזרחי',
     'יוסף אומץ', 'אוצר המדרשים', 'ברוך שאמר', 'פני יהושע', 'רי"ז גוסטמן',
     'גוסטמן', 'רמ"א', 'הרמ"א', 'ט"ז', 'ריטב"א', 'חדושי הריטב"א',
-    "האר''י הקדוש", 'האר"י הקדוש', 'רבי יוסף קארו', 'כסף משנה', 'הגריד"ס', "הגריד''ס"
+    "האר''י הקדוש", 'האר"י הקדוש', 'רבי יוסף קארו', 'כסף משנה', 'הגריד"ס', "הגריד''ס",
+    'אבודרהם', 'ספר אבודרהם', 'רבי שלמה גאנצפריד', 'קיצור שולחן ערוך', 'קצור שו"ע', 'נפש הרב', 'הרב צבי שכטר'
 ]
 
 def ensure_dirs():
@@ -70,7 +71,8 @@ def load_config():
     return {'subjects': ['Gemara']}
 
 def sanitize_filename(name):
-    clean = name.replace('"', "''")
+    clean = re.sub(r'[\x00-\x1f\x7f]', '', name)
+    clean = clean.replace('"', "''")
     clean = re.sub(r'[:\\/|?*<>]', '-', clean)
     clean = re.sub(r'\s+', ' ', clean).strip()
     return clean
@@ -117,13 +119,13 @@ def is_line_english(line):
     return False
 
 def decode_line(line):
-    if not any(c in "abcdefghijklmnopqrstuvwxyz\x1b" for c in line.lower()):
+    if not any(c in "abcdefghijklmnopqrstuvwxyz\x1b\x18" for c in line.lower()):
         return line
     if is_line_english(line):
         return line
     rev = line[::-1]
     res = [QWERTY_TO_HEBREW.get(ch, ch) for ch in rev]
-    return "".join(res).replace('\x1b', '"')
+    return "".join(res).replace('\x1b', '"').replace('\x18', '')
 
 def decode_text(text):
     if not text:
@@ -154,6 +156,8 @@ AUTHOR_CANONICAL_MAP = {
     'רמ"א': "רמ''א",
     'חדושי הריטב"א': "ריטב''א",
     "חדושי הריטב''א": "ריטב''א",
+    'חידושי הריטב"א': "ריטב''א",
+    "חידושי הריטב''א": "ריטב''א",
     'ט"ז': "ט''ז",
     "ט''ז": "ט''ז",
     'מגן אברהם': 'מגן אברהם',
@@ -425,7 +429,24 @@ AUTHOR_CANONICAL_MAP = {
     "שו''ת שמע שלמה": 'הרב שלמה משה עמאר',
     'הרב שלמה משה עמאר': 'הרב שלמה משה עמאר',
     'שלמה משה עמאר': 'הרב שלמה משה עמאר',
-    'תיבת משה': 'תיבת משה'
+    'תיבת משה': 'תיבת משה',
+    'אבודרהם': 'אבודרהם',
+    'ספר אבודרהם': 'אבודרהם',
+    'רבי דוד אבודרהם': 'אבודרהם',
+    'דוד אבודרהם': 'אבודרהם',
+    'קצור שו"ע': 'רבי שלמה גאנצפריד',
+    "קצור שו''ע": 'רבי שלמה גאנצפריד',
+    'ספר קצור שו"ע': 'רבי שלמה גאנצפריד',
+    "ספר קצור שו''ע": 'רבי שלמה גאנצפריד',
+    'ספר קיצור שולחן ערוך': 'רבי שלמה גאנצפריד',
+    'קיצור שולחן ערוך': 'רבי שלמה גאנצפריד',
+    'קצור שולחן ערוך': 'רבי שלמה גאנצפריד',
+    'רבי שלמה גאנצפריד': 'רבי שלמה גאנצפריד',
+    'שלמה גאנצפריד': 'רבי שלמה גאנצפריד',
+    'נפש הרב': 'הרב צבי שכטר',
+    'הרב צבי שכטר': 'הרב צבי שכטר',
+    'ריטב א': "ריטב''א",
+    'טור אורח חיים': 'רבי יעקב בן אשר'
 }
 
 def get_all_known_authors():
@@ -642,6 +663,17 @@ def parse_citation(citation):
         'בסוד היחיד והיחוד': ('הרב יוסף דוב סולוביצ׳יק', 'בסוד היחיד והיחוד'),
         'כסף משנה': ('רבי יוסף קארו', 'כסף משנה'),
         'נודע ביהודה': ('רבי יחזקאל לנדא', "שו''ת נודע ביהודה"),
+        'ספר אבודרהם': ('אבודרהם', 'ספר אבודרהם'),
+        'אבודרהם': ('אבודרהם', 'ספר אבודרהם'),
+        'נפש הרב': ('הרב צבי שכטר', 'נפש הרב'),
+        'ספר קצור שו"ע': ('רבי שלמה גאנצפריד', 'קיצור שולחן ערוך'),
+        "ספר קצור שו''ע": ('רבי שלמה גאנצפריד', 'קיצור שולחן ערוך'),
+        'ספר קיצור שולחן ערוך': ('רבי שלמה גאנצפריד', 'קיצור שולחן ערוך'),
+        'קצור שו"ע': ('רבי שלמה גאנצפריד', 'קיצור שולחן ערוך'),
+        "קצור שו''ע": ('רבי שלמה גאנצפריד', 'קיצור שולחן ערוך'),
+        'קיצור שולחן ערוך': ('רבי שלמה גאנצפריד', 'קיצור שולחן ערוך'),
+        'קצור שולחן ערוך': ('רבי שלמה גאנצפריד', 'קיצור שולחן ערוך'),
+        'טור אורח חיים': ('רבי יעקב בן אשר', 'טור אורח חיים'),
     }
     m_pfx = re.match(r'^(?:הגריד"?ס|הגריד\'\'ס)\s*[-—:]\s*', clean)
     pfx_author = None
@@ -655,7 +687,7 @@ def parse_citation(citation):
             author = pfx_author or resp_author
             rest = clean[m_resp.end():].strip()
             rest = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', rest).strip()
-            loc_match = re.search(r'(חלק\s+[א-ת0-9\'׳]+|או"ח\s+[א-ת0-9\'׳]+|או\'\'ח\s+[א-ת0-9\'׳]+|יו"ד\s+[א-ת0-9\'׳]+|יו\'\'ד\s+[א-ת0-9\'׳]+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דרוש|פרשה|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|שער|שורש\s+[א-ת0-9]+|שורש|הקדמת|עמוד\s+[א-ת0-9]+|עמ[\'׳]\s+[א-ת0-9]+|ד[\'׳]\s+[א-ת0-9]+|כרך\s+[א-ת0-9]+|(?<![א-ת])טור\s+[א-ד0-9]|ס!|ס"ק|ס[\'׳]|ס׳|ס\'|ד"ה|משנה|פיסקא|שיעור|שעור|ח\"[א-ת]|ח\'\'[א-ת]|ח[\'׳][א-ת]).*', rest)
+            loc_match = re.search(r'(חלק\s+[א-ת0-9\'׳]+|או"ח\s+[א-ת0-9\'׳]+|או\'\'ח\s+[א-ת0-9\'׳]+|יו"ד\s+[א-ת0-9\'׳]+|יו\'\'ד\s+[א-ת0-9\'׳]+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דרוש|פרשה|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|שער|שורש\s+[א-ת0-9]+|שורש|הקדמת|עמוד\s+[א-ת0-9]+|עמ[\'׳]\s+[א-ת0-9]+|ד[\'׳]\s+[א-ת0-9]+|כרך\s+[א-ת0-9]+|(?<![א-ת])טור\s+[א-ד0-9](?![א-ת])|ס!|ס"ק|ס[\'׳]|ס׳|ס\'|ד"ה|משנה(?!\s*ברורה)|פיסקא|שיעור|שעור|ח\"[א-ת]|ח\'\'[א-ת]|ח[\'׳][א-ת]).*', rest)
             if loc_match:
                 location = loc_match.group(0).strip()
                 extra_book = rest[:loc_match.start()].strip()
@@ -709,6 +741,10 @@ def parse_citation(citation):
                         book = resp_book
                     elif sefer_key == 'כסף משנה':
                         location = f"{extra_book} {location}".strip()
+                        book = resp_book
+                    elif sefer_key in ['ספר אבודרהם', 'אבודרהם']:
+                        if extra_book:
+                            location = f"{extra_book} - {location}"
                         book = resp_book
                     elif sefer_key == 'נודע ביהודה':
                         if extra_book:
@@ -769,7 +805,8 @@ def parse_citation(citation):
             location = re.sub(r'ס!\s*', 'סימן ', location)
             location = re.sub(r'!', "'", location)
             location = re.sub(r'(?:^|\s)ד[׳\']\s*([א-ת]+)', r' דף \1', location).strip()
-            location = re.sub(r'דף\s+([א-ת0-9]+)[/\-]([אב])\b', r'דף \1 עמוד \2', location)
+            location = re.sub(r'דף\s+([א-ת0-9]+)\s*(?:ע[/\-]|[/|\-])\s*([אב])\b', r'דף \1 עמוד \2', location)
+            location = re.sub(r'\bע[/\-]([אב])\b', r'עמוד \1', location)
             location = re.sub(r'[:-]+$', '', location).strip()
             if 'קמ א' in location and 'אות א' not in location:
                 location = location.replace('קמ א', 'קמ אות א')
@@ -787,6 +824,8 @@ def parse_citation(citation):
         location = loc_m.group(0).strip() if loc_m else rest
         return author, book, location, False, None
 
+    clean = re.sub(r'^(?:ריטב\s*א|הריטב\s*א)\s+(?:לתלמוד בבלי\s+)?מסכת\s+', "חידושי הריטב''א מסכת ", clean)
+
     author = None
     matched_text = None
     matches = []
@@ -795,16 +834,18 @@ def parse_citation(citation):
     sorted_authors = sorted(ALL_KNOWN_AUTHORS, key=len, reverse=True)
     for a in sorted_authors:
         pattern = r'(?<![א-ת])' + re.escape(a) + r'(?![א-ת])'
-        if re.search(pattern, clean):
-            matches.append(a)
+        m = re.search(pattern, clean)
+        if m:
+            matches.append((m.start(), a))
             
     if matches:
-        best_match = matches[0]
+        matches.sort(key=lambda x: (x[0], -len(x[1])))
+        best_match = matches[0][1]
         matched_text = best_match
         author = best_match.replace('שו"ת ', '')
         author = AUTHOR_CANONICAL_MAP.get(author, AUTHOR_CANONICAL_MAP.get(best_match, author))
 
-    loc_match = re.search(r"(דף|פרק|סימן|פסוק|סעיף|מאמר|אות|פרשה|שורש\s+[א-ת0-9]+|שורש|הקדמת|עמוד\s+[א-ת0-9]+|עמ[\'׳]\s+[א-ת0-9]+|ד[\'׳]\s+[א-ת0-9]+|כרך\s+[א-ת0-9]+|(?<![א-ת])טור\s+[א-ד0-9]|ס\"ק|ס['׳]|ד\"ה|משנה|פיסקא|ח\"[א-ת]|ח\'\'[א-ת]|ח[\'׳][א-ת]).*", clean)
+    loc_match = re.search(r"(דף|פרק|סימן|פסוק|סעיף|מאמר|אות|פרשה|שורש\s+[א-ת0-9]+|שורש|הקדמת|עמוד\s+[א-ת0-9]+|עמ[\'׳]\s+[א-ת0-9]+|ד[\'׳]\s+[א-ת0-9]+|כרך\s+[א-ת0-9]+|(?<![א-ת])טור\s+[א-ד0-9](?![א-ת])|ס\"ק|ס['׳]|ד\"ה|משנה(?!\s*ברורה)|פיסקא|ח\"[א-ת]|ח\'\'[א-ת]|ח[\'׳][א-ת]).*", clean)
     if loc_match:
         location = loc_match.group(0).strip()
         book_part = clean[:loc_match.start()].strip()
@@ -833,6 +874,9 @@ def parse_citation(citation):
     elif matched_text == "ביאור הלכה":
         author = "משנה ברורה"
         book = "ביאור הלכה"
+    elif author == "משנה ברורה" and ("על שולחן ערוך" in clean or "על השולחן ערוך" in clean):
+        book = "משנה ברורה"
+        location = re.sub(r'^(?:על\s+)?(?:ה?שולחן\s+ערוך\s+)?', '', location).strip(' -:')
     elif author == "מגן אברהם" and (not book or book in ["מקור", "מגן אברהם"]):
         book = "אורח חיים"
     elif author in ["ט''ז", 'ט"ז'] and (not book or book in ["מקור", 'ט"ז']):
@@ -841,6 +885,8 @@ def parse_citation(citation):
         author = "ריטב''א"
         if book.startswith("חדושי "):
             book = book.replace("חדושי ", "חידושי ")
+        elif book.startswith("מסכת "):
+            book = f"חידושי הריטב''א {book}"
 
     if not author:
         m_rabbah = re.search(r'^(?:ספר\s+|חומש\s+)?(בראשית|שמות|ויקרא|במדבר|דברים|שיר השירים|רות|איכה|קהלת|אסתר)\s+רבה(?![א-ת])', clean)
@@ -896,7 +942,8 @@ def parse_citation(citation):
 
     if not re.search(r'(?:עמ[\'׳]|עמוד|דף|סימן|פרק|פסוק|אות|הלכה|סעיף)\s+\d+[\)\(]?$', location):
         location = re.sub(r"\s*\d+[\)\(]?$", "", location).strip()
-    location = re.sub(r'דף\s+([א-ת0-9]+)[/\-]([אב])\b', r'דף \1 עמוד \2', location)
+    location = re.sub(r'דף\s+([א-ת0-9]+)\s*(?:ע[/\-]|[/|\-])\s*([אב])\b', r'דף \1 עמוד \2', location)
+    location = re.sub(r'\bע[/\-]([אב])\b', r'עמוד \1', location)
 
     return author, book, location, audit_needed, audit_reason
 
