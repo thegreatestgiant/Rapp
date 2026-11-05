@@ -1,9 +1,9 @@
 ---
 subject: "[[Gemara]]"
-season: "Fall"
+season: Fall
 year: "2026"
-test_target: "Midterm"
-date: "2026-11-02"
+test_target: Final
+date: 2026-11-02
 pdf_source: "[[planting.pdf]]"
 ---
 # planting

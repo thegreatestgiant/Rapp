@@ -1,9 +1,9 @@
 ---
 subject: "[[Halacha]]"
-season: "Fall"
+season: Fall
 year: "2026"
-test_target: "Midterm"
-date: "2026-11-04"
+test_target: Final
+date: 2026-11-04
 pdf_source: "[[SHATZ.pdf]]"
 ---
 # SHATZ
