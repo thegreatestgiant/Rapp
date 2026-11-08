@@ -52,25 +52,48 @@ def ensure_dirs():
     for d in [SOURCES_DIR, AUTHORS_DIR, SHEETS_DIR, ATTACHMENTS_DIR]:
         d.mkdir(parents=True, exist_ok=True)
 
-def get_academic_metadata():
-    today = date.today()
-    month, day, year = today.month, today.day, today.year
-    
-    if month == 1 and day < 15:
-        return 'Fall', str(year - 1), 'Final'
-    elif month < 6 or (month == 6 and day < 15):
-        test_target = 'Midterm' if month < 4 else 'Final'
-        return 'Spring', str(year), test_target
-    else:
-        test_target = 'Midterm' if (month < 11 or (month == 11 and day < 20)) else 'Final'
-        return 'Fall', str(year), test_target
-
 def load_config():
     config_path = RAPP_ROOT / 'config.json'
     if config_path.exists():
-        with open(config_path, 'r') as f:
+        with open(config_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     return {'subjects': ['Gemara']}
+
+def get_academic_metadata(config=None, target_date=None):
+    if config is None:
+        config = load_config()
+
+    # Delegate to the canonical academic_metadata.js script
+    script_path = SCRIPT_DIR / "academic_metadata.js"
+    if script_path.exists():
+        try:
+            cmd = ["node", str(script_path)]
+            if target_date:
+                cmd.append(target_date.strftime("%Y-%m-%d") if hasattr(target_date, 'strftime') else str(target_date))
+            res = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            data = json.loads(res.stdout.strip())
+            return data["season"], str(data["year"]), data["testTarget"]
+        except Exception:
+            pass
+
+    # Pure Python fallback
+    explicit_target = config.get('default_test_target') or config.get('test_target')
+    now = target_date if isinstance(target_date, date) else date.today()
+    month, day, year = now.month, now.day, now.year
+    
+    if month == 1 and day < 15:
+        return 'Fall', str(year - 1), explicit_target or 'Final'
+    elif month < 6 or (month == 6 and day < 15):
+        # Spring: DST begins on 2nd Sunday of March; Mincha in class stops -> Finals
+        first_sun_march = 1 + (6 - date(year, 3, 1).weekday()) % 7
+        second_sun_march = first_sun_march + 7
+        auto_target = 'Midterm' if (month < 3 or (month == 3 and day < second_sun_march)) else 'Final'
+        return 'Spring', str(year), explicit_target or auto_target
+    else:
+        # Fall: DST ends on 1st Sunday of November; Mincha in class starts -> Finals
+        first_sunday_nov = 1 + (6 - date(year, 11, 1).weekday()) % 7
+        auto_target = 'Midterm' if (month < 11 or (month == 11 and day < first_sunday_nov)) else 'Final'
+        return 'Fall', str(year), explicit_target or auto_target
 
 def sanitize_filename(name):
     clean = re.sub(r'[\x00-\x1f\x7f]', '', name)
@@ -1438,7 +1461,7 @@ tags: {tag_list}
 def main():
     config = load_config()
     default_subject = config.get('subjects', ['Gemara'])[0] if config.get('subjects') else 'Gemara'
-    auto_season, auto_year, auto_test = get_academic_metadata()
+    auto_season, auto_year, auto_test = get_academic_metadata(config)
 
     parser = argparse.ArgumentParser(description="Process source sheets from PDF")
     parser.add_argument('pdf_path', help="Path to the PDF")

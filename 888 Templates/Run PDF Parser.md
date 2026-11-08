@@ -7,26 +7,6 @@ function rappPath(subpath) {
   return rappRoot ? `${rappRoot}/${subpath}` : subpath;
 }
 
-function getAcademicMetadata() {
-  const now = new Date();
-  const month = now.getMonth() + 1;
-  const day = now.getDate();
-  let year = now.getFullYear();
-  let season, testTarget;
-  
-  if (month === 1 && day < 15) {
-    season = 'Fall'; year = year - 1; testTarget = 'Final';
-  } else if (month < 6 || (month === 6 && day < 15)) {
-    season = 'Spring';
-    testTarget = (month < 4) ? 'Midterm' : 'Final';
-  } else {
-    season = 'Fall';
-    testTarget = (month < 11 || (month === 11 && day < 20)) ? 'Midterm' : 'Final';
-  }
-  
-  return { season, year: String(year), testTarget };
-}
-
 // Load config from the Rapp root
 const configFile = app.vault.getAbstractFileByPath(rappPath('config.json'));
 let config = {};
