@@ -150,7 +150,9 @@ def decode_line(line):
         return line
     rev = line[::-1]
     res = [QWERTY_TO_HEBREW.get(ch, ch) for ch in rev]
-    return "".join(res).replace('\x1b', '"').replace('\x18', '')
+    decoded = "".join(res).replace('\x1b', '"').replace('\x18', '')
+    decoded = re.sub(r'\d+', lambda m: m.group(0)[::-1], decoded)
+    return decoded
 
 def decode_text(text):
     if not text:
@@ -187,6 +189,22 @@ AUTHOR_CANONICAL_MAP = {
     "חידושי הריטב''א": "ריטב''א",
     'ט"ז': "ט''ז",
     "ט''ז": "ט''ז",
+    'ב"ח': "ב''ח",
+    "ב''ח": "ב''ח",
+    'הגהות אשרי': 'רבי ישראל מקרעמז',
+    'הגהות אשר"י': 'רבי ישראל מקרעמז',
+    "הגהות אשר''י": 'רבי ישראל מקרעמז',
+    'תפארת שמואל': 'רבי אהרן שמואל קאיידנובר',
+    'ביצחק יקרא': 'רבי אביגדור נבנצל',
+    'בית הבחירה': 'המאירי',
+    'בית הבחירה למאירי': 'המאירי',
+    'מגיד משנה': 'רבי וידאל די טולוזא',
+    'הגהות רעק"א': 'רבי עקיבא איגר',
+    "הגהות רעק''א": 'רבי עקיבא איגר',
+    'משפט כהן': 'הרב אברהם יצחק הכהן קוק',
+    'שו"ת משפט כהן': 'הרב אברהם יצחק הכהן קוק',
+    "שו''ת משפט כהן": 'הרב אברהם יצחק הכהן קוק',
+    'חשוקי חמד': 'הרב יצחק זילברשטיין',
     'מגן אברהם': 'מגן אברהם',
     'קובץ': 'רבי אלחנן וסרמן',
     'קובץ שעורים': 'רבי אלחנן וסרמן',
@@ -642,7 +660,7 @@ def parse_citation(citation):
     clean = re.sub(r"[()\[\]]", "", clean)
     clean = re.sub(r"\b\d+[\)\(]|\([\)\d]+", "", clean)
     clean = re.sub(r"^\s*\d+[\)\.]?\s*", "", clean)
-    if not re.search(r'(?:עמ[\'׳]|עמוד|דף|סימן|פרק|פסוק|אות|הלכה|סעיף)\s+\d+\s*[\)]?$', clean):
+    if not re.search(r'(?:עמ[\'׳]|עמוד|דף|סימן|פרק|פסוק|אות|הלכה|סעיף|הערה|הע[\'׳])\s+\d+\s*[\)]?$', clean):
         clean = re.sub(r"\s*[\(\-]?[\s]*\d+\s*[\)]?\s*$", "", clean)
     clean = re.sub(r"^[א-ת]\"?[א-ת]?\s*[\)\.\-]\s*", "", clean)
     if not re.search(r"פירוש המשניות", clean):
@@ -762,6 +780,18 @@ def parse_citation(citation):
         "תוספות רא''ש": ('רא"ש', 'תוספות הרא"ש'),
         'תוספות הרא"ש': ('רא"ש', 'תוספות הרא"ש'),
         "תוספות הרא''ש": ('רא"ש', 'תוספות הרא"ש'),
+        'הגהות אשרי': ('רבי ישראל מקרעמז', 'הגהות אשר"י'),
+        'הגהות אשר"י': ('רבי ישראל מקרעמז', 'הגהות אשר"י'),
+        "הגהות אשר''י": ('רבי ישראל מקרעמז', 'הגהות אשר"י'),
+        'תפארת שמואל': ('רבי אהרן שמואל קאיידנובר', 'תפארת שמואל'),
+        'ביצחק יקרא': ('רבי אביגדור נבנצל', 'ביצחק יקרא'),
+        'בית הבחירה למאירי': ('המאירי', 'בית הבחירה'),
+        'בית הבחירה': ('המאירי', 'בית הבחירה'),
+        'מגיד משנה': ('רבי וידאל די טולוזא', 'מגיד משנה'),
+        'הגהות רעק"א': ('רבי עקיבא איגר', 'הגהות רבי עקיבא איגר'),
+        "הגהות רעק''א": ('רבי עקיבא איגר', 'הגהות רבי עקיבא איגר'),
+        'משפט כהן': ('הרב אברהם יצחק הכהן קוק', 'שו"ת משפט כהן'),
+        'חשוקי חמד': ('הרב יצחק זילברשטיין', 'חשוקי חמד'),
     }
     m_pfx = re.match(r'^(?:הגריד"?ס|הגריד\'\'ס)\s*[-—:]\s*', clean)
     pfx_author = None
@@ -775,7 +805,7 @@ def parse_citation(citation):
             author = pfx_author or resp_author
             rest = clean[m_resp.end():].strip()
             rest = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', rest).strip()
-            loc_match = re.search(r'(חלק\s+[א-ת0-9\'׳]+|או"ח\s+[א-ת0-9\'׳]+|או\'\'ח\s+[א-ת0-9\'׳]+|יו"ד\s+[א-ת0-9\'׳]+|יו\'\'ד\s+[א-ת0-9\'׳]+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דרוש|פרשה|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|שער|שורש\s+[א-ת0-9]+|שורש|הקדמת|עמוד\s+[א-ת0-9]+|עמ[\'׳]\s+[א-ת0-9]+|ד[\'׳]\s+[א-ת0-9]+|כרך\s+[א-ת0-9]+|(?<![א-ת])טור\s+[א-ד0-9](?![א-ת])|ס!|ס"ק|ס[\'׳]|ס׳|ס\'|ד"ה|משנה(?!\s*ברורה)|פיסקא|שיעור|שעור|ח\"[א-ת]|ח\'\'[א-ת]|ח[\'׳][א-ת]).*', rest)
+            loc_match = re.search(r'(חלק\s+[א-ת0-9\'׳]+|או"ח\s+[א-ת0-9\'׳]+(?:\s*-\s*[א-ת0-9\'׳]+)?|או\'\'ח\s+[א-ת0-9\'׳]+(?:\s*-\s*[א-ת0-9\'׳]+)?|יו"ד\s+[א-ת0-9\'׳]+|יו\'\'ד\s+[א-ת0-9\'׳]+|אבהע"ז|חו"מ|בבא\s+[א-ת]+|דרוש|פרשה|דף|פרק|סימן|פסוק|סעיף|מאמר|אות|שער|שורש\s+[א-ת0-9]+|שורש|הקדמת|עמוד\s+[א-ת0-9]+|עמ[\'׳]\s+[א-ת0-9]+|ד[\'׳]\s+[א-ת0-9]+|כרך\s+[א-ת0-9]+|(?<![א-ת])טור\s+[א-ד0-9](?![א-ת])|ס!|ס"ק|ס[\'׳]|ס׳|ס\'|הערה\s+[0-9א-ת\'׳]+|הע[\'׳]\s+[0-9א-ת\'׳]+|הערה|הע[\'׳]|ד"ה|משנה(?!\s*ברורה)|פיסקא|שיעור|שעור|ח\"[א-ת]|ח\'\'[א-ת]|ח[\'׳][א-ת]).*', rest)
             if loc_match:
                 location = loc_match.group(0).strip()
                 extra_book = rest[:loc_match.start()].strip()
@@ -854,6 +884,25 @@ def parse_citation(citation):
                     elif sefer_key in ['תוספות רא"ש', "תוספות רא''ש", 'תוספות הרא"ש', "תוספות הרא''ש"]:
                         maseches = re.sub(r'^(?:על\s+)?(?:מסכת\s+)?', '', extra_clean).strip()
                         book = f"תוספות הרא''ש מסכת {maseches}".strip()
+                    elif sefer_key in ['הגהות אשרי', 'הגהות אשר"י', "הגהות אשר''י"]:
+                        book = f"הגהות אשר''י {extra_clean}".strip() if extra_clean else "הגהות אשר''י"
+                    elif sefer_key == 'תפארת שמואל':
+                        book = f"תפארת שמואל {extra_clean}".strip() if extra_clean else "תפארת שמואל"
+                    elif sefer_key == 'ביצחק יקרא':
+                        maseches = re.sub(r'^(?:על\s+)?(?:מסכת\s+)?', '', extra_clean).strip()
+                        book = f"ביצחק יקרא מסכת {maseches}".strip() if maseches else resp_book
+                    elif sefer_key in ['בית הבחירה למאירי', 'בית הבחירה']:
+                        maseches = re.sub(r'^(?:על\s+)?(?:מסכת\s+)?', '', extra_clean).strip()
+                        book = f"בית הבחירה מסכת {maseches}".strip() if maseches else resp_book
+                    elif sefer_key == 'מגיד משנה':
+                        book = f"מגיד משנה {extra_clean}".strip() if extra_clean else resp_book
+                    elif sefer_key in ['הגהות רעק"א', "הגהות רעק''א"]:
+                        book = f"הגהות רבי עקיבא איגר {extra_clean}".strip() if extra_clean else "הגהות רבי עקיבא איגר אורח חיים"
+                    elif sefer_key == 'חשוקי חמד':
+                        maseches = re.sub(r'^(?:על\s+)?(?:מסכת\s+)?', '', extra_clean).strip()
+                        book = f"חשוקי חמד מסכת {maseches}".strip() if maseches else resp_book
+                    elif sefer_key == 'משפט כהן':
+                        book = "שו''ת משפט כהן"
                     elif sefer_key.startswith('פתח עינים'):
                         extra_clean = re.sub(r'^(?:להחיד"?א|להחיד\'\'א)\s*', '', extra_clean).strip()
                         book = f"פתח עינים {extra_clean}".strip()
@@ -924,6 +973,7 @@ def parse_citation(citation):
             # Post-clean location anomalies
             location = re.sub(r'ס!\s*', 'סימן ', location)
             location = re.sub(r'!', "'", location)
+            location = re.sub(r'(?:^|\s)ד[׳\']\s*ע[״\"׳\']*\s*([אב])(?![א-ת])', r' דף ד עמוד \1', location).strip()
             location = re.sub(r'(?:^|\s)ד[׳\']\s*([א-ת]+)', r' דף \1', location).strip()
             location = re.sub(r'דף\s+([א-ת0-9]+)\s*(?:ע[/\-]|[/|\-])\s*([אב])\b', r'דף \1 עמוד \2', location)
             location = re.sub(r'\bע[/\-]([אב])\b', r'עמוד \1', location)
@@ -1060,9 +1110,11 @@ def parse_citation(citation):
         else:
             book = "מקור"
 
-    if not re.search(r'(?:עמ[\'׳]|עמוד|דף|סימן|פרק|פסוק|אות|הלכה|סעיף)\s+\d+[\)\(]?$', location):
+    if not re.search(r'(?:עמ[\'׳]|עמוד|דף|סימן|פרק|פסוק|אות|הלכה|סעיף|הערה|הע[\'׳])\s+\d+[\)\(]?$', location):
         location = re.sub(r"\s*\d+[\)\(]?$", "", location).strip()
     location = re.sub(r'דף\s+([א-ת0-9]+)\s*(?:ע[/\-]|[/|\-])\s*([אב])\b', r'דף \1 עמוד \2', location)
+    location = re.sub(r'\bד[\'׳]\s*ע["״\'׳]*([אב])\b', r'דף ד עמוד \1', location)
+    location = re.sub(r'\bדף\s+([א-ת0-9]+)\s*ע["״\'׳]*([אב])\b', r'דף \1 עמוד \2', location)
     location = re.sub(r'\bע[/\-]([אב])\b', r'עמוד \1', location)
 
     return author, book, location, audit_needed, audit_reason
@@ -1146,8 +1198,27 @@ def extract_sources_and_images(pdf_path):
         if has_numbered_doc:
             break
 
+    # Detect duplicate PDF page cycles (e.g. 3 pages duplicated 21 times)
+    page_texts = [p.get_text().strip() for p in doc]
+    total_pages = len(doc)
+    effective_page_count = total_pages
+    for cycle_len in range(1, total_pages // 2 + 1):
+        if total_pages % cycle_len == 0:
+            repeats = total_pages // cycle_len
+            base_cycle = page_texts[:cycle_len]
+            if all(len(t) > 20 for t in base_cycle):
+                is_repetition = True
+                for r in range(1, repeats):
+                    if page_texts[r * cycle_len : (r + 1) * cycle_len] != base_cycle:
+                        is_repetition = False
+                        break
+                if is_repetition:
+                    print(f"Detected duplicate PDF cycle: {cycle_len} pages repeated {repeats} times. Only processing the first {cycle_len} pages.")
+                    effective_page_count = cycle_len
+                    break
+
     cur_max_header_num = 0
-    for page_num in range(len(doc)):
+    for page_num in range(effective_page_count):
         page = doc[page_num]
         blocks = page.get_text("blocks")
 
