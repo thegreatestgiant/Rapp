@@ -36,7 +36,7 @@ KNOWN_AUTHORS = [
     'שולחן ערוך', 'משנה ברורה', 'בית יוסף', 'אגרות משה', 'שו"ת אגרות משה',
     'מהרש"א', 'רד"ק', 'אברבנאל', 'מצודת דוד', 'מלבי"ם', 'חזון איש', 'חתם סופר',
     'שו"ת חתם סופר', 'פתחי תשובה', 'באר היטב', 'רב פעלים', 'שו"ת רב פעלים',
-    'אבני נזר', 'שו"ת אבני נזר', 'מגן אברהם', 'ביאור הלכה', 'ציץ אליעזר',
+    'אבני נזר', 'שו"ת אבני נזר', 'מגן אברהם', 'ביאור הלכה', 'שער הציון', 'ציץ אליעזר',
     'שו"ת ציץ אליעזר', 'שמירת שבת כהלכתה', 'מדרש תנחומא', 'תנחומא', 'ספרי',
     'בראשית רבה', 'במדבר רבה', 'קהלת רבה', 'מדרש רבה', 'מדרש תהלים', 'מדרש משלי', 'זוהר',
     'הגרמ"צ ברגמן', 'הגראי"ל שטיינמן', 'חכם צבי', 'שו"ת חכם צבי', 'מזרחי',
@@ -165,6 +165,7 @@ AUTHOR_CANONICAL_MAP = {
     'פירוש המשניות להרמב"ם': 'רמב"ם',
     'פירוש המשניות': 'רמב"ם',
     'ביאור הלכה': 'משנה ברורה',
+    'שער הציון': 'משנה ברורה',
     'שו"ת בית יהודה': 'רבי יהודה עייאש',
     "שו''ת בית יהודה": 'רבי יהודה עייאש',
     'שו"ת בית': 'רבי יהודה עייאש',
@@ -1088,6 +1089,9 @@ def parse_citation(citation):
     elif matched_text == "ביאור הלכה":
         author = "משנה ברורה"
         book = "ביאור הלכה"
+    elif matched_text == "שער הציון":
+        author = "משנה ברורה"
+        book = "שער הציון"
     elif author == "משנה ברורה" and ("על שולחן ערוך" in clean or "על השולחן ערוך" in clean):
         book = "משנה ברורה"
         location = re.sub(r'^(?:על\s+)?(?:ה?שולחן\s+ערוך\s+)?', '', location).strip(' -:')
@@ -1219,7 +1223,7 @@ def match_existing_source(author, book, location):
 
 KNOWN_HEADER_KEYWORDS = [
     "תלמוד בבלי", "תלמוד ירושלמי", "רש\"י", "רמב\"ם", "משנה ברורה", "שולחן ערוך", "רא\"ש",
-    "בית יוסף", "ביאור הלכה", "מגן אברהם", "טור", "ספרי", "מדרש", "פסיקתא", "בראשית רבה",
+    "בית יוסף", "ביאור הלכה", "שער הציון", "מגן אברהם", "טור", "ספרי", "מדרש", "פסיקתא", "בראשית רבה",
     "במדבר רבה", "קהלת רבה", "אגרות משה", "חזון איש", "חתם סופר", "אבני נזר", "פתחי תשובה",
     "ציץ אליעזר", "שמירת שבת כהלכתה", "ערוך השולחן", "פרי מגדים", "תוספות", "ריטב\"א",
     "רשב\"א", "ר\"ן", "רי\"ף", "פירוש המשניות"
@@ -1382,16 +1386,30 @@ def extract_sources_and_images(pdf_path):
                 if block_idx + 1 < len(blocks):
                     first_line = blocks[block_idx+1][4].strip().split('\n')[0]
                     first_line_dec = first_line.strip() if is_ocr else decode_text(first_line).strip()
-                    match = re.search(r'^(.*?)[\-\.:](?:\s|$)', first_line_dec)
-                    if match:
-                        candidate = match.group(1).strip()
-                        if len(candidate.split()) <= 8:
-                            dh = candidate
-                    elif first_line_dec.endswith('-') or first_line_dec.endswith('.') or first_line_dec.endswith(':'):
-                        candidate = first_line_dec[:-1].strip()
-                        if len(candidate.split()) <= 8:
-                            dh = candidate
-                if dh:
+                    if book == "שער הציון":
+                        m_ot = re.search(r'[\(\)]([א-ת0-9"״\'׳]+)[\(\)]', first_line_dec)
+                        if m_ot and "אות" not in location:
+                            clean_ot = re.sub(r'["״\'׳]', '', m_ot.group(1))
+                            location = f"{location} אות {clean_ot}"
+                            dh = f"אות {clean_ot}"
+                    elif author == "רב עובדיה יוסף" or "שו''ת" in book or 'שו"ת' in book:
+                        m_sec = re.match(r'^([א-ת])\/(?:\s|$)', first_line_dec.strip())
+                        if m_sec and "אות" not in location:
+                            clean_sec = m_sec.group(1)
+                            location = f"{location} אות {clean_sec}"
+                            dh = f"אות {clean_sec}"
+
+                    if not dh:
+                        match = re.search(r'^(.*?)[\-\.:](?:\s|$)', first_line_dec)
+                        if match:
+                            candidate = match.group(1).strip()
+                            if len(candidate.split()) <= 8:
+                                dh = candidate
+                        elif first_line_dec.endswith('-') or first_line_dec.endswith('.') or first_line_dec.endswith(':'):
+                            candidate = first_line_dec[:-1].strip()
+                            if len(candidate.split()) <= 8:
+                                dh = candidate
+                if dh and not dh.startswith("אות "):
                     dh = re.sub(r'^\s*[\(\)][א-ת0-9\s\'\"״׳]+[\(\)]\s*', '', dh).strip()
                     dh = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', dh).strip()
             except ValueError:
@@ -1420,6 +1438,17 @@ def extract_sources_and_images(pdf_path):
                 "audit_needed": audit_needed,
                 "audit_reason": audit_reason
             })
+
+    # Disambiguate un-sectioned responsa sources if a subsequent section exists in same sheet
+    for idx, s in enumerate(sources):
+        if "אות" not in s["location"] and (s["author"] == "רב עובדיה יוסף" or "שו" in s["book"]):
+            for other in sources:
+                if other != s and other["author"] == s["author"] and other["book"] == s["book"]:
+                    if other["location"].startswith(s["location"]) and "אות ב" in other["location"]:
+                        s["location"] = f"{s['location']} אות א"
+                        if not s.get("dibur_hamatchil"):
+                            s["dibur_hamatchil"] = "אות א"
+                        break
 
     return sources
 def process_source(source_data, sheet_stem, subject, seen_in_sheet=None):
@@ -1571,6 +1600,8 @@ tags: {tag_list}
 ### {heading_to_use}
 """
     source_file.write_text(source_content, encoding="utf-8")
+    if seen_in_sheet is not None:
+        seen_in_sheet[file_base] = 1
     return file_base, heading_to_use, audit_needed
 
 def main():
