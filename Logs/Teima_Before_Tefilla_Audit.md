@@ -35,8 +35,16 @@ Audited `111 Source Sheets/teima before tefilla.md` (`000 Source PDFs/teima befo
 ### 3. Source #8 Multi-Page Spanning
 - **Verification**: **שולחן ערוך אורח חיים סימן רלב סעיף ב** begins at the bottom of Page 1 and continues across the top of Page 2 before Source #9. Verified that both crops `teima before tefilla_p1_s8.png` and continuation crop `teima before tefilla_p2_cont.png` are properly embedded in [`333 Sources/שולחן ערוך - אורח חיים - סימן רלב סעיף ב.md`](file:///home/sean/Obsidian/Rapp/333%20Sources/%D7%A9%D7%55%D7%9C%D7%97%D7%9F%20%D7%A2%D7%A8%D7%55%D7%9A%20-%20%D7%22%D7%95%D7%A8%D7%97%20%D7%97%D7%99%D7%99%D7%95%20-%20%D7%A1%D7%99%D7%9E%D7%9F%20%D7%A8%D7%9C%D7%91%20%D7%A1%D7%A2%D7%99%D7%A3%20%D7%91.md).
 
-### 4. Preservation of User Notes
-- **Verification**: Verified that [`333 Sources/תלמוד בבלי - מסכת ברכות - דף י עמוד ב.md`](file:///home/sean/Obsidian/Rapp/333%20Sources/%D7%AA%D7%9C%D7%9E%D7%55%D7%93%20%D7%91%D7%91%D7%9C%D7%99%20-%20%D7%9E%D7%A1%D7%93%D7%AA%20%D7%91%D7%A8%D7%93%D7%95%D7%AA%20-%20%D7%93%D7%A3%20%D7%99%20%D7%A2%D7%9E%D7%55%D7%93%20%D7%91.md) retained all existing user study commentary under its internal heading while cleanly adopting the new crop `teima before tefilla_p1_s1.png`.
+### 4. Preservation of User Notes & Multi-Sheet Heading Partitioning (Berachot 10b)
+- **Convention**: In Gemara notes referenced across multiple source sheets, content headings are partitioned by the sheet name (e.g. `### melachim 1.6`, `### teima before tefilla`), matching the vault convention established in Sanhedrin 22a and Sanhedrin 102a.
+- **Resolution**:
+  - In [`333 Sources/תלמוד בבלי - מסכת ברכות - דף י עמוד ב.md`](file:///home/sean/Obsidian/Rapp/333%20Sources/%D7%AA%D7%9C%D7%9E%D7%55%D7%93%20%D7%91%D7%91%D7%9C%D7%99%20-%20%D7%9E%D7%A1%D7%93%D7%AA%20%D7%91%D7%A8%D7%93%D7%95%D7%AA%20-%20%D7%93%D7%A3%20%D7%99%20%D7%A2%D7%9E%D7%55%D7%93%20%D7%91.md), partitioned the user study notes into distinct subsections:
+    - `### melachim 1.6`: contains study notes regarding Chizkiyahu praying by turning to the wall.
+    - `### teima before tefilla`: contains study notes regarding the prohibition of eating before praying for one's life.
+  - Updated embed in [`111 Source Sheets/melachim 1.6.md`](file:///home/sean/Obsidian/Rapp/111%20Source%20Sheets/melachim%201.6.md) to `![[תלמוד בבלי - מסכת ברכות - דף י עמוד ב#melachim 1.6]]`.
+  - Updated embed in [`111 Source Sheets/teima before tefilla.md`](file:///home/sean/Obsidian/Rapp/111%20Source%20Sheets/teima%20before%20tefilla.md) to `![[תלמוד בבלי - מסכת ברכות - דף י עמוד ב#teima before tefilla]]`.
+  - Added tag `halacha-source` alongside `navi-source`.
+  *(Note: Maintained strictly in audit workflows and note curation, preserved independent of script automation).*
 
 ---
 
@@ -44,7 +52,7 @@ Audited `111 Source Sheets/teima before tefilla.md` (`000 Source PDFs/teima befo
 
 | # | Canonical Title | Author | Status | Notes |
 |---|---|---|---|---|
-| 1 | `תלמוד בבלי - מסכת ברכות - דף י עמוד ב` | [[תלמוד בבלי]] | ✅ Preserved | User study notes intact; crop `p1_s1` added |
+| 1 | `תלמוד בבלי - מסכת ברכות - דף י עמוד ב` | [[תלמוד בבלי]] | ✅ Preserved | Partitioned headings by sheet: `#melachim 1.6` & `#teima before tefilla` |
 | 2 | `רשב''א - חידושי הרשב''א מסכת ברכות - דף י עמוד ב` | [[רשב''א]] | ✅ Verified | Clean 2-header layout; crop `p1_s2` |
 | 3 | `רא''ש - מסכת ברכות - פרק א סימן י` | [[רא''ש]] | ✅ Verified | Clean 2-header layout; crop `p1_s3` |
 | 4 | `רבי יעקב בן אשר - טור אורח חיים - סימן פט` | [[רבי יעקב בן אשר]] | ✅ Verified | Clean 2-header layout; crop `p1_s4` |
