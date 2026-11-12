@@ -5,7 +5,11 @@
 > 2. **Dual Compatibility**: Any parser fix or script update MUST work for both existing vault notes and newly generated future notes.
 > 3. **Audit Order of Operations**: When auditing, **first fix the sheets and vault files** so notes and embeds are immediately functional and clean, and **then fix the root issue in the scripts** (`process_source_sheets.py`) so future runs parse correctly out-of-the-box.
 > 4. **Session Logging**: Document audit results and architectural updates in `Logs/` (e.g., `Logs/<Topic>_Audit.md` or `Logs/Bugs_Fixed.md`). Keep this file focused on enduring system rules and capabilities, not chronological logs.
-> 5. **Git Safety**: Do not commit changes directly; the user reviews and commits all changes.
+> 5. **Git Safety & Commit Standards**: When instructed to commit, strictly adhere to conventional emoji prefixes:
+>    - `🤨`: **Audit Fixes & Verifications** (e.g., `🤨 Navi - Melachim 1.14`, `🤨 Gemara - ...`). ALWAYS use `🤨` for audit fixes and verification runs.
+>    - `🎓`: **Completed Source Sheets / Shiur Notes** (e.g., `🎓 Navi - Melachim 1.13`).
+>    - `⏳`: **In-Progress / Initial Extraction Drafts** (e.g., `⏳ Navi - Melachim 1.10`).
+>    - Do not commit changes directly unless explicitly requested by the user.
 
 ---
 
@@ -76,6 +80,7 @@ When auditing or fixing a master source sheet, adhere to a strict two-stage proc
    - Patch the Python script directly so future runs parse correctly automatically.
 5. **Log Results**: Document the audit and script fixes in `Logs/<Topic>_Audit.md` (e.g., `Melachim_Audit.md`, `Two_Do_Audit.md`, `Tzitzis_Audit.md`, `Universe_Audit.md`, `Fixing_Lulav_and_Esrog_Audit.md`).
 6. **Report Back**: Summarize all sources corrected on the sheet, followed by the script root cause patches implemented.
+7. **Commit Standards**: When user requests a commit for an audit fix, ALWAYS use the `🤨` emoji prefix (e.g., `git commit -m "🤨 <Subject> - <Topic>"`).
 
 ---
 
