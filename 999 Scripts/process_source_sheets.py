@@ -1259,6 +1259,9 @@ def get_normalized_location(t):
     t = re.sub(r'^דף(?=[א-ת0-9])', 'ד', t)
     return t
 
+def strip_dh(t):
+    return re.sub(r'[\s\-_]*(?:ד["״\'׳]{1,2}ה|דיבור המתחיל)\s+.*$', '', t).strip()
+
 def match_existing_source(author, book, location):
     display_author = sanitize_filename(author)[:60].strip()
     display_book = sanitize_filename(book)[:60].strip()
@@ -1277,6 +1280,7 @@ def match_existing_source(author, book, location):
 
     norm_author = normalize_text_for_match(author)
     norm_loc = get_normalized_location(location)
+    norm_loc_nodh = get_normalized_location(strip_dh(location))
     norm_book = normalize_text_for_match(book)
     
     existing_files = list(SOURCES_DIR.glob("*.md"))
@@ -1284,22 +1288,32 @@ def match_existing_source(author, book, location):
     for f in existing_files:
         stem = f.stem
         parts = stem.split(" - ")
-        if len(parts) >= 3:
-            ex_author = parts[0]
-            ex_book = " - ".join(parts[1:-1])
-            ex_loc = parts[-1]
-            
-            if normalize_text_for_match(ex_author) == norm_author:
-                if get_normalized_location(ex_loc) == norm_loc:
-                    if difflib.SequenceMatcher(None, norm_book, normalize_text_for_match(ex_book)).ratio() >= 0.7:
-                        return f
-        elif len(parts) == 2:
-            ex_author = parts[0]
-            ex_loc = parts[1]
-            if normalize_text_for_match(ex_author) == norm_author:
-                if get_normalized_location(ex_loc) == norm_loc:
+        if not parts:
+            continue
+        ex_author = parts[0]
+        if normalize_text_for_match(ex_author) != norm_author:
+            continue
+
+        # Try all split points between book and location to accommodate dashes in book/location
+        for split_idx in range(1, len(parts)):
+            candidate_book = " - ".join(parts[1:split_idx]) if split_idx > 1 else ""
+            candidate_loc = " - ".join(parts[split_idx:])
+
+            book_match = False
+            if candidate_book:
+                if difflib.SequenceMatcher(None, norm_book, normalize_text_for_match(candidate_book)).ratio() >= 0.7:
+                    book_match = True
+            else:
+                # 2-part filename (Author - Location) where book == author or book is omitted
+                if norm_book == norm_author or not norm_book:
+                    book_match = True
+
+            if book_match:
+                cand_norm_loc = get_normalized_location(candidate_loc)
+                cand_norm_loc_nodh = get_normalized_location(strip_dh(candidate_loc))
+                if cand_norm_loc in (norm_loc, norm_loc_nodh) or cand_norm_loc_nodh in (norm_loc, norm_loc_nodh):
                     return f
-                        
+
     return None
 
 KNOWN_HEADER_KEYWORDS = [

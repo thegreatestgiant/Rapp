@@ -31,7 +31,7 @@ Audited `111 Source Sheets/melachim 1.14.md` (`000 Source PDFs/melachim 1.14.pdf
 - **Author Note**: Updated [`222 Authors/אבני נזר.md`](file:///home/sean/Obsidian/Rapp/222%20Authors/%D7%90%D7%91%D7%A0%D7%99%20%D7%A0%D7%96%D7%A8.md) with comprehensive aliases and biography.
 
 ### 6. User Study Notes Preserved
-- **Berakhot 10b (Source #3)**: Preserved existing study notes under `### תלמוד בבלי - מסכת ברכות - דף י עמוד ב - melachim 1.6` (*"They turned to the wall. חזקיהו asked to be saved..."*) and `### תלמוד בבלי - מסכת ברכות - דף י עמוד ב - teima before tefilla` (*"Don't eat before you start begging for your life."*) intact in [`333 Sources/תלמוד בבלי - מסכת ברכות - דף י עמוד ב.md`](file:///home/sean/Obsidian/Rapp/333%20Sources/%D7%AA%D7%94%D7%9E%D7%95%D7%93%20%D7%91%D7%91%D7%94%D7%99%20-%20%D7%9E%D7%A1%D7%93%D7%AA%20%D7%91%D7%A8%D7%93%D7%95%D7%AA%20-%20%D7%93%D7%A3%20%D7%99%20%D7%A2%D7%9E%D7%95%D7%93%20%D7%91.md).
+- **Berakhot 10b (Source #3)**: Preserved existing study notes under `### תלמוד בבלי - מסכת ברכות - דף י עמוד ב - melachim 1.6` and `### תלמוד בבלי - מסכת ברכות - דף י עמוד ב - teima before tefilla`, and established dedicated disambiguated subsection `### תלמוד בבלי - מסכת ברכות - דף י עמוד ב - melachim 1.14` containing full English translation of the Kings I 14:9 derashah (*"And You have cast Me behind your back [gavecha]... do not read it as gavecha, but rather ge'echa"*), referenced cleanly in [`111 Source Sheets/melachim 1.14.md`](file:///home/sean/Obsidian/Rapp/111%20Source%20Sheets/melachim%201.14.md).
 - **Kesef Mishneh (Source #12)**: Preserved study notes (*"His mother was a convert, but because his father was king he could be king"*) intact in [`333 Sources/רבי יוסף קארו - כסף משנה - הלכות מלכים פרק א הלכה ד.md`](file:///home/sean/Obsidian/Rapp/333%20Sources/%D7%A8%D7%91%D7%99%20%D7%99%D7%95%D7%A1%D7%A3%20%D7%A7%D7%90%D7%A8%D7%95%20-%20%D7%93%D7%A1%D7%A3%20%D7%9E%D7%50%D7%A0%D7%94%20-%20%D7%94%D7%94%D7%93%D7%95%D7%AA%20%D7%9E%D7%94%D7%93%D7%99%D7%95%20%D7%A4%D7%A8%D7%A7%20%D7%90%20%D7%94%D7%94%D7%93%D7%94%20%D7%93.md).
 
 ---
@@ -90,3 +90,28 @@ Audited `111 Source Sheets/melachim 1.14.md` (`000 Source PDFs/melachim 1.14.pdf
 
 7. **Chida Canonical Normalization**:
    - Corrected canonical mapping target for `חיד"א` and `החיד"א` in `AUTHOR_CANONICAL_MAP` from double-quote to canonical vault standard `"חיד''א"`.
+
+8. **Flexible Location & D"H Stripping in `match_existing_source`**:
+   - Enhanced `match_existing_source` to iterate through all possible split points between book and location (`split_idx in range(1, len(parts))`), accommodating dashes inside book titles or locations (e.g. `חו''מ - סימן א`).
+   - Implemented `strip_dh` normalization (`re.sub(r'[\s\-_]*(?:ד["״\'׳]{1,2}ה|דיבור המתחיל)\s+.*$', '', t)`) so citations containing specific D"H variants match existing notes for the same Siman/Daf instead of creating redundant duplicate files.
+
+---
+
+## 4. Post-Audit Deduplication & Sheet Disambiguation
+
+1. **Noda BiYehuda Consolidation**:
+   - Merged duplicate note `333 Sources/רבי יחזקאל לנדא - שו''ת נודע ביהודה מהדורה קמא - חו''מ - סימן א ד''ה אמנם להוציא.md` into canonical note [`333 Sources/רבי יחזקאל לנדא - שו''ת נודע ביהודה מהדורה קמא - חו''מ - סימן א.md`](file:///home/sean/Obsidian/Rapp/333%20Sources/%D7%A8%D7%91%D7%99%20%D7%99%D7%97%D7%96%D7%A7%D7%90%D7%94%20%D7%9C%D7%A0%D7%93%D7%90%20-%20%D7%A9%D7%95''%D7%AA%20%D7%A0%D7%95%D7%93%D7%A2%20%D7%91%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%9E%D7%94%D7%93%D7%95%D7%A8%D7%94%20%D7%A7%D7%9E%D7%90%20-%20%D7%97%D7%95''%D7%9E%20-%20%D7%A1%D7%99%D7%9E%D7%97%20%D7%90.md).
+   - Preserved all user study notes from both sheets under dedicated headers:
+     - `### ... - melachim 1.14`
+     - `### ... - melachim 1.11`
+   - Updated embeds in both [`111 Source Sheets/melachim 1.14.md`](file:///home/sean/Obsidian/Rapp/111%20Source%20Sheets/melachim%201.14.md) and [`111 Source Sheets/melachim 1.11.md`](file:///home/sean/Obsidian/Rapp/111%20Source%20Sheets/melachim%201.11.md).
+
+2. **Kessef Mishneh Disambiguation**:
+   - Disambiguated [`333 Sources/רבי יוסף קארו - כסף משנה - הלכות מלכים פרק א הלכה ד.md`](file:///home/sean/Obsidian/Rapp/333%20Sources/%D7%A8%D7%91%D7%99%20%D7%99%D7%95%D7%A1%D7%A3%20%D7%A7%D7%90%D7%A8%D7%95%20-%20%D7%9B%D7%A1%D7%A4%20%D7%9E%D7%A9%D7%A0%D7%94%20-%20%D7%94%D7%94%D7%9B%D7%95%D7%AA%20%D7%9E%D7%94%D7%9B%D7%99%D7%95%20%D7%A4%D7%A8%D7%A7%20%D7%90%20%D7%94%D7%94%D7%9B%D7%94%20%D7%93.md) into sheet-specific sections (` - melachim 1.14` and ` - melachim 1.11`), preventing cross-sheet bleed.
+   - Updated embeds in both master source sheets.
+
+3. **Berachot 10b & Maharsha Disambiguation**:
+   - Disambiguated `ברכות י עמוד ב` and `מהרש''א על ברכות י עמוד ב` with dedicated `- melachim 1.14` anchors.
+
+4. **PDF Double #9 Clarification**:
+   - Documented that page 2 of `000 Source PDFs/melachim 1.14.pdf` contains two sources numbered `(9` (Ta'anit 20a and Radak), resulting in 17 canonical sources on the sheet while the PDF's last printed number is `(16`.
