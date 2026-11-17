@@ -36,7 +36,7 @@ Audited `111 Source Sheets/melachim 1.15.md` (`000 Source PDFs/melachim 1.15.pdf
 
 ---
 
-## 2. Complete Sheet Verification (14/14)
+## 2. Complete Sheet Verification (15/15)
 
 | # | Canonical Title | Canonical Author | Status | Notes |
 |---|---|---|---|---|
@@ -52,8 +52,9 @@ Audited `111 Source Sheets/melachim 1.15.md` (`000 Source PDFs/melachim 1.15.pdf
 | 10 | `רש''י - מלכים א - פרק יא פסוק לט` | [[רש''י]] | ✅ Verified | Clean DH anchor `#אך לא כל הימים` |
 | 11 | `תנ''ך - דברי הימים ב - פרק טז פסוק יב` | [[תנ''ך]] | 🔧 **Fixed** | Corrupt DH `#ר«פ  א ים` replaced with canonical Tanach heading |
 | 12 | `אבן עזרא - שמות - פרק כג פסוק כה` | [[אבן עזרא]] | ✅ Verified | Clean 2-header layout |
-| 13 | `ב''ח - יורה דעה - סימן שלו` | [[ב''ח]] | 🔧 **Fixed** | Attributed to Bach; book & location normalized; Sotah 10a anchored |
-| 14 | `יהודה הנשיא - משנה מסכת אבות - פרק ה משנה יח` | [[יהודה הנשיא]] | 🔧 **Fixed** | Attributed to Yehudah HaNasi; DH anchor `#כל המזכה את הרבים` |
+| 13 | `ב''ח - יורה דעה - סימן שלו` | [[ב''ח]] | 🔧 **Fixed** | Attributed to Bach; study notes preserved |
+| 14 | `תלמוד בבלי - מסכת סוטה - דף י עמוד א` | [[תלמוד בבלי]] | 🔧 **Fixed** | Separated unnumbered Gemara into dedicated note #14; study notes preserved; dedicated crop `melachim 1.15_p2_s6_sotah.png` |
+| 15 | `יהודה הנשיא - משנה מסכת אבות - פרק ה משנה יח` | [[יהודה הנשיא]] | 🔧 **Fixed** | Bumped to #15; attributed to Yehudah HaNasi; DH anchor `#כל המזכה את הרבים` |
 
 ---
 
