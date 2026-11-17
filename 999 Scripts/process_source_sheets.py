@@ -1524,6 +1524,16 @@ def extract_sources_and_images(pdf_path):
                 cont_img_name = sanitize_filename(f"{pdf_path.stem}_p{page_num+1}_cont.png")
                 pix.save(str(ATTACHMENTS_DIR / cont_img_name))
                 sources[-1]["image_filenames"].append(cont_img_name)
+                if not sources[-1].get("dibur_hamatchil") and sources[-1]["author"] == "משנה ברורה":
+                    first_cont_line = (content_blocks[0][4] if is_ocr else decode_text(content_blocks[0][4])).strip().splitlines()[0].strip()
+                    m_cont_dh = re.search(r'^(.*?)[\-\.:](?:\s|$)', first_cont_line)
+                    if m_cont_dh:
+                        cand = m_cont_dh.group(1).strip()
+                        if len(cand.split()) <= 4:
+                            cand = re.sub(r'^\s*[\(\)][א-ת0-9\s\'\"״׳]+[\(\)]\s*', '', cand).strip()
+                            cand = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', cand).strip()
+                            if cand:
+                                sources[-1]["dibur_hamatchil"] = cand
 
         for i, h in enumerate(headers):
             raw_header = h[4].strip()
@@ -1583,6 +1593,12 @@ def extract_sources_and_images(pdf_path):
                             clean_sec = m_sec.group(1)
                             location = f"{location} אות {clean_sec}"
                             dh = f"אות {clean_sec}"
+                    elif (author == "שולחן ערוך" or book == "שולחן ערוך") and "סעיף" not in location:
+                        m_seif = re.match(r'^סעיף\s+([א-ת0-9"״\'׳]+)', first_line_dec.strip())
+                        if m_seif:
+                            clean_seif = re.sub(r'["״\'׳]', '', m_seif.group(1))
+                            if clean_seif != 'א':
+                                location = f"{location} סעיף {clean_seif}"
 
                     if not dh and author not in ["תנ''ך", 'תנ"ך', "שמירת שבת כהלכתה", "שולחן ערוך", "רמב''ם", "רמב\"ם", "חיי אדם", "קיצור שולחן ערוך"]:
                         match = re.search(r'^(.*?)[\-\.:](?:\s|$)', first_line_dec)
@@ -1633,6 +1649,15 @@ def extract_sources_and_images(pdf_path):
                         s["location"] = f"{s['location']} אות א"
                         if not s.get("dibur_hamatchil"):
                             s["dibur_hamatchil"] = "אות א"
+                        break
+
+    # Disambiguate un-sectioned Shulchan Aruch sources if another source in the same siman exists
+    for idx, s in enumerate(sources):
+        if (s["author"] == "שולחן ערוך" or s["book"] == "שולחן ערוך") and "סעיף" not in s["location"]:
+            for other in sources:
+                if other != s and (other["author"] == s["author"] or other["book"] == s["book"]):
+                    if re.match(rf"^{re.escape(s['location'])}(?:\s+|$)", other["location"]) and "סעיף" in other["location"]:
+                        s["location"] = f"{s['location']} סעיף א"
                         break
 
     return sources
