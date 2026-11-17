@@ -1,11 +1,11 @@
 ---
 tags: [navi-source]
-author: "[[Vilna Goan]]"
+author: "[[הגר''א]]"
 book: "קול אליהו"
 location: "על דברים פרק לב פסוק ל"
 ---
 > [!info]- Reference
-> Author:: [[Vilna Goan]]
+> Author:: [[הגר''א]]
 > Book:: קול אליהו
 > Location:: על דברים פרק לב פסוק ל
 
