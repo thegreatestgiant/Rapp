@@ -56,7 +56,8 @@ KNOWN_AUTHORS = [
     'מהר"ם מרוטנבורג', "מהר''ם מרוטנבורג", 'מהרם מרוטנבורג', 'רבי מאיר מרוטנבורג',
     'קהלות יעקב', 'קהילת יעקב', 'הסטייפלר',
     'פסיקתא דרב כהנא', 'פסיקתא רבתי', 'רבי יהודה דוד אייזנשטיין', 'יהודה דוד אייזנשטיין', 'אוצר המדרשים',
-    'ראב"ד', "ראב''ד", 'הראב"ד', "הראב''ד"
+    'ראב"ד', "ראב''ד", 'הראב"ד', "הראב''ד",
+    'רבינו חננאל', 'רבנו חננאל', 'מרומי שדה', 'באור הלכה'
 ]
 
 def ensure_dirs():
@@ -633,7 +634,11 @@ AUTHOR_CANONICAL_MAP = {
     'השגות הראב"ד': "ראב''ד",
     "השגות הראב''ד": "ראב''ד",
     'בעל ההשגות': "ראב''ד",
-    'רבי אברהם בן דוד': "ראב''ד"
+    'רבי אברהם בן דוד': "ראב''ד",
+    'רבינו חננאל': 'רבינו חננאל',
+    'רבנו חננאל': 'רבינו חננאל',
+    'מרומי שדה': "הנצי''ב",
+    'באור הלכה': 'משנה ברורה'
 }
 
 def get_all_known_authors():
@@ -764,6 +769,15 @@ def parse_citation(citation):
     if m_trailing_ot:
         trailing_ot = m_trailing_ot.group(1)
         clean = clean[:m_trailing_ot.start()].strip()
+    m_range = re.search(r'דף\s+([א-ת0-9]+)\s+עמוד\s+([אב])\s*[\"\'״׳].*?[\"\'״׳]\s*עד\s+עמוד\s+([אב])(?:\s*[\"\'״׳].*?[\"\'״׳])?', clean)
+    if m_range:
+        r_daf = m_range.group(1)
+        r_a1 = m_range.group(2)
+        r_a2 = m_range.group(3)
+        if r_a1 == 'א' and r_a2 == 'ב':
+            clean = clean[:m_range.start()] + f"דף {r_daf} עמוד א וב"
+        else:
+            clean = clean[:m_range.start()] + f"דף {r_daf} עמוד {r_a1}-{r_a2}"
     clean = re.sub(r'פרק\s+([א-ת0-9]+)\s*[\(\[\]\)]\s*([א-ת0-9]+)\s*[\(\[\]\)]', r'פרק \1 פסוק \2', clean)
     clean = re.sub(r"\s*[\(\)][0-9א-ת\s]+[\(\)]\s*$", "", clean)
     clean = re.sub(r'[\(\)][^\(\)]*[\(\)]', '', clean)
@@ -951,6 +965,9 @@ def parse_citation(citation):
         'אוצר המדרשים': ('רבי יהודה דוד אייזנשטיין', 'אוצר המדרשים'),
         'פסיקתא דרב כהנא': ('פסיקתא דרב כהנא', 'פסיקתא דרב כהנא'),
         'פסיקתא רבתי': ('פסיקתא רבתי', 'פסיקתא רבתי'),
+        'מרומי שדה': ("הנצי''ב", 'מרומי שדה'),
+        'רבינו חננאל': ('רבינו חננאל', 'מסכת שבת'),
+        'רבנו חננאל': ('רבינו חננאל', 'מסכת שבת'),
     }
     m_pfx = re.match(r'^(?:הגריד"?ס|הגריד\'\'ס)\s*[-—:]\s*', clean)
     pfx_author = None
@@ -1151,6 +1168,16 @@ def parse_citation(citation):
                             book = 'נספחים'
                         else:
                             book = resp_book
+                    elif sefer_key == 'מרומי שדה':
+                        if extra_clean:
+                            book = f"מרומי שדה {extra_clean}" if not extra_clean.startswith("מרומי שדה") else extra_clean
+                        else:
+                            book = resp_book
+                    elif sefer_key in ['רבינו חננאל', 'רבנו חננאל']:
+                        if extra_clean:
+                            book = extra_clean
+                        else:
+                            book = resp_book
                     else:
                         book = f"{resp_book} {extra_book}".strip()
                 else:
@@ -1204,6 +1231,7 @@ def parse_citation(citation):
             location = re.sub(r'!', "'", location)
             location = re.sub(r'(?:^|\s)ד[׳\']\s*ע[״\"׳\']*\s*([אב])(?![א-ת])', r' דף ד עמוד \1', location).strip()
             location = re.sub(r'(?:^|\s)ד[׳\']\s*([א-ת]+)', r' דף \1', location).strip()
+            location = re.sub(r'ד["״\'׳]*ה\s*[\*]\s*', 'ד"ה ', location)
             location = re.sub(r'דף\s+([א-ת0-9]+)\s*(?:ע[/\-]|[/|\-])\s*([אב])\b', r'דף \1 עמוד \2', location)
             location = re.sub(r'\bע[/\-]([אב])\b', r'עמוד \1', location)
             location = re.sub(r'[:-]+$', '', location).strip()
@@ -1280,7 +1308,7 @@ def parse_citation(citation):
     if matched_text in ["פירוש המשניות להרמב\"ם", "פירוש המשניות"]:
         author = "רמב\"ם"
         book = "פירוש המשניות"
-    elif matched_text == "ביאור הלכה":
+    elif matched_text in ["ביאור הלכה", "באור הלכה"]:
         author = "משנה ברורה"
         book = "ביאור הלכה"
     elif matched_text == "שער הציון":
@@ -1362,6 +1390,7 @@ def parse_citation(citation):
 
     if not re.search(r'(?:עמ[\'׳]|עמוד|דף|סימן|פרק|פסוק|אות|הלכה|סעיף|הערה|הע[\'׳])\s+\d+[\)\(]?$', location):
         location = re.sub(r"\s*\d+[\)\(]?$", "", location).strip()
+    location = re.sub(r'ד["״\'׳]*ה\s*[\*]\s*', 'ד"ה ', location)
     location = re.sub(r'דף\s+([א-ת0-9]+)\s*(?:ע[/\-]|[/|\-])\s*([אב])\b', r'דף \1 עמוד \2', location)
     location = re.sub(r'\bד[\'׳]\s*ע["״\'׳]*([אב])\b', r'דף ד עמוד \1', location)
     location = re.sub(r'\bדף\s+([א-ת0-9]+)\s*ע["״\'׳]*([אב])\b', r'דף \1 עמוד \2', location)
@@ -1446,7 +1475,8 @@ KNOWN_HEADER_KEYWORDS = [
     "רשב\"א", "ר\"ן", "רי\"ף", "פירוש המשניות",
     "ספרא", "קצות החושן", "באר יצחק", "מהר\"ם מרוטנבורג", "קהלות יעקב",
     "פסיקתא דרב כהנא", "פסיקתא רבתי", "אוצר המדרשים",
-    "ראב\"ד", "ראב''ד", "הראב\"ד", "הראב''ד", "השגות הראב\"ד", "השגות הראב''ד"
+    "ראב\"ד", "ראב''ד", "הראב\"ד", "הראב''ד", "השגות הראב\"ד", "השגות הראב''ד",
+    "רבינו חננאל", "רבנו חננאל", "מרומי שדה", "באור הלכה"
 ]
 
 def extract_sources_and_images(pdf_path):
@@ -1636,18 +1666,18 @@ def extract_sources_and_images(pdf_path):
                                 location = f"{location} סעיף {clean_seif}"
 
                     if not dh and author not in ["תנ''ך", 'תנ"ך', "שמירת שבת כהלכתה", "שולחן ערוך", "רמב''ם", "רמב\"ם", "חיי אדם", "קיצור שולחן ערוך"]:
-                        match = re.search(r'^(.*?)[\-\.:](?:\s|$)', first_line_dec)
+                        match = re.search(r'^(.*?)[\-\.:/](?:\s|$)', first_line_dec)
                         if match:
                             candidate = match.group(1).strip()
                             if len(candidate.split()) <= 4:
                                 dh = candidate
-                        elif first_line_dec.endswith('-') or first_line_dec.endswith('.') or first_line_dec.endswith(':'):
+                        elif first_line_dec.endswith('-') or first_line_dec.endswith('.') or first_line_dec.endswith(':') or first_line_dec.endswith('/'):
                             candidate = first_line_dec[:-1].strip()
                             if len(candidate.split()) <= 4:
                                 dh = candidate
                 if dh and not dh.startswith("אות "):
                     dh = re.sub(r'^\s*[\(\)][א-ת0-9\s\'\"״׳]+[\(\)]\s*', '', dh).strip()
-                    dh = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', dh).strip()
+                    dh = re.sub(r'^[-\s:;*]+|[-\s:;*]+$', '', dh).strip()
             except ValueError:
                 pass
 
