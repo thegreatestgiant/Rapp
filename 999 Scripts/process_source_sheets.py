@@ -54,7 +54,9 @@ KNOWN_AUTHORS = [
     'ספרא', 'יצחק אלחנן ספקטור', 'רבי יצחק אלחנן ספקטור', 'באר יצחק', 'שו"ת באר יצחק', "שו''ת באר יצחק",
     'קצות החושן', 'קצות', 'קצה"ה', "קצה''ה",
     'מהר"ם מרוטנבורג', "מהר''ם מרוטנבורג", 'מהרם מרוטנבורג', 'רבי מאיר מרוטנבורג',
-    'קהלות יעקב', 'קהילת יעקב', 'הסטייפלר'
+    'קהלות יעקב', 'קהילת יעקב', 'הסטייפלר',
+    'פסיקתא דרב כהנא', 'פסיקתא רבתי', 'רבי יהודה דוד אייזנשטיין', 'יהודה דוד אייזנשטיין', 'אוצר המדרשים',
+    'ראב"ד', "ראב''ד", 'הראב"ד', "הראב''ד"
 ]
 
 def ensure_dirs():
@@ -617,7 +619,21 @@ AUTHOR_CANONICAL_MAP = {
     'רבי מאיר מרוטנבורג': "מהר''ם מרוטנבורג",
     'קהלות יעקב': 'קהלות יעקב',
     'קהילת יעקב': 'קהלות יעקב',
-    'הסטייפלר': 'קהלות יעקב'
+    'הסטייפלר': 'קהלות יעקב',
+    'פסיקתא דרב כהנא': 'פסיקתא דרב כהנא',
+    'פסיקתא רבתי': 'פסיקתא רבתי',
+    'אוצר המדרשים': 'רבי יהודה דוד אייזנשטיין',
+    'רבי יהודה דוד אייזנשטיין': 'רבי יהודה דוד אייזנשטיין',
+    'יהודה דוד אייזנשטיין': 'רבי יהודה דוד אייזנשטיין',
+    'אייזנשטיין': 'רבי יהודה דוד אייזנשטיין',
+    'ראב"ד': "ראב''ד",
+    "ראב''ד": "ראב''ד",
+    'הראב"ד': "ראב''ד",
+    "הראב''ד": "ראב''ד",
+    'השגות הראב"ד': "ראב''ד",
+    "השגות הראב''ד": "ראב''ד",
+    'בעל ההשגות': "ראב''ד",
+    'רבי אברהם בן דוד': "ראב''ד"
 }
 
 def get_all_known_authors():
@@ -748,6 +764,7 @@ def parse_citation(citation):
     if m_trailing_ot:
         trailing_ot = m_trailing_ot.group(1)
         clean = clean[:m_trailing_ot.start()].strip()
+    clean = re.sub(r'פרק\s+([א-ת0-9]+)\s*[\(\[\]\)]\s*([א-ת0-9]+)\s*[\(\[\]\)]', r'פרק \1 פסוק \2', clean)
     clean = re.sub(r"\s*[\(\)][0-9א-ת\s]+[\(\)]\s*$", "", clean)
     clean = re.sub(r'[\(\)][^\(\)]*[\(\)]', '', clean)
     clean = re.sub(r'[\[\]][^\[\]]*[\[\]]', '', clean)
@@ -931,6 +948,9 @@ def parse_citation(citation):
         'מהרם מרוטנבורג': ("מהר''ם מרוטנבורג", 'שו"ת מהר"ם מרוטנבורג'),
         'קהלות יעקב': ('קהלות יעקב', 'קהלות יעקב'),
         'קהילת יעקב': ('קהלות יעקב', 'קהלות יעקב'),
+        'אוצר המדרשים': ('רבי יהודה דוד אייזנשטיין', 'אוצר המדרשים'),
+        'פסיקתא דרב כהנא': ('פסיקתא דרב כהנא', 'פסיקתא דרב כהנא'),
+        'פסיקתא רבתי': ('פסיקתא רבתי', 'פסיקתא רבתי'),
     }
     m_pfx = re.match(r'^(?:הגריד"?ס|הגריד\'\'ס)\s*[-—:]\s*', clean)
     pfx_author = None
@@ -1124,6 +1144,13 @@ def parse_citation(citation):
                         book = resp_book
                     elif sefer_key in ['מהר"ם מרוטנבורג', "מהר''ם מרוטנבורג", 'מהרם מרוטנבורג']:
                         book = resp_book
+                    elif sefer_key == 'אוצר המדרשים':
+                        book = resp_book
+                    elif sefer_key in ['פסיקתא דרב כהנא', 'פסיקתא רבתי']:
+                        if 'נספחים' in extra_clean:
+                            book = 'נספחים'
+                        else:
+                            book = resp_book
                     else:
                         book = f"{resp_book} {extra_book}".strip()
                 else:
@@ -1242,8 +1269,10 @@ def parse_citation(citation):
 
     book = re.sub(r"^[-\s:;]+|[-\s:;]+$", "", book_part).strip()
 
-    if author == "חזקוני" and book.startswith("על "):
-        book = re.sub(r"^על\s+", "", book)
+    if book.startswith("על ") or book.startswith("על-"):
+        cand_book = re.sub(r"^על[-\s]+", "", book).strip()
+        if cand_book in TANACH_BOOKS or any(cand_book.startswith(tb) for tb in TANACH_BOOKS) or author in ["משך חכמה", "אברבנאל", "חזקוני", "רלב''ג", "רלב\"ג", "מלבי''ם", "מלבי\"ם", "רש''י", "רש\"י", "רד''ק", "רד\"ק", "ספורנו", "כלי יקר", "אלשיך"]:
+            book = cand_book
     elif author == "מדרש רבה" and (not book or book == "מקור"):
         if matched_text and matched_text.endswith("רבה"):
             book = matched_text
@@ -1324,6 +1353,10 @@ def parse_citation(citation):
             book = "שדי חמד"
         elif author == "שמירת שבת כהלכתה":
             book = "שמירת שבת כהלכתה"
+        elif author == "רבי יהודה דוד אייזנשטיין":
+            book = "אוצר המדרשים"
+        elif author in ["פסיקתא דרב כהנא", "פסיקתא רבתי"]:
+            book = author
         else:
             book = "מקור"
 
@@ -1411,7 +1444,9 @@ KNOWN_HEADER_KEYWORDS = [
     "ציץ אליעזר", "שמירת שבת כהלכתה", "שבט הלוי", "שו\"ת שבט הלוי", "ברכי יוסף", "נחלת שבעה", "ספר נחלת שבעה",
     "ערוך השולחן", "פרי מגדים", "תוספות", "ריטב\"א",
     "רשב\"א", "ר\"ן", "רי\"ף", "פירוש המשניות",
-    "ספרא", "קצות החושן", "באר יצחק", "מהר\"ם מרוטנבורג", "קהלות יעקב"
+    "ספרא", "קצות החושן", "באר יצחק", "מהר\"ם מרוטנבורג", "קהלות יעקב",
+    "פסיקתא דרב כהנא", "פסיקתא רבתי", "אוצר המדרשים",
+    "ראב\"ד", "ראב''ד", "הראב\"ד", "הראב''ד", "השגות הראב\"ד", "השגות הראב''ד"
 ]
 
 def extract_sources_and_images(pdf_path):
@@ -1636,6 +1671,7 @@ def extract_sources_and_images(pdf_path):
                 "header": decoded_header,
                 "dibur_hamatchil": dh,
                 "image_filenames": [main_img_name],
+                "first_line_dec": first_line_dec if 'first_line_dec' in locals() else "",
                 "audit_needed": audit_needed,
                 "audit_reason": audit_reason
             })
@@ -1659,6 +1695,20 @@ def extract_sources_and_images(pdf_path):
                     if re.match(rf"^{re.escape(s['location'])}(?:\s+|$)", other["location"]) and "סעיף" in other["location"]:
                         s["location"] = f"{s['location']} סעיף א"
                         break
+
+    # Disambiguate duplicate Talmud / Midrash sources sharing the same daf/location without DH
+    for idx, s in enumerate(sources):
+        if not s.get("dibur_hamatchil"):
+            duplicates = [o for o in sources if o != s and o["author"] == s["author"] and o["book"] == s["book"] and o["location"] == s["location"]]
+            if duplicates:
+                first_text = s.get("first_line_dec", "")
+                clean_text = re.sub(r'^\s*[\(\[\]\)].*?[\(\[\]\)]\s*', '', first_text).strip()
+                words = clean_text.split()
+                if words:
+                    cand = " ".join(words[:4])
+                    cand = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', cand).strip()
+                    if cand:
+                        s["dibur_hamatchil"] = cand
 
     return sources
 def process_source(source_data, sheet_stem, subject, seen_in_sheet=None):
