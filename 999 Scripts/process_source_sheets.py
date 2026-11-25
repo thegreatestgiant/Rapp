@@ -47,6 +47,8 @@ KNOWN_AUTHORS = [
     'גוסטמן', 'רמ"א', 'הרמ"א', 'ט"ז', 'ריטב"א', 'חדושי הריטב"א',
     "האר''י הקדוש", 'האר"י הקדוש', 'רבי יוסף קארו', 'כסף משנה', 'הגריד"ס', "הגריד''ס",
     'אבודרהם', 'ספר אבודרהם', 'רבי שלמה גאנצפריד', 'קיצור שולחן ערוך', 'קצור שו"ע', 'נפש הרב', 'הרב צבי שכטר',
+    'משנה הלכות', 'שו"ת משנה הלכות', "שו''ת משנה הלכות", 'רבי מנשה קליין',
+    'פחד יצחק', 'רבי יצחק הוטנר', 'רב מיכאל ברוידה', 'Michael Broyde', 'James Bandler',
     "רמ''ה", 'רמ"ה', 'הרמ"ה', 'יד רמה', 'בני יששכר', 'ספר בני יששכר', 'רבי צבי אלימלך מדינוב', 'רבי יוסף באבד',
     'הרב חיים גרוס', 'הרב יצחק יוסף', 'רבי שמעון בן צמח דוראן', 'תשב"ץ', 'הרב בן ציון פירר',
     'רב יוסף אלבו', 'רבי יעקב עטלינגר', 'רבי אברהם יהושע העשיל בורנשטיין', 'פרקי דרבי אליעזר',
@@ -126,7 +128,10 @@ COMMON_ENG_WORDS = {
     'yisroel', 'translated', 'immortality', 'resurrection', 'kabbalistic', 'view', 'perspective',
     'february', 'torah', 'printed', 'translation', 'how', 'old', 'pp', 'page', 'bereishis',
     'talmud', 'tanakh', 'mishnah', 'midrash', 'munk', 'max', 'shalosh', 'handasiyot', 'baayot',
-    'kings', 'shmuel', 'sefer', 'jewish', 'wikipedia', 'origins', 'israel', 'beta'
+    'kings', 'shmuel', 'sefer', 'jewish', 'wikipedia', 'origins', 'israel', 'beta',
+    'new', 'york', 'nov', 'november', 'dec', 'december', 'jan', 'january', 'street', 'journal',
+    'eastern', 'edition', 'first', 'day', 'celebration', 'thanksgiving', 'held', 'winter',
+    'pilgrims', 'american', 'muslims', 'debate', 'gravity', 'bandler', 'broyde', 'turkey', 'harder'
 }
 
 def is_line_english(line):
@@ -137,7 +142,9 @@ def is_line_english(line):
     if re.search(r'https?://|www\.|\.org\b|\.com\b|\.edu\b|\.net\b', line, re.IGNORECASE):
         return True
     # If there is punctuation stuck between letters or semicolons without spaces (e.g. h,cr, ;s, sunk,), it is QWERTY-scrambled Hebrew
-    if re.search(r'[a-zA-Z][,.;/][a-zA-Z]', line) or re.search(r';[a-zA-Z]|[a-zA-Z];', line):
+    # Strip single-letter abbreviations like N.Y. or U.S. or i.e. first
+    cleaned_punct = re.sub(r'\b[a-zA-Z]\.[a-zA-Z]\b', '', line)
+    if re.search(r'[a-zA-Z][,.;/][a-zA-Z]', cleaned_punct) or re.search(r';[a-zA-Z]|[a-zA-Z];', line):
         return False
 
     words = [re.sub(r'[^a-zA-Z]', '', w).lower() for w in line.split()]
@@ -211,6 +218,15 @@ AUTHOR_CANONICAL_MAP = {
     "ב''ח": "ב''ח",
     'בית חדש': "ב''ח",
     'ספר בית חדש': "ב''ח",
+    'משנה הלכות': 'רבי מנשה קליין',
+    'שו"ת משנה הלכות': 'רבי מנשה קליין',
+    "שו''ת משנה הלכות": 'רבי מנשה קליין',
+    'פחד יצחק': 'רבי יצחק הוטנר',
+    'הוטנר': 'רבי יצחק הוטנר',
+    'רבי יצחק הוטנר': 'רבי יצחק הוטנר',
+    'רב מיכאל ברוידה': 'רב מיכאל ברוידה',
+    'Michael Broyde': 'רב מיכאל ברוידה',
+    'James Bandler': 'James Bandler',
     'משנה': 'יהודה הנשיא',
     'יהודה הנשיא': 'יהודה הנשיא',
     'רבי יהודה הנשיא': 'יהודה הנשיא',
@@ -739,6 +755,14 @@ def parse_citation(citation):
         location = "דף יז"
         return author, book, location, False, None
 
+    # Rabbi Michael Broyde Thanksgiving article
+    if 'winter of 1622' in c_str or 'survival by the pilgrims' in c_str or 'Thanksgiving day celebration was held' in c_str or 'Sarah Joseph Hale' in c_str or 'Sara Joseph Hale' in c_str:
+        return "רב מיכאל ברוידה", "Journal of Halacha and Contemporary Society", "כרך ל", False, None
+
+    # Wall Street Journal Thanksgiving article by James Bandler
+    if 'James Bandler' in c_str or 'Hard Line on Turkey' in c_str:
+        return "James Bandler", "The Wall Street Journal", "20 Nov 2001 p. A1", False, None
+
     # 1. English citation heuristic parsing
     if is_line_english(c_str):
         c = re.sub(r'^\s*\(?\s*\d+[\)\.\-:]?\s*', '', c_str).strip()
@@ -746,19 +770,19 @@ def parse_citation(citation):
         book = ""
         location = ""
 
-        # Pattern A: Sefer/Title (Author) Location (e.g. Einei Yisroel (Rav Yisroel Belsky) Bereishis pp. 12-16)
-        m = re.match(r'^([^(]+)\s*\(([^)]+)\)\s*(.*)$', c)
-        if m:
-            book = m.group(1).strip()
-            author = m.group(2).strip()
-            location = m.group(3).strip()
+        # Pattern B: Title by Author Date/Location (e.g. THE AGE OF THE UNIVERSE ... By Rabbi Aryeh Kaplan February 18, 1979)
+        m_by = re.search(r'^(.*?)\s+by\s+([A-Za-z\.\s\']+?)(?:\.|\s+([A-Z][a-z]+ \d{1,2},? \d{4}|\b(?:pp?|vol|ch|wall street journal)\b.*|$))', c, re.IGNORECASE)
+        if m_by and not re.search(r'\b(?:step|day|piece)\s+by\s+(?:step|day|piece)\b', c, re.IGNORECASE):
+            book = m_by.group(1).strip()
+            author = m_by.group(2).strip()
+            location = (m_by.group(3) or "").strip()
         else:
-            # Pattern B: Title by Author Date/Location (e.g. THE AGE OF THE UNIVERSE ... By Rabbi Aryeh Kaplan February 18, 1979)
-            m = re.search(r'^(.*?)\s+by\s+([A-Za-z\.\s\']+?)(?:\s+([A-Z][a-z]+ \d{1,2},? \d{4}|\b(?:pp?|vol|ch)\b.*|$))', c, re.IGNORECASE)
+            # Pattern A: Sefer/Title (Author) Location (e.g. Einei Yisroel (Rav Yisroel Belsky) Bereishis pp. 12-16)
+            m = re.match(r'^([^(]+)\s*\(([^)]+)\)\s*(.*)$', c)
             if m:
                 book = m.group(1).strip()
                 author = m.group(2).strip()
-                location = (m.group(3) or "").strip()
+                location = m.group(3).strip()
             else:
                 # Pattern C: Author, Title, Location/Source (e.g. Rabbi Shimon Schwab, How old is the Universe?, Challenge p. 165)
                 parts = [p.strip() for p in re.split(r'[,;]\s*', c) if p.strip()]
@@ -821,6 +845,10 @@ def parse_citation(citation):
     clean = re.sub(r"\s+", " ", clean).strip()
     # Check for known responsa sefarim where book title implies author
     RESPONSA_SPECIAL_MAP = {
+        'משנה הלכות': ('רבי מנשה קליין', 'שו"ת משנה הלכות'),
+        'שו"ת משנה הלכות': ('רבי מנשה קליין', 'שו"ת משנה הלכות'),
+        "שו''ת משנה הלכות": ('רבי מנשה קליין', 'שו"ת משנה הלכות'),
+        'פחד יצחק': ('רבי יצחק הוטנר', 'פחד יצחק'),
         'שבט הלוי': ('רבי שמואל הלוי וואזנר', 'שו"ת שבט הלוי'),
         'נחלת שבעה': ('רבי שמואל הלוי', 'שו"ת נחלת שבעה'),
         'ספר נחלת שבעה': ('רבי שמואל הלוי', 'שו"ת נחלת שבעה'),
@@ -1662,13 +1690,14 @@ def extract_sources_and_images(pdf_path):
             is_kw = any(kw in raw_decoded for kw in KNOWN_HEADER_KEYWORDS)
             has_words = bool(re.search(r'[\u0590-\u05FFa-zA-Z]{2,}', raw_decoded))
             
+            is_standalone_num = bool(re.match(r'^\(?\s*\d{1,2}\s*[\)\.\-:]?\s*$', raw.strip()))
             is_header = False
-            if len(raw) < 350 and has_words:
+            if len(raw) < 350 and (has_words or is_standalone_num):
                 if has_numbered_doc:
                     if cur_max_header_num >= 5 and found_num is not None and found_num < cur_max_header_num - 2:
                         is_header = False
                     else:
-                        is_header = has_num_prefix or has_special_num
+                        is_header = has_num_prefix or has_special_num or is_standalone_num
                 else:
                     is_header = has_num_prefix or has_special_num or (is_kw and b[1] > 30 and len(raw_decoded) < 150)
 
@@ -1707,6 +1736,16 @@ def extract_sources_and_images(pdf_path):
                             cand = re.sub(r'^[-\s:;]+|[-\s:;]+$', '', cand).strip()
                             if cand:
                                 sources[-1]["dibur_hamatchil"] = cand
+        elif page_num > 0 and sources and not headers:
+            content_blocks = [b for b in blocks if len((b[4] if is_ocr else decode_text(b[4])).strip()) > 20]
+            if content_blocks:
+                min_y = max(30, min(b[1] for b in content_blocks) - 5)
+                max_y = max(b[3] for b in content_blocks) + 5
+                cont_rect = fitz.Rect(0, min_y, page.rect.width, max_y)
+                pix = page.get_pixmap(clip=cont_rect, dpi=150)
+                cont_img_name = sanitize_filename(f"{pdf_path.stem}_p{page_num+1}_cont.png")
+                pix.save(str(ATTACHMENTS_DIR / cont_img_name))
+                sources[-1]["image_filenames"].append(cont_img_name)
 
         for i, h in enumerate(headers):
             raw_header = h[4].strip()
